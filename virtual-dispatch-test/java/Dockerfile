@@ -1,5 +1,5 @@
 ARG TARGET
-FROM eclipse-temurin:25.0.1_8-jdk AS build-temurin
+FROM docker.io/library/eclipse-temurin:25.0.1_8-jdk AS build-temurin
 WORKDIR /build
 COPY java/VirtualDispatch.java .
 RUN javac --release 25 VirtualDispatch.java
@@ -14,7 +14,7 @@ WORKDIR /build
 COPY java/VirtualDispatch.java .
 RUN javac --release 25 VirtualDispatch.java && native-image --no-fallback -O3 VirtualDispatch virtual-dispatch
 
-FROM eclipse-temurin:25.0.1_8-jre AS final-temurin-c2
+FROM docker.io/library/eclipse-temurin:25.0.1_8-jre AS final-temurin-c2
 WORKDIR /benchmark
 COPY --from=build-temurin /build/*.class ./
 ENTRYPOINT ["java", "VirtualDispatch"]
@@ -24,7 +24,7 @@ WORKDIR /benchmark
 COPY --from=build-graal-jit /build/*.class ./
 ENTRYPOINT ["java", "VirtualDispatch"]
 
-FROM debian:bookworm-20251020-slim AS final-graalvm-native
+FROM docker.io/library/debian:bookworm-20251020-slim AS final-graalvm-native
 WORKDIR /benchmark
 COPY --from=build-graal-native /build/virtual-dispatch ./
 ENTRYPOINT ["/benchmark/virtual-dispatch"]

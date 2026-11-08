@@ -23,4 +23,13 @@ case "$language:$target" in
 esac
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-docker build --pull --build-arg "TARGET=$target" --file "$root/$language/Dockerfile" --tag "virtual-dispatch-$target:latest" "$root"
+container_engine=${CONTAINER_ENGINE:-docker}
+case "$container_engine" in
+    docker|podman) ;;
+    *) echo "unsupported container engine: $container_engine (expected docker or podman)" >&2; exit 2 ;;
+esac
+command -v "$container_engine" >/dev/null 2>&1 || {
+    echo "container engine not found: $container_engine" >&2
+    exit 127
+}
+"$container_engine" build --pull --build-arg "TARGET=$target" --file "$root/$language/Dockerfile" --tag "virtual-dispatch-$target:latest" "$root"

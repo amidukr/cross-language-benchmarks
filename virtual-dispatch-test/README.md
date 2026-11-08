@@ -68,6 +68,17 @@ Build the complete Docker target matrix, then run the previously built images:
   --run-id example-all-docker-001 --trial 1 --config-id default
 ```
 
+The container scripts use `docker` by default. To use Podman, set
+`CONTAINER_ENGINE=podman` for both commands:
+
+```sh
+CONTAINER_ENGINE=podman ./virtual-dispatch-test/build-all.sh
+CONTAINER_ENGINE=podman ./virtual-dispatch-test/run-all.sh \
+  --size 100000 --seed 42 --repeats 100 --value 7 \
+  --warmup-samples 10 --samples 30 \
+  --run-id example-all-podman-001 --trial 1 --config-id default
+```
+
 ### Run all targets natively
 
 Build every target supported by the host, then run the artifacts that were

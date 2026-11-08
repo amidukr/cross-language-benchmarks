@@ -37,6 +37,16 @@ fi
 mkdir -p "$output"
 output=$(CDPATH= cd -- "$output" && pwd)
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+container_engine=${CONTAINER_ENGINE:-docker}
+case "$container_engine" in
+    docker|podman) ;;
+    *) echo "unsupported container engine: $container_engine (expected docker or podman)" >&2; exit 2 ;;
+esac
+command -v "$container_engine" >/dev/null 2>&1 || {
+    echo "container engine not found: $container_engine" >&2
+    exit 127
+}
+container_engine_version=$("$container_engine" --version 2>&1)
 host_uid=$(id -u)
 host_gid=$(id -g)
 cpu=${BENCH_CPU:-0}
@@ -71,6 +81,8 @@ log="$output/$target-$run_id.log"
     echo "run_id=$run_id"
     echo "target=$target"
     echo "execution_mode=docker"
+    echo "container_engine=$container_engine"
+    echo "container_engine_version=$container_engine_version"
     echo "image=virtual-dispatch-$target:latest"
     echo "cpu=$cpu"
     echo "cpu_limit=one logical CPU"
@@ -82,7 +94,7 @@ log="$output/$target-$run_id.log"
 
 cd "$root"
 set +e
-docker run --rm --cpuset-cpus "$cpu" --user "$host_uid:$host_gid" \
+"$container_engine" run --rm --cpuset-cpus "$cpu" --user "$host_uid:$host_gid" \
     --volume "$output:/output" \
     --env "BENCH_ENVIRONMENT=$environment" \
     "virtual-dispatch-$target:latest" "$@" 2>>"$log"
