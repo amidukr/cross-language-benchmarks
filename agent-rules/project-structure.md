@@ -64,10 +64,12 @@ resource controls. Retain that provenance when combining samples.
 ## Reports
 
 Store reports under `reports/` at the repository root, with one directory per
-workload and one CSV per target.
+workload, one CSV per target, and the workload analysis in a Markdown file
+beside the workload's report directory.
 
 ```text
 reports/<workload>-test/<target-id>-report.csv
+reports/<workload>-test.md
 ```
 
 For standard repository runs, pass `--output reports/<workload>-test` to
@@ -83,6 +85,8 @@ reports/virtual-dispatch-test/temurin-c2-report.csv
 
 Append subsequent samples to the report for the selected target. Pass separate
 `--output` directories when Docker and native runs need separate report files.
+Write analysis tasks to `reports/<workload>-test.md` and follow
+[analysis.md](analysis.md).
 
 ## Build definitions
 

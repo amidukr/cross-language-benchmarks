@@ -67,3 +67,5 @@ define its name, unit, and measurement boundary here before using it.
 - Keep individual samples in the CSV. Compute summaries and charts from those
   samples. For a warmup chart, filter to a workload and metric, then plot
   `elapsed_ms` against `value`, with a series per target and trial.
+
+Follow [analysis.md](analysis.md) when analyzing or comparing report data.
