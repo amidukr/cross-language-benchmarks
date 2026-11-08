@@ -56,6 +56,37 @@ For a native run, use the corresponding two-phase host workflow:
   --config-id default
 ```
 
+### Run all targets with Docker
+
+Build the complete Docker target matrix, then run the previously built images:
+
+```sh
+./virtual-dispatch-test/build-all.sh
+./virtual-dispatch-test/run-all.sh \
+  --size 100000 --seed 42 --repeats 100 --value 7 \
+  --warmup-samples 10 --samples 30 \
+  --run-id example-all-docker-001 --trial 1 --config-id default
+```
+
+### Run all targets natively
+
+Build every target supported by the host, then run the artifacts that were
+built successfully:
+
+```sh
+./virtual-dispatch-test/build-all-native.sh
+./virtual-dispatch-test/run-all-native.sh \
+  --size 100000 --seed 42 --repeats 100 --value 7 \
+  --warmup-samples 10 --samples 30 \
+  --run-id example-all-native-001 --trial 1 --config-id default
+```
+
+Both run-all commands write to `reports/virtual-dispatch-test/` by default. Add
+`--output <directory>` to use another location. Do not pass `--target`; the
+batch scripts select each target automatically. Native batches skip targets
+whose required host toolchains or previously built artifacts are unavailable,
+continue through the matrix, and print a summary.
+
 The native scripts fail when the requested toolchain or built artifact is
 unavailable. Java native builds accept an installed JDK that supports
 `--release 25`; Temurin JDK 25 remains preferred, and GraalVM targets still
