@@ -1,5 +1,8 @@
 # Docker build and execution rules
 
+Use the compiler, runtime, and build tools defined in
+[tooling.md](tooling.md).
+
 ## Build and run in Docker
 
 - Compile, build, and publish all benchmark targets in Docker. Run dataset
