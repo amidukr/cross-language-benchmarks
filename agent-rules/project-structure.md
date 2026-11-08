@@ -22,8 +22,15 @@ language. Use the directory names shown above consistently across workloads.
 Each implementation directory must contain:
 
 - its language-specific source code;
-- a Dockerfile containing the required build and runtime toolchain; and
-- shell scripts to build and run the implementation.
+- a Dockerfile containing the required build and runtime toolchain;
+- an executable `build.sh` script; and
+- an executable `run.sh` script.
+
+`build.sh` builds the implementation's Docker image and compiles or publishes
+the workload. `run.sh` runs the already-built workload image with the supplied
+benchmark arguments and writes results and logs to the configured output
+directory. Both scripts must fail with a nonzero exit code when their operation
+does not complete successfully.
 
 Keep language-specific manifests and build definitions beside the
 implementation, including `Cargo.toml`, `go.mod`, and an SDK-style `.csproj`
@@ -34,6 +41,16 @@ Keep the shared C and C++ `CMakeLists.txt` in the workload root. Define separate
 C and C++ executables for the workload. Support the GCC baseline and required
 Clang C++ target with separate build directories so their artifacts and cached
 configuration cannot overlap.
+
+Use the workload directory as the Docker build context for every implementation
+and select the implementation Dockerfile with `--file`. For example:
+
+```sh
+docker build --file <workload>-test/cpp/Dockerfile <workload>-test/
+```
+
+This context allows Dockerfiles to access workload-level build definitions and
+shared files without accessing unrelated repository content.
 
 Repository-level orchestration may invoke the per-language scripts to build and
 run complete target matrices. Keep workload-independent orchestration outside
