@@ -1,6 +1,6 @@
 # Benchmark report format
 
-Every benchmark runner produces a `benchmark-results.csv` file using the same
+Every benchmark runner produces a `results.csv` file using the same
 schema. Each row records one metric for one sample. A suite can combine reports
 by keeping one header and appending the data rows.
 
