@@ -29,8 +29,9 @@ Each implementation directory must contain:
 `build.sh` builds the implementation's Docker image and compiles or publishes
 the workload. `run.sh` runs the already-built workload image with the supplied
 benchmark arguments and writes results and logs to the configured output
-directory. Both scripts must fail with a nonzero exit code when their operation
-does not complete successfully.
+directory. Follow [runner.md](runner.md) for the common command-line interface.
+Both scripts must fail with a nonzero exit code when their operation does not
+complete successfully.
 
 Keep language-specific manifests and build definitions beside the
 implementation, including `Cargo.toml`, `go.mod`, and an SDK-style `.csproj`
