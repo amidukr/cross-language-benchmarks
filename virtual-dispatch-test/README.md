@@ -79,6 +79,12 @@ CONTAINER_ENGINE=podman ./virtual-dispatch-test/run-all.sh \
   --run-id example-all-podman-001 --trial 1 --config-id default
 ```
 
+Rootless Podman may not expose the cgroup `cpuset` controller. The Podman path
+therefore applies one-CPU affinity with host `taskset`; Docker continues to use
+`--cpuset-cpus`. The runner also detects when the `docker` command is Podman's
+Docker-CLI compatibility wrapper and automatically uses the Podman path. Set
+`BENCH_CPU` to select the logical CPU in either mode.
+
 ### Run all targets natively
 
 Build every target supported by the host, then run the artifacts that were

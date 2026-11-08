@@ -47,9 +47,22 @@ command -v "$container_engine" >/dev/null 2>&1 || {
     exit 127
 }
 container_engine_version=$("$container_engine" --version 2>&1)
+case "$container_engine:$container_engine_version" in
+    podman:*|*:*[Pp]odman*) container_runtime=podman ;;
+    *) container_runtime=docker ;;
+esac
 host_uid=$(id -u)
 host_gid=$(id -g)
 cpu=${BENCH_CPU:-0}
+if [ "$container_runtime" = podman ]; then
+    command -v taskset >/dev/null 2>&1 || {
+        echo "required command not found: taskset" >&2
+        exit 127
+    }
+    cpu_control=taskset
+else
+    cpu_control=container-cpuset
+fi
 environment="$(uname -srmo); $(sed -n 's/^model name[[:space:]]*: //p' /proc/cpuinfo | sed -n '1p')"
 args=
 old_ifs=$IFS
@@ -83,8 +96,10 @@ log="$output/$target-$run_id.log"
     echo "execution_mode=docker"
     echo "container_engine=$container_engine"
     echo "container_engine_version=$container_engine_version"
+    echo "container_runtime=$container_runtime"
     echo "image=virtual-dispatch-$target:latest"
     echo "cpu=$cpu"
+    echo "cpu_control=$cpu_control"
     echo "cpu_limit=one logical CPU"
     echo "memory_limit=none"
     echo "architecture=$(uname -m)"
@@ -94,10 +109,19 @@ log="$output/$target-$run_id.log"
 
 cd "$root"
 set +e
-"$container_engine" run --rm --cpuset-cpus "$cpu" --user "$host_uid:$host_gid" \
-    --volume "$output:/output" \
-    --env "BENCH_ENVIRONMENT=$environment" \
-    "virtual-dispatch-$target:latest" "$@" 2>>"$log"
+if [ "$container_runtime" = podman ]; then
+    taskset -c "$cpu" "$container_engine" run --rm \
+        --user "$host_uid:$host_gid" \
+        --volume "$output:/output" \
+        --env "BENCH_ENVIRONMENT=$environment" \
+        "virtual-dispatch-$target:latest" "$@" 2>>"$log"
+else
+    "$container_engine" run --rm --cpuset-cpus "$cpu" \
+        --user "$host_uid:$host_gid" \
+        --volume "$output:/output" \
+        --env "BENCH_ENVIRONMENT=$environment" \
+        "virtual-dispatch-$target:latest" "$@" 2>>"$log"
+fi
 status=$?
 set -e
 echo "exit_status=$status" >>"$log"
