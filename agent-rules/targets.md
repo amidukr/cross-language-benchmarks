@@ -2,21 +2,24 @@
 
 ## Comparison targets
 
-| Language | Runtime or toolchain |
-| --- | --- |
-| Java | Eclipse Temurin JDK 25 LTS with HotSpot and its C2 JIT |
-| Java | GraalVM for JDK 25 in JVM mode with the Graal JIT |
-| Java | GraalVM for JDK 25 Native Image, compiled ahead of time |
-| C++ | C++ compiled in an optimized release build |
-| C | C compiled in an optimized release build |
-| Rust | Rust compiled in an optimized release build |
-| Go | Go compiled with the standard Go toolchain |
-| Python | CPython |
-| C# | .NET 10 LTS with the CoreCLR JIT |
-| C# | .NET 10 LTS Native AOT |
-| JavaScript | Node.js 26 LTS with the V8 JIT |
+| Language   | Runtime or toolchain                                    |
+| ---------- | ------------------------------------------------------- |
+| Java       | Eclipse Temurin JDK 25 LTS with HotSpot and its C2 JIT  |
+| Java       | GraalVM for JDK 25 in JVM mode with the Graal JIT       |
+| Java       | GraalVM for JDK 25 Native Image, compiled ahead of time |
+| C++        | GCC compiled in an optimized release build              |
+| C++        | Clang compiled in an optimized release build            |
+| C          | C compiled in an optimized release build                |
+| Rust       | Rust compiled in an optimized release build             |
+| Go         | Go compiled with the standard Go toolchain              |
+| Python     | CPython                                                 |
+| C#         | .NET 10 LTS with the CoreCLR JIT                        |
+| C#         | .NET 10 LTS Native AOT                                  |
+| JavaScript | Node.js 26 LTS with the V8 JIT                          |
 
 Use JDK 25 as the common Java baseline. Reuse the Java workload source across the three Java targets where possible. Record the exact JDK distribution and build, including the GraalVM distribution or edition, and use matching JDK patch releases where available.
+
+Reuse the same C++ workload source for GCC and Clang. Compile both with the same C++ language standard and equivalent optimized release settings. Report the exact compiler versions and flags as separate targets.
 
 Use the same workload, inputs, correctness checks, and timing boundaries across targets. Record exact toolchain versions, compiler and runtime flags, hardware, and operating system. Report profile-guided builds or other tuned configurations as separate results.
 
