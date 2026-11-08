@@ -4,9 +4,9 @@
 
 | Language   | Target ID        | Runtime or toolchain                                    |
 | ---------- | ---------------- | ------------------------------------------------------- |
-| Java       | `temurin-c2`     | Eclipse Temurin JDK 25 LTS with HotSpot and its C2 JIT  |
-| Java       | `graalvm-jit`    | GraalVM for JDK 25 in JVM mode with the Graal JIT       |
-| Java       | `graalvm-native` | GraalVM for JDK 25 Native Image, compiled ahead of time |
+| Java       | `temurin-c2`     | OpenJDK with HotSpot C2; Temurin JDK 25 is preferred    |
+| Java       | `graalvm-jit`    | GraalVM in JVM mode with the Graal JIT; JDK 25 preferred |
+| Java       | `graalvm-native` | GraalVM Native Image; JDK 25 preferred                  |
 | C++        | `cpp-gcc`        | GCC compiled in an optimized release build              |
 | C++        | `cpp-clang`      | Clang compiled in an optimized release build            |
 | C          | `c-gcc`          | C compiled with GCC in an optimized release build       |
@@ -21,7 +21,14 @@
 Use these target IDs in command-line arguments, image and artifact names,
 result rows, and run logs.
 
-Use JDK 25 as the common Java baseline. Reuse the Java workload source across the three Java targets where possible. Record the exact JDK distribution and build, including the GraalVM distribution or edition, and use matching JDK patch releases where available.
+Prefer JDK 25, with Eclipse Temurin as the HotSpot reference distribution, for
+the common Java baseline. Native runs may use another installed OpenJDK version
+or distribution when it supports the workload. Record the exact compiler and
+runtime distribution and build, including the GraalVM distribution or edition.
+Do not combine or directly compare runs from different JDK versions without
+retaining that distinction in the reported toolchain metadata. Reuse the Java
+workload source across the three Java targets where possible, and use matching
+JDK patch releases where available.
 
 Reuse the same C workload source across its GCC and Clang targets, and do the same for C++. Compile each language with the same language standard and equivalent optimized release settings across both compilers. Report the exact compiler versions and flags as separate targets.
 
@@ -58,7 +65,7 @@ stability.
 
 - Keep tiered compilation enabled. Inspect compilation events using
   `-XX:+PrintCompilation` or Java Flight Recorder.
-- For Temurin, check that the hot path reaches HotSpot tier 4 (C2) before the
+- For HotSpot C2 configurations, check that the hot path reaches tier 4 (C2) before the
   planned steady-state window. Inspect the compiled caller if the workload was
   inlined. Check for on-stack replacement (OSR) when a long-running loop
   transitions to optimized code during execution.

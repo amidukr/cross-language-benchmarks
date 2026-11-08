@@ -5,6 +5,11 @@ Use the compiler, runtime, and build tools defined in
 
 ## Build and run in Docker
 
+These rules apply to `build.sh` and `run.sh`. The optional host-native path is
+defined by `build_native.sh` and `run_native.sh` in
+[project-structure.md](project-structure.md) and must preserve the same workload
+and measurement contract.
+
 - Compile, build, and publish all benchmark targets in Docker. Run dataset
   generation, correctness checks, diagnostics, and benchmark measurements in
   Docker as well.

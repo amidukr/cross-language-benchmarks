@@ -24,7 +24,9 @@ Each implementation directory must contain:
 - its language-specific source code;
 - a Dockerfile containing the required build and runtime toolchain;
 - an executable `build.sh` script; and
-- an executable `run.sh` script.
+- an executable `run.sh` script; and
+- an executable `build_native.sh` script; and
+- an executable `run_native.sh` script.
 
 `build.sh` builds the implementation's Docker image and compiles or publishes
 the workload. `run.sh` runs the already-built workload image with the supplied
@@ -32,6 +34,27 @@ benchmark arguments and writes results and logs to the configured output
 directory. Follow [runner.md](runner.md) for the common command-line interface.
 Both scripts must fail with a nonzero exit code when their operation does not
 complete successfully.
+
+`build_native.sh` builds or publishes the selected target with toolchains
+installed on the host. Like `build.sh`, it accepts `--target <target-id>` and
+rejects invalid targets. `run_native.sh` runs only that already-built host
+artifact without rebuilding it. Like `run.sh`, it accepts the standard runner
+arguments and writes results and logs only to the selected `--output`
+directory. Both native scripts must fail with a nonzero exit status when their
+operation does not complete successfully.
+
+The native scripts must use the same sources, release settings, timing
+boundaries, correctness checks, and target IDs as the Docker path. Keep host
+build artifacts in a workload-local ignored directory, separated by target so
+toolchains cannot overwrite one another. Fail clearly when a required host
+toolchain is missing, does not match the requested target, or when
+`run_native.sh` cannot find an artifact previously produced by
+`build_native.sh`.
+
+Native and Docker executions are distinct trials. Record `execution_mode` as
+`native` or `docker` in the run log, along with the exact host toolchain and
+resource controls. Do not combine their samples without retaining that
+provenance.
 
 `build.sh` must accept `--target <target-id>`. Reject a target ID that is not
 valid for the implementation directory. Use the canonical IDs from

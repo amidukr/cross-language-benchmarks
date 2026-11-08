@@ -1,13 +1,16 @@
 # Language toolsets
 
 Use the toolsets below to build and run benchmark targets. Install and invoke
-them inside Docker as required by [docker.md](docker.md). The host only needs
-Docker and the repository's orchestration scripts.
+them inside Docker for `build.sh` and `run.sh` as described by
+[docker.md](docker.md). For `build_native.sh` and `run_native.sh`, install the
+same toolset on the host; the scripts must verify required commands and reject
+a mismatched target.
 
 Pin every container base image and toolchain version in the benchmark's Docker
-files. Record the exact version reported by the compiler or runtime in the run
-log and `toolchain` result field. Record all non-default build and runtime
-options in the `flags` field.
+files. Native runs use the installed host version rather than a pinned image.
+Record the exact version reported by the compiler or runtime in the run log and
+`toolchain` result field. Record all non-default build and runtime options in
+the `flags` field.
 
 ## Toolset matrix
 
@@ -41,9 +44,11 @@ Follow [project-structure.md](project-structure.md) for Dockerfile, script, and
 language-manifest locations. Scripts orchestrate the selected build tools inside
 Docker; they do not replace those tools.
 
-Use the container runtime to set CPU affinity and resource limits. Install any
-timing, memory, or diagnostic utility that contributes report data in the
-relevant image, pin it where applicable, and record it in the run log.
+Use the container runtime for Docker CPU affinity and resource limits. Use host
+facilities such as `taskset` for equivalent native controls. Install any timing,
+memory, or diagnostic utility that contributes report data in the relevant
+image or host environment, pin it where applicable, and record it in the run
+log.
 
 Diagnostic tools may differ by runtime, but they must observe the same built
 artifact as the headline run. Enable intrusive diagnostics only in separate
