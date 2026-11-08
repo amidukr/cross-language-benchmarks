@@ -9,3 +9,11 @@ All task specifications live in [`agent-tasks/`](agent-tasks/). Before starting 
 ## Rules
 
 Shared rules and guidelines live in [`agent-rules/`](agent-rules/). Before writing, changing, or running a benchmark, read the applicable rules, starting with [Benchmark targets and measurement](agent-rules/targets.md).
+
+## Questions and clarifications
+
+Reusable answers to agent questions live in
+[`agents-questions/`](agents-questions/). Before asking the user how to proceed
+when tools, runtimes, container engines, permissions, or other execution
+capabilities are unavailable, check this directory for an existing
+clarification and follow it when applicable.
