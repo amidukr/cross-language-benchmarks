@@ -8,4 +8,4 @@ All task specifications live in [`agent-tasks/`](agent-tasks/). Before starting 
 
 ## Rules
 
-Shared rules and guidelines live in [`agent-rules/`](agent-rules/). Before writing, changing, or running a benchmark, read the applicable rules, starting with [Benchmark targets and measurement](agent-rules/benchmark-targets.md).
+Shared rules and guidelines live in [`agent-rules/`](agent-rules/). Before writing, changing, or running a benchmark, read the applicable rules, starting with [Benchmark targets and measurement](agent-rules/targets.md).
