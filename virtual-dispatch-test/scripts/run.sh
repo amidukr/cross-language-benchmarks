@@ -70,6 +70,7 @@ log="$output/$target-$run_id.log"
 {
     echo "run_id=$run_id"
     echo "target=$target"
+    echo "execution_mode=docker"
     echo "image=virtual-dispatch-$target:latest"
     echo "cpu=$cpu"
     echo "cpu_limit=one logical CPU"

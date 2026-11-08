@@ -7,6 +7,12 @@ Each directory also has `build_native.sh` and `run_native.sh`. The first builds
 the target with host-installed tools; the second runs that already-built target
 without Docker and applies the same CPU pinning.
 
+The workload root also provides `build-all.sh`, `run-all.sh`,
+`build-all-native.sh`, and `run-all-native.sh` for processing the full target
+matrix sequentially. The run-all scripts default to
+`reports/virtual-dispatch-test/` and accept the standard runner options except
+`--target`, which they select for each invocation.
+
 ## Benchmark targets
 
 Use the language directory and its corresponding `--target` value.
