@@ -4,7 +4,10 @@ Analyze the code generated for the benchmark's timed region. Collect
 performance metrics in clean runs with the benchmark configuration's normal
 JIT settings. Enable JIT disassembly, tracing, and other assembly diagnostics
 only in separate diagnostic processes. Exclude all diagnostic-run timings
-from the benchmark CSVs and performance comparisons.
+from the benchmark CSVs and performance comparisons. Follow the clean
+performance-run requirements in [targets.md](targets.md); diagnostic flags and
+environment variables must never leak into startup, warmup, or retained timing
+samples.
 
 ## Collect evidence
 

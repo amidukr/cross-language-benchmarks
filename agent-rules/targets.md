@@ -54,12 +54,39 @@ independent processes. Build or publish the workload before the timed runs.
 
 ## Runtime-specific checks
 
-Keep default runtime behavior for the baseline and label tuned configurations
-separately. Run compilation diagnostics separately from headline timing runs.
-Use the same build, inputs, and execution settings for diagnostics, apart from
-the diagnostic options. Report compilation evidence separately from observed
-steady-state performance. A compilation event alone does not establish
-stability.
+### Clean performance runs
+
+Use default runtime behavior for baseline performance measurements. Do not add
+runtime flags or environment variables that enable, disable, or alter JIT
+profiling, tiered compilation, OSR, inlining, deoptimization, code generation,
+garbage collection, code-cache behavior, tracing, event recording,
+disassembly, or compilation logging. This prohibition applies to the entire
+performance process, including startup, warmup, and every retained sample.
+
+Do not allow ambient host or image settings to inject such behavior. Establish
+a controlled runtime environment by clearing or rejecting runtime option
+variables and startup hooks, such as Java tool-option variables, CoreCLR
+`DOTNET_*` or `COMPlus_*` overrides, `NODE_OPTIONS`, and equivalent mechanisms.
+Record any runtime-affecting environment value that must remain. Fail the clean
+run when the baseline environment cannot be established with confidence.
+
+Normal profiling performed internally by a runtime under its unmodified
+defaults is part of the baseline. Do not add flags that change that profiling
+or expose it through intrusive diagnostics. Launcher arguments required only
+to locate and start the built artifact, and the benchmark's standard workload
+arguments, are not runtime-tuning flags.
+
+Run compilation, profiling, tracing, event-recording, and disassembly
+diagnostics only in separate processes. Diagnostic runs must not append rows to
+performance CSVs, and their timings must not be used in performance summaries
+or comparisons. Use the same artifact, inputs, and execution controls where
+possible, record every diagnostic difference, and keep diagnostic output
+separate from clean-run logs.
+
+If a task explicitly requests a tuned runtime configuration, give it a
+distinct `config_id`, run it separately, and never substitute it for or combine
+it with the clean baseline. Report compilation evidence separately from
+observed performance. A compilation event alone does not establish stability.
 
 ### Java on HotSpot and GraalVM
 

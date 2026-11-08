@@ -64,12 +64,15 @@ resource controls. Retain that provenance when combining samples.
 ## Reports
 
 Store reports under `reports/` at the repository root, with one directory per
-workload, one CSV per target, and the workload analysis in a Markdown file
-beside the workload's report directory.
+workload, one CSV per target, and analysis Markdown files beside the workload's
+report directory. Keep raw assembly and code-generation diagnostics inside the
+workload's report directory, separated by target and diagnostic run.
 
 ```text
 reports/<workload>-test/<target-id>-report.csv
+reports/<workload>-test/assembly/<target-id>/<diagnostic-run-id>/
 reports/<workload>-test.md
+reports/<workload>-test-assembly.md
 ```
 
 For standard repository runs, pass `--output reports/<workload>-test` to
@@ -87,6 +90,12 @@ Append subsequent samples to the report for the selected target. Pass separate
 `--output` directories when Docker and native runs need separate report files.
 Write analysis tasks to `reports/<workload>-test.md` and follow
 [analysis.md](analysis.md).
+
+Write assembly and code-generation analysis to
+`reports/<workload>-test-assembly.md`. Store its raw evidence under
+`reports/<workload>-test/assembly/<target-id>/<diagnostic-run-id>/` and follow
+[assembly-analysis.md](assembly-analysis.md). Keep diagnostic artifacts and
+their output separate from timing CSVs and clean performance-run logs.
 
 ## Build definitions
 

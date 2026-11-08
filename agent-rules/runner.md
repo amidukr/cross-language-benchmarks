@@ -56,6 +56,16 @@ Ensure result files remain owned and writable by the invoking host user where
 the container platform supports it. Create no benchmark results outside the
 selected output directory.
 
+`run.sh` and `run_native.sh` must run clean performance measurements as defined
+by [targets.md](targets.md). They must not inject runtime flags or environment
+variables that alter JIT profiling, compilation, optimization, garbage
+collection, tracing, event recording, or disassembly. Use separate diagnostic
+scripts or commands whose output cannot be mistaken for performance results.
+They must also clear or reject ambient runtime option variables and startup
+hooks rather than inheriting unrecorded behavior from the invoking shell or
+container image. Fail before recording samples if a clean runtime environment
+cannot be established.
+
 Forward the benchmark application's exit status. A failed argument check,
 checksum mismatch, timeout, signal, or incomplete run invalidates the trial and
 must not produce successful measurement rows.
