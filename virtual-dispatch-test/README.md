@@ -83,7 +83,9 @@ Rootless Podman may not expose the cgroup `cpuset` controller. The Podman path
 therefore applies one-CPU affinity with host `taskset`; Docker continues to use
 `--cpuset-cpus`. The runner also detects when the `docker` command is Podman's
 Docker-CLI compatibility wrapper and automatically uses the Podman path. Set
-`BENCH_CPU` to select the logical CPU in either mode.
+`BENCH_CPU` to select the logical CPU in either mode. Podman runs with the
+`keep-id` user namespace so benchmark reports written through the bind mount
+remain owned and writable by the invoking host user.
 
 ### Run all targets natively
 

@@ -13,7 +13,7 @@ COPY CMakeLists.txt ./
 COPY c/main.c c/main.c
 COPY cpp/main.cpp cpp/main.cpp
 RUN cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ && cmake --build build --target virtual-dispatch-cpp
-FROM docker.io/library/debian:bookworm-20251020-slim AS final-cpp-gcc
+FROM docker.io/library/gcc:15.2.0-bookworm AS final-cpp-gcc
 COPY --from=build-cpp-gcc /src/build/virtual-dispatch-cpp /virtual-dispatch
 ENTRYPOINT ["/virtual-dispatch"]
 FROM docker.io/library/debian:bookworm-20251020-slim AS final-cpp-clang

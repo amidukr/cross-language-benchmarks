@@ -111,7 +111,7 @@ cd "$root"
 set +e
 if [ "$container_runtime" = podman ]; then
     taskset -c "$cpu" "$container_engine" run --rm \
-        --user "$host_uid:$host_gid" \
+        --userns keep-id \
         --volume "$output:/output" \
         --env "BENCH_ENVIRONMENT=$environment" \
         "virtual-dispatch-$target:latest" "$@" 2>>"$log"

@@ -10,7 +10,7 @@ RUN dotnet publish -c Release -r linux-x64 -p:PublishAot=true -o /app
 FROM mcr.microsoft.com/dotnet/runtime:10.0.14-noble AS final-coreclr
 COPY --from=build-coreclr /app /app
 ENTRYPOINT ["dotnet", "/app/VirtualDispatch.dll"]
-FROM docker.io/library/debian:bookworm-20251020-slim AS final-dotnet-native
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0.14-noble AS final-dotnet-native
 COPY --from=build-native /app/VirtualDispatch /virtual-dispatch
 ENTRYPOINT ["/virtual-dispatch"]
 FROM final-${TARGET}
