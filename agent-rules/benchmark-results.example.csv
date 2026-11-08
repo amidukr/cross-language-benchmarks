@@ -1,0 +1,7 @@
+schema_version,run_id,benchmark,case_id,language,target,config_id,toolchain,flags,environment,trial,phase,sample,elapsed_ms,metric,value,unit
+1,example-001,edigits,digits-10000,Java,temurin-c2,default,Temurin 25.0.1+8,,Example Linux x86_64 host,1,startup,1,128,wall_time,128,ms
+1,example-001,edigits,digits-10000,Java,temurin-c2,default,Temurin 25.0.1+8,,Example Linux x86_64 host,2,warmup,1,140,time_per_op,6700000,ns/op
+1,example-001,edigits,digits-10000,Java,temurin-c2,default,Temurin 25.0.1+8,,Example Linux x86_64 host,2,warmup,2,245,time_per_op,4900000,ns/op
+1,example-001,edigits,digits-10000,Java,temurin-c2,default,Temurin 25.0.1+8,,Example Linux x86_64 host,2,steady_state,3,345,time_per_op,2800000,ns/op
+1,example-001,edigits,digits-10000,Go,go,default,go1.25.0,,Example Linux x86_64 host,1,startup,1,9,wall_time,9,ms
+1,example-001,edigits,digits-10000,Go,go,default,go1.25.0,,Example Linux x86_64 host,2,steady_state,1,100,time_per_op,3100000,ns/op
