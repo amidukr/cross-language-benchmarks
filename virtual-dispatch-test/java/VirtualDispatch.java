@@ -134,7 +134,7 @@ public final class VirtualDispatch {
     Data data = prepare(c.size, c.seed);
     int want = expected(data.direct, c.repeats, c.value);
     Files.createDirectories(c.output);
-    Path result = c.output.resolve("results.csv");
+    Path result = c.output.resolve(c.target + "-report.csv");
     boolean exists = Files.exists(result) && Files.size(result) > 0;
     var out = new StringBuilder();
     if (!exists)

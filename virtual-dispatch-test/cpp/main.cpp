@@ -227,19 +227,19 @@ int main(int argc, char **argv) {
     rows << '\n';
   }
   std::filesystem::create_directories(c.output);
-  auto path = std::filesystem::path(c.output) / "results.csv";
+  auto path = std::filesystem::path(c.output) / (c.target + "-report.csv");
   bool exists =
       std::filesystem::exists(path) && std::filesystem::file_size(path) > 0;
   std::ofstream out(path, std::ios::app);
   if (!out)
-    fail("cannot open results.csv");
+    fail("cannot open report CSV");
   if (!exists)
     out << "schema_version,run_id,benchmark,case_id,language,target,config_id,"
            "toolchain,flags,environment,trial,phase,sample,elapsed_ms,metric,"
            "value,unit\n";
   out << rows.str();
   if (!out)
-    fail("cannot write results.csv");
+    fail("cannot write report CSV");
   std::cerr << "effective size=" << c.size << " seed=" << c.seed
             << " repeats=" << c.repeats << " value=" << c.value
             << " warmup_samples=" << c.warmup << " samples=" << c.samples

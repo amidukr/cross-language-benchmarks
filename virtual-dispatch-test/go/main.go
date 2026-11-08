@@ -151,7 +151,7 @@ func main() {
 	if e := os.MkdirAll(c.output, 0755); e != nil {
 		panic(e)
 	}
-	filePath := filepath.Join(c.output, "results.csv")
+	filePath := filepath.Join(c.output, c.target+"-report.csv")
 	info, e := os.Stat(filePath)
 	exists := e == nil && info.Size() > 0
 	f, e := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)

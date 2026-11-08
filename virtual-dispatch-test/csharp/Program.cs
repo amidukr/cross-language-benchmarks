@@ -129,7 +129,7 @@ static class Program {
     var (ops, direct) = Prepare(c.Size, c.Seed);
     var want = Expected(direct, c.Repeats, c.Value);
     Directory.CreateDirectory(c.Output);
-    var file = Path.Combine(c.Output, "results.csv");
+    var file = Path.Combine(c.Output, $"{c.Target}-report.csv");
     var exists = File.Exists(file) && new FileInfo(file).Length > 0;
     var text = new StringBuilder();
     if (!exists)

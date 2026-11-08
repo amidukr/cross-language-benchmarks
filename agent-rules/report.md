@@ -1,8 +1,9 @@
 # Benchmark report format
 
-Every benchmark runner produces a `results.csv` file using the same
-schema. Each row records one metric for one sample. A suite can combine reports
-by keeping one header and appending the data rows.
+Every benchmark runner produces a `<target-id>-report.csv` file using the same
+schema, where `<target-id>` is the canonical target ID passed with `--target`.
+Each row records one metric for one sample. A suite can combine reports by
+keeping one header and appending the data rows.
 
 ## CSV format
 

@@ -182,7 +182,7 @@ fn main() {
     let (ops, direct) = prepare(c.size, c.seed);
     let want = expected(&direct, c.repeats, c.value);
     fs::create_dir_all(&c.output).unwrap();
-    let path = c.output.join("results.csv");
+    let path = c.output.join(format!("{}-report.csv", c.target));
     let exists = fs::metadata(&path).map(|m| m.len() > 0).unwrap_or(false);
     let mut out = String::new();
     if !exists {

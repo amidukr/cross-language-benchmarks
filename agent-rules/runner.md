@@ -14,7 +14,7 @@ settings unchanged to the benchmark application running inside Docker.
 | `--value`          | Signed 32-bit integer   | Input value supplied to each workload operation.                    |
 | `--warmup-samples` | Nonnegative integer     | Number of timed samples designated as warmup.                       |
 | `--samples`        | Positive integer        | Number of measured samples recorded initially as `unclassified`.    |
-| `--output`         | Directory path          | Host output directory for `results.csv` and run logs.               |
+| `--output`         | Directory path          | Host output directory for `<target-id>-report.csv` and run logs.     |
 | `--run-id`         | Nonempty identifier     | ID shared by all trials belonging to one benchmark invocation.      |
 | `--trial`          | Positive integer        | Independent process repetition number.                              |
 | `--target`         | Target ID               | Canonical target ID defined in `targets.md`.                        |

@@ -55,7 +55,8 @@ unavailable. Java native builds accept an installed JDK that supports
 `--release 25`; Temurin JDK 25 remains preferred, and GraalVM targets still
 require the corresponding GraalVM runtime or `native-image` tool.
 
-The application appends successful samples to `results.csv`. Warmup samples use
-phase `warmup`; retained measurement samples use `unclassified`. Diagnostics,
-effective arguments, checksum, toolchain, image, and execution state are written
-to the target/run-specific log in the selected output directory.
+The application appends successful samples to `<target-id>-report.csv` (for
+example, `temurin-c2-report.csv`). Warmup samples use phase `warmup`; retained
+measurement samples use `unclassified`. Diagnostics, effective arguments,
+checksum, toolchain, image, and execution state are written to the
+target/run-specific log in the selected output directory.

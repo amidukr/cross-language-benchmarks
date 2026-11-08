@@ -154,7 +154,7 @@ def main():
     want = expected(direct, cfg["repeats"], cfg["value"])
     output = Path(cfg["output"])
     output.mkdir(parents=True, exist_ok=True)
-    path = output / "results.csv"
+    path = output / f"{cfg['target']}-report.csv"
     toolchain = f"CPython {sys.version.split()[0]}"
     environment = os.environ.get("BENCH_ENVIRONMENT", "unknown")
     case_id = f"size-{cfg['size']}-repeats-{cfg['repeats']}-value-{cfg['value']}-seed-{cfg['seed']}"

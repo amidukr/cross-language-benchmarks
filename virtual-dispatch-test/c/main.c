@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
   }
   int32_t want = expected(d, c.size, c.repeats, c.value);
   char path[4096];
-  if (snprintf(path, sizeof path, "%s/results.csv", c.output) >=
+  if (snprintf(path, sizeof path, "%s/%s-report.csv", c.output, c.target) >=
       (int)sizeof path)
     fail("output path too long");
   FILE *check = fopen(path, "r");
@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
     fclose(check);
   FILE *out = fopen(path, "a");
   if (!out)
-    fail("cannot open results.csv");
+    fail("cannot open report CSV");
   if (!exists)
     fputs("schema_version,run_id,benchmark,case_id,language,target,config_id,"
           "toolchain,flags,environment,trial,phase,sample,elapsed_ms,metric,"
@@ -245,7 +245,7 @@ int main(int argc, char **argv) {
         env, caseid);
   }
   if (fclose(out))
-    fail("cannot write results.csv");
+    fail("cannot write report CSV");
   fprintf(stderr,
           "effective size=%u seed=%" PRIu64 " repeats=%u value=%" PRId32
           " warmup_samples=%u samples=%u run_id=%s trial=%u target=%s "

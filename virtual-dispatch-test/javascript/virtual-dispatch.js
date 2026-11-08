@@ -165,7 +165,7 @@ function main() {
       String(after - before), 'ns/op'
     ]);
   }
-  const file = path.join(cfg.output, 'results.csv'),
+  const file = path.join(cfg.output, `${cfg.target}-report.csv`),
         exists = fs.existsSync(file) && fs.statSync(file).size > 0;
   const lines = [];
   if (!exists)
