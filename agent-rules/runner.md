@@ -15,15 +15,26 @@ settings unchanged to the benchmark application running inside Docker.
 | `--warmup-samples` | Nonnegative integer     | Number of timed samples designated as warmup.                       |
 | `--samples`        | Positive integer        | Number of measured samples recorded initially as `unclassified`.    |
 | `--output`         | Directory path          | Host output directory for `results.csv` and run logs.               |
+| `--run-id`         | Nonempty identifier     | ID shared by all trials belonging to one benchmark invocation.      |
+| `--trial`          | Positive integer        | Independent process repetition number.                              |
+| `--target`         | Target ID               | Canonical target ID defined in `targets.md`.                        |
+| `--config-id`      | Nonempty identifier     | Build and runtime profile, such as `default` or `pgo`.              |
 
 Use the `--option value` form. Do not use positional arguments for standard
 workload settings. Each application must also support `--help`, print a concise
 usage message, and exit successfully without running the benchmark.
 
+Identifiers must match `[A-Za-z0-9][A-Za-z0-9._-]*`. This keeps them safe for
+CSV values, file names, image tags, and orchestration scripts.
+
 ## Argument behavior
 
 - A workload task may define defaults for workload options. The application
   must report every effective value, including a system-generated seed.
+- `--target` is required and must be valid for the implementation directory.
+  `--config-id` defaults to `default` and `--trial` defaults to `1`. `run.sh`
+  may generate `--run-id` when it is omitted, but it must report and forward the
+  effective value.
 - Supplying the same seed to the same implementation and toolchain must generate
   the same dataset. Different languages are not required to generate identical
   datasets from the same seed unless the workload task says otherwise.
@@ -53,4 +64,5 @@ Write diagnostic messages and errors to standard error. Keep standard output
 machine-readable or empty so repository-level orchestration can consume it.
 
 Follow [report.md](report.md) for CSV fields, phases, sample numbering, and
-successful-trial requirements.
+successful-trial requirements. Follow [targets.md](targets.md) for canonical
+target IDs.

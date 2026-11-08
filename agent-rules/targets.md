@@ -2,20 +2,23 @@
 
 ## Comparison targets
 
-| Language   | Runtime or toolchain                                    |
-| ---------- | ------------------------------------------------------- |
-| Java       | Eclipse Temurin JDK 25 LTS with HotSpot and its C2 JIT  |
-| Java       | GraalVM for JDK 25 in JVM mode with the Graal JIT       |
-| Java       | GraalVM for JDK 25 Native Image, compiled ahead of time |
-| C++        | GCC compiled in an optimized release build              |
-| C++        | Clang compiled in an optimized release build            |
-| C          | C compiled in an optimized release build                |
-| Rust       | Rust compiled in an optimized release build             |
-| Go         | Go compiled with the standard Go toolchain              |
-| Python     | CPython                                                 |
-| C#         | .NET 10 LTS with the CoreCLR JIT                        |
-| C#         | .NET 10 LTS Native AOT                                  |
-| JavaScript | Node.js 26 LTS with the V8 JIT                          |
+| Language   | Target ID        | Runtime or toolchain                                    |
+| ---------- | ---------------- | ------------------------------------------------------- |
+| Java       | `temurin-c2`     | Eclipse Temurin JDK 25 LTS with HotSpot and its C2 JIT  |
+| Java       | `graalvm-jit`    | GraalVM for JDK 25 in JVM mode with the Graal JIT       |
+| Java       | `graalvm-native` | GraalVM for JDK 25 Native Image, compiled ahead of time |
+| C++        | `cpp-gcc`        | GCC compiled in an optimized release build              |
+| C++        | `cpp-clang`      | Clang compiled in an optimized release build            |
+| C          | `c-gcc`          | C compiled with GCC in an optimized release build       |
+| Rust       | `rust`           | Rust compiled in an optimized release build             |
+| Go         | `go`             | Go compiled with the standard Go toolchain              |
+| Python     | `cpython`        | CPython                                                 |
+| C#         | `coreclr`        | .NET 10 LTS with the CoreCLR JIT                        |
+| C#         | `dotnet-native`  | .NET 10 LTS Native AOT                                  |
+| JavaScript | `node-v8`        | Node.js 26 LTS with the V8 JIT                          |
+
+Use these target IDs in command-line arguments, image and artifact names,
+result rows, and run logs.
 
 Use JDK 25 as the common Java baseline. Reuse the Java workload source across the three Java targets where possible. Record the exact JDK distribution and build, including the GraalVM distribution or edition, and use matching JDK patch releases where available.
 
