@@ -36,9 +36,9 @@ options in the `flags` field.
 
 ## Supporting tools
 
-Each implementation directory contains a Dockerfile and shell scripts that
-build and run that implementation. Scripts orchestrate the selected build tools
-inside Docker; they do not replace those tools.
+Follow [project-structure.md](project-structure.md) for Dockerfile, script, and
+language-manifest locations. Scripts orchestrate the selected build tools inside
+Docker; they do not replace those tools.
 
 Use the container runtime to set CPU affinity and resource limits. Install any
 timing, memory, or diagnostic utility that contributes report data in the
