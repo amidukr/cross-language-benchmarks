@@ -2,10 +2,14 @@
 
 Place each benchmark workload in a directory named `<workload>-test/` at the
 repository root. Use one implementation directory per language required by the
-task.
+task. Put the scripts that build and run all targets in the workload root.
 
 ```text
 <workload>-test/
+├── build-all.sh
+├── run-all.sh
+├── build-all-native.sh
+├── run-all-native.sh
 ├── c/
 ├── cpp/
 ├── csharp/
@@ -28,37 +32,34 @@ Each implementation directory must contain all of the following.
 - An executable `build_native.sh` script
 - An executable `run_native.sh` script
 
+## Per-language scripts
+
 `build.sh` builds the implementation's Docker image and compiles or publishes
 the workload. `run.sh` runs the already-built workload image with the supplied
 benchmark arguments and writes results and logs to the configured output
 directory. Follow [runner.md](runner.md) for the common command-line interface.
-Both scripts must fail with a nonzero exit code when their operation does not
-complete successfully.
+Both scripts must return a nonzero exit status when their operation fails.
 
 `build_native.sh` builds or publishes the selected target with toolchains
-installed on the host. Like `build.sh`, it accepts `--target <target-id>` and
-rejects invalid targets. `run_native.sh` runs the already-built host artifact
-without rebuilding it. Like `run.sh`, it accepts the standard runner arguments
-and writes results and logs only to the selected `--output` directory. Both
-native scripts must fail with a nonzero exit status when their operation does
-not complete successfully.
+installed on the host. `run_native.sh` runs the already-built host artifact
+without rebuilding it. It accepts the same runner arguments as `run.sh` and
+writes results and logs only to the selected `--output` directory. Both native
+scripts must return a nonzero exit status when their operation fails.
+
+Both build scripts must accept `--target <target-id>` and reject target IDs
+that are invalid for the implementation directory. Use the canonical IDs from
+[targets.md](targets.md) in image tags and artifact names so multiple targets
+from one language directory cannot overwrite each other.
 
 The native scripts must use the same sources, release settings, timing
 boundaries, correctness checks, and target IDs as the Docker path. Keep host
-build artifacts in a workload-local ignored directory, separated by target so
-toolchains cannot overwrite one another. Fail clearly when a required host
-toolchain is missing, does not match the requested target, or when
-`run_native.sh` cannot find an artifact previously produced by
-`build_native.sh`.
+build artifacts in a workload-local ignored directory, separated by target.
+Report a clear error when a required host toolchain is missing or incompatible,
+or when `run_native.sh` cannot find the artifact produced by `build_native.sh`.
 
 Native and Docker executions are distinct trials. Record `execution_mode` as
 `native` or `docker` in the run log, along with the exact host toolchain and
 resource controls. Retain that provenance when combining samples.
-
-`build.sh` must accept `--target <target-id>`. Reject a target ID that is not
-valid for the implementation directory. Use the canonical IDs from
-[targets.md](targets.md) in image tags and artifact names so multiple targets
-from one language directory cannot overwrite each other.
 
 ## Reports
 
@@ -106,6 +107,36 @@ docker build --file <workload>-test/cpp/Dockerfile <workload>-test/
 This context gives Dockerfiles access to workload-level build definitions and
 shared files.
 
-Repository-level orchestration may invoke the per-language scripts to build and
-run complete target matrices. Keep workload-independent orchestration outside
-the workload directories and reuse it across tasks.
+## Build and run all targets
+
+Keep the following executable scripts directly in `<workload>-test/`.
+Each script identifies its workload from its own location, so callers can
+invoke it from the repository root or another working directory.
+
+| Script                | Purpose                                     |
+| --------------------- | ------------------------------------------- |
+| `build-all.sh`        | Build every Docker target for the workload. |
+| `run-all.sh`          | Run every previously built Docker target.   |
+| `build-all-native.sh` | Build every target using host toolchains.   |
+| `run-all-native.sh`   | Run every previously built host target.     |
+
+Use the canonical language-to-target mapping from [targets.md](targets.md).
+Select the targets for the workload's implementation directories and delegate
+to their per-language scripts. Run targets sequentially.
+
+The run scripts must pass the corresponding `--target` for each invocation and
+forward the caller's benchmark arguments. Default `--output` to
+`reports/<workload>-test/` relative to the repository root and honor an explicit
+`--output` override. Run previously built targets without rebuilding them.
+
+A Docker build or run failure must produce a nonzero batch exit status.
+
+Native batches must attempt every target even when a target cannot build or run.
+If a host toolchain is missing or incompatible, or a native build artifact is
+missing, report the target as skipped. If a build or run fails for another
+reason, report it as failed. In either case, record the target ID and reason,
+then continue to the next target.
+
+After a native batch, print a summary of successful, skipped, and failed
+targets. Return a nonzero exit status if any target failed or no target
+succeeded. A batch with successful and skipped targets exits successfully.
