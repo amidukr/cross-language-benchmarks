@@ -1,0 +1,20 @@
+run_id=run-20261108T172840Z-63943
+target=cpp-gcc
+execution_mode=docker
+container_engine=docker
+container_engine_version=Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+podman version 5.7.0
+container_runtime=podman
+image=virtual-dispatch-cpp-gcc:latest
+cpu=0
+cpu_control=taskset
+cpu_limit=one logical CPU
+memory_limit=none
+architecture=x86_64
+environment=Linux 7.0.0-42-generic x86_64 GNU/Linux; 12th Gen Intel(R) Core(TM) i7-1255U
+started_utc=2026-11-08T17:28:47Z
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+effective size=100000 seed=5437839247628292592 repeats=100 value=1 warmup_samples=5 samples=20 run_id=run-20261108T172840Z-63943 trial=1 target=cpp-gcc config_id=default
+toolchain=GCC 15.2.0 flags=CMake Release; -O3 -DNDEBUG environment=Linux 7.0.0-42-generic x86_64 GNU/Linux; 12th Gen Intel(R) Core(TM) i7-1255U
+checksum=90019700
+exit_status=0

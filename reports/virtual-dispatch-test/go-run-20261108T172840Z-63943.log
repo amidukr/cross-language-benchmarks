@@ -1,0 +1,20 @@
+run_id=run-20261108T172840Z-63943
+target=go
+execution_mode=docker
+container_engine=docker
+container_engine_version=Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+podman version 5.7.0
+container_runtime=podman
+image=virtual-dispatch-go:latest
+cpu=0
+cpu_control=taskset
+cpu_limit=one logical CPU
+memory_limit=none
+architecture=x86_64
+environment=Linux 7.0.0-42-generic x86_64 GNU/Linux; 12th Gen Intel(R) Core(TM) i7-1255U
+started_utc=2026-11-08T17:29:15Z
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+effective size=100000 seed=6905137088210294228 repeats=100 value=1 warmup_samples=5 samples=20 run_id=run-20261108T172840Z-63943 trial=1 target=go config_id=default
+toolchain=go1.25.3 flags=go build -trimpath -ldflags=-s -w environment=Linux 7.0.0-42-generic x86_64 GNU/Linux; 12th Gen Intel(R) Core(TM) i7-1255U
+checksum=89848300
+exit_status=0
