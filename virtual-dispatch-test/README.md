@@ -7,6 +7,28 @@ Each directory also has `build_native.sh` and `run_native.sh`. The first builds
 the target with host-installed tools; the second runs that already-built target
 without Docker and applies the same CPU pinning.
 
+## Benchmark targets
+
+Use the language directory and its corresponding `--target` value.
+
+| #   | Language directory | `--target` value |
+| --- | ------------------ | ---------------- |
+| 1   | `c`                | `c-gcc`          |
+| 2   | `c`                | `c-clang`        |
+| 3   | `cpp`              | `cpp-gcc`        |
+| 4   | `cpp`              | `cpp-clang`      |
+| 5   | `java`             | `temurin-c2`     |
+| 6   | `java`             | `graalvm-jit`    |
+| 7   | `java`             | `graalvm-native` |
+| 8   | `rust`             | `rust`           |
+| 9   | `go`               | `go`             |
+| 10  | `python`           | `cpython`        |
+| 11  | `csharp`           | `coreclr`        |
+| 12  | `csharp`           | `dotnet-native`  |
+| 13  | `javascript`       | `node-v8`        |
+
+## Usage
+
 Example:
 
 ```sh
