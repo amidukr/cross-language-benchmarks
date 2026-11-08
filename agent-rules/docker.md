@@ -14,6 +14,11 @@ scripts must preserve `CONTAINER_ENGINE` when invoking per-language scripts.
 Use the same Dockerfiles, image tags, benchmark arguments, and output paths
 with either engine. Use the same engine to build and run a target.
 
+Assembly diagnostic build and capture scripts must follow the same engine
+selection rules. Use separate diagnostic image tags when their artifacts or
+settings differ from the performance image, and record the selected engine,
+engine version, image reference, and image identity in the capture manifest.
+
 ## Build and run in containers
 
 These rules apply to `build.sh` and `run.sh`. The optional host-native path is

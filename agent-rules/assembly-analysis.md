@@ -11,6 +11,11 @@ samples.
 
 ## Collect evidence
 
+- Use the assembly diagnostic scripts defined by
+  [project-structure.md](project-structure.md). Select the container or native
+  path explicitly and do not mix their evidence without retaining execution
+  provenance. Pass representative workload arguments and a stable diagnostic
+  run ID to every target capture.
 - Prefer the exact optimized artifact used in the benchmark. For JIT targets,
   use the same runtime, inputs, and optimization settings, with disassembly
   enabled in a separate process. Record the exact command, target ID,
@@ -27,6 +32,9 @@ samples.
 - Keep the raw output and identify the symbol or address range in each cited
   excerpt. If native code cannot be captured, report what evidence is
   available and why capture was unavailable.
+- Verify each capture manifest before using its evidence. A diagnostic command
+  that exits successfully but does not identify the requested hot region is an
+  incomplete capture, not a successful assembly result.
 
 ## Collection methods
 
