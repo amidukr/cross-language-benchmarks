@@ -106,6 +106,33 @@ batch scripts select each target automatically. Native batches skip targets
 whose required host toolchains or previously built artifacts are unavailable,
 continue through the matrix, and print a summary.
 
+## Capture assembly diagnostics
+
+Assembly capture is a separate diagnostic workflow and never appends to the
+performance CSV files. With Podman, build the isolated diagnostic images and
+then capture all targets as follows:
+
+```sh
+CONTAINER_ENGINE=podman ./virtual-dispatch-test/build-all-assembly.sh
+CONTAINER_ENGINE=podman ./virtual-dispatch-test/capture-all-assembly.sh \
+  --diagnostic-run-id assembly-001 \
+  --size 100000 --seed 42 --repeats 100 --value 1 \
+  --warmup-samples 5 --samples 20
+```
+
+Raw output, standard error, the exact command, and a capture manifest are
+written beneath:
+
+```text
+reports/virtual-dispatch-test/assembly/<target-id>/podman/assembly-001/
+```
+
+Use `build-all-assembly-native.sh` and `capture-all-assembly-native.sh` for the
+corresponding host-toolchain workflow. Native evidence is stored under the
+`native` execution-mode directory. The complete `assembly/` directory is a
+self-contained evidence bundle that can be collected on another host and then
+analyzed in this repository.
+
 The native scripts fail when the requested toolchain or built artifact is
 unavailable. Java native builds accept an installed JDK that supports
 `--release 25`; Temurin JDK 25 remains preferred, and GraalVM targets still

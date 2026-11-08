@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.14.0-slim-bookworm
+FROM docker.io/library/python:3.14.0-slim-bookworm AS assembly
 ARG TARGET
 RUN test "$TARGET" = cpython
 WORKDIR /benchmark

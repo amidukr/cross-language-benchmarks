@@ -5,6 +5,9 @@ WORKDIR /src
 COPY rust/Cargo.toml rust/Cargo.lock ./
 COPY rust/src ./src
 RUN cargo build --release --locked
+FROM build AS assembly
+ENV RUSTFLAGS="-C debuginfo=2"
+RUN cargo build --release --locked
 FROM docker.io/library/debian:bookworm-20251020-slim
 COPY --from=build /src/target/release/virtual-dispatch /virtual-dispatch
 ENTRYPOINT ["/virtual-dispatch"]
