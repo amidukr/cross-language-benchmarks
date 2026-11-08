@@ -10,6 +10,7 @@
 | C++        | `cpp-gcc`        | GCC compiled in an optimized release build              |
 | C++        | `cpp-clang`      | Clang compiled in an optimized release build            |
 | C          | `c-gcc`          | C compiled with GCC in an optimized release build       |
+| C          | `c-clang`        | C compiled with Clang in an optimized release build     |
 | Rust       | `rust`           | Rust compiled in an optimized release build             |
 | Go         | `go`             | Go compiled with the standard Go toolchain              |
 | Python     | `cpython`        | CPython                                                 |
@@ -22,7 +23,7 @@ result rows, and run logs.
 
 Use JDK 25 as the common Java baseline. Reuse the Java workload source across the three Java targets where possible. Record the exact JDK distribution and build, including the GraalVM distribution or edition, and use matching JDK patch releases where available.
 
-Reuse the same C++ workload source for GCC and Clang. Compile both with the same C++ language standard and equivalent optimized release settings. Report the exact compiler versions and flags as separate targets.
+Reuse the same C workload source across its GCC and Clang targets, and do the same for C++. Compile each language with the same language standard and equivalent optimized release settings across both compilers. Report the exact compiler versions and flags as separate targets.
 
 Use the same workload, inputs, correctness checks, and timing boundaries across targets. Record exact toolchain versions, compiler and runtime flags, hardware, and operating system. Report profile-guided builds or other tuned configurations as separate results.
 

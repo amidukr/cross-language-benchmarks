@@ -44,8 +44,8 @@ where applicable. Commit generated lock files when required by
 [tooling.md](tooling.md).
 
 Keep the shared C and C++ `CMakeLists.txt` in the workload root. Define separate
-C and C++ executables for the workload. Support the GCC baseline and required
-Clang C++ target with separate build directories so their artifacts and cached
+C and C++ executables for the workload. Support GCC and Clang targets for both
+languages with separate build directories so their artifacts and cached
 configuration cannot overlap.
 
 Use the workload directory as the Docker build context for every implementation
