@@ -18,9 +18,9 @@ The following source pairs were selected.
 | `c-clang` | `virtual-dispatch-test/c-clang-report.csv` | `virtual-dispatch-test/c-clang-run-20261108T172840Z-63943.log` |
 | `cpp-gcc` | `virtual-dispatch-test/cpp-gcc-report.csv` | `virtual-dispatch-test/cpp-gcc-run-20261108T172840Z-63943.log` |
 | `cpp-clang` | `virtual-dispatch-test/cpp-clang-report.csv` | `virtual-dispatch-test/cpp-clang-run-20261108T172840Z-63943.log` |
-| `temurin-c2` | `virtual-dispatch-test/temurin-c2-report.csv` | `virtual-dispatch-test/temurin-c2-run-20261108T172840Z-63943.log` |
-| `graalvm-jit` | `virtual-dispatch-test/graalvm-jit-report.csv` | `virtual-dispatch-test/graalvm-jit-run-20261108T172840Z-63943.log` |
-| `graalvm-native` | `virtual-dispatch-test/graalvm-native-report.csv` | `virtual-dispatch-test/graalvm-native-run-20261108T172840Z-63943.log` |
+| Java (Eclipse Temurin, HotSpot C2) [`temurin-c2`] | `virtual-dispatch-test/temurin-c2-report.csv` | `virtual-dispatch-test/temurin-c2-run-20261108T172840Z-63943.log` |
+| Java (GraalVM JIT) [`graalvm-jit`] | `virtual-dispatch-test/graalvm-jit-report.csv` | `virtual-dispatch-test/graalvm-jit-run-20261108T172840Z-63943.log` |
+| Java (GraalVM Native Image) [`graalvm-native`] | `virtual-dispatch-test/graalvm-native-report.csv` | `virtual-dispatch-test/graalvm-native-run-20261108T172840Z-63943.log` |
 | `rust` | `virtual-dispatch-test/rust-report.csv` | `virtual-dispatch-test/rust-run-20261108T172840Z-63943.log` |
 | `go` | `virtual-dispatch-test/go-report.csv` | `virtual-dispatch-test/go-run-20261108T172840Z-63943.log` |
 | `cpython` | `virtual-dispatch-test/cpython-report.csv` | `virtual-dispatch-test/cpython-run-20261108T172840Z-63943.log` |
@@ -95,13 +95,13 @@ samples remain `unclassified`; none are reported as source `steady_state` data.
 | `dotnet-native` | 1 | 20 | 84.224 | 3.608 | 8.422 | Yes |
 | `rust` | 1 | 20 | 90.460 | 6.271 | 9.046 | Yes |
 | `cpp-gcc` | 1 | 20 | 92.844 | 0.727 | 9.284 | Yes |
-| `temurin-c2` | 1 | 20 | 96.107 | 4.853 | 9.611 | Yes |
+| Java (Eclipse Temurin, HotSpot C2) [`temurin-c2`] | 1 | 20 | 96.107 | 4.853 | 9.611 | Yes |
 | `cpp-clang` | 1 | 20 | 96.108 | 8.924 | 9.611 | Yes |
 | `go` | 1 | 20 | 100.623 | 11.745 | 10.062 | Yes |
-| `graalvm-jit` | 1 | 20 | 104.341 | 2.237 | 10.434 | Yes |
+| Java (GraalVM JIT) [`graalvm-jit`] | 1 | 20 | 104.341 | 2.237 | 10.434 | Yes |
 | `node-v8` | 1 | 20 | 111.522 | 8.102 | 11.152 | Yes |
 | `coreclr` | 1 | 20 | 114.917 | 7.695 | 11.492 | No |
-| `graalvm-native` | 1 | 20 | 176.672 | 10.939 | 17.667 | Yes |
+| Java (GraalVM Native Image) [`graalvm-native`] | 1 | 20 | 176.672 | 10.939 | 17.667 | Yes |
 | `cpython` | 1 | 20 | 2654.789 | 10.249 | 265.479 | Yes |
 
 The table is ordered by the unclassified-sample median. `c-gcc` has the lowest
@@ -118,22 +118,23 @@ than a stable final level. No diagnostic data is available to attribute that
 shift to tiered compilation, dynamic PGO, OSR, or another cause.
 
 Several other trials show transitions or spikes before their stable-check
-window. `cpp-clang` reaches 146.026 ms, Go reaches 146.848 ms, and GraalVM
-Native reaches 245.338 ms early in the measured phase. These observations are
-retained in the medians and IQRs. In contrast, `cpp-gcc` is especially tight
-after its first measured samples, with a 0.727 ms full-phase IQR. GraalVM JIT's
-first two warmup samples fall from 210.239 to 160.378 ms before later values
-cluster near 103--105 ms; Temurin similarly drops from 190.496 to 141.160 ms
-and then to roughly 96 ms. Those shapes are consistent with runtime warmup,
-but without compilation logs they are not confirmation of JIT events.
+window. `cpp-clang` reaches 146.026 ms, Go reaches 146.848 ms, and Java
+(GraalVM Native Image) reaches 245.338 ms early in the measured phase. These
+observations are retained in the medians and IQRs. In contrast, `cpp-gcc` is
+especially tight after its first measured samples, with a 0.727 ms full-phase
+IQR. The first two warmup samples for Java (GraalVM JIT) fall from 210.239 to
+160.378 ms before later values cluster near 103--105 ms; Java (Eclipse
+Temurin, HotSpot C2) similarly drops from 190.496 to 141.160 ms and then to
+roughly 96 ms. Those shapes are consistent with runtime warmup, but without
+compilation logs they are not confirmation of JIT events.
 
 The within-language results are also single-trial observations. Clang's C
 median is higher than GCC's, while the two C++ medians are effectively equal.
-Temurin C2 is lower than GraalVM JIT in this run, and both are lower than the
-GraalVM Native Image result. .NET Native AOT is lower than CoreCLR, though the
-CoreCLR trial lacks stability. These differences describe the complete
-workload on the recorded configurations; no matched non-virtual control exists
-to assign them specifically to dispatch.
+For Java, Eclipse Temurin with HotSpot C2 is lower than GraalVM JIT in this
+run, and both are lower than GraalVM Native Image. .NET Native AOT is lower
+than CoreCLR, though the CoreCLR trial lacks stability. These differences
+describe the complete workload on the recorded configurations; no matched
+non-virtual control exists to assign them specifically to dispatch.
 
 ## Conclusions and limitations
 
