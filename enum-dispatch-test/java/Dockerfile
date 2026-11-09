@@ -14,6 +14,16 @@ WORKDIR /build
 COPY java/EnumDispatch.java .
 RUN javac --release 25 EnumDispatch.java && native-image --no-fallback -O3 EnumDispatch enum-dispatch
 
+FROM ghcr.io/graalvm/native-image-community:25.0.1 AS assembly-graal-native
+WORKDIR /build
+COPY java/EnumDispatch.java .
+# Retain the performance build's -O3 level while adding symbols needed to
+# isolate EnumDispatch.run. This remains a separate diagnostic artifact because
+# source-level debug information may affect code generation.
+RUN javac --release 25 -g EnumDispatch.java && \
+    native-image --no-fallback -O3 -g -H:+SourceLevelDebug \
+      -H:-DeleteLocalSymbols EnumDispatch enum-dispatch
+
 FROM docker.io/library/eclipse-temurin:25.0.1_8-jre AS final-temurin-c2
 WORKDIR /benchmark
 COPY --from=build-temurin /build/*.class ./
