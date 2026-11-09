@@ -17,7 +17,10 @@ disagreement prevents treating the directory label as proof of a Docker run.
 The C, C++, Rust, Go, and AOT captures are static disassemblies. The configured
 compiler/runtime versions come from their pinned build images: GCC 15.2.0,
 Clang 21, Rust 1.90.0, Go 1.25.3, GraalVM Native Image 25.0.1, and .NET SDK
-10.0.403 Native AOT. The runtime diagnostics identify Temurin 25.0.1+8,
+10.0.403 Native AOT. The GraalVM Native diagnostic build retains DWARF and local
+Java method symbols with `-g -H:+SourceLevelDebug -H:-DeleteLocalSymbols` while
+preserving the performance build's `-O3` level; it is not the exact measured
+artifact. The runtime diagnostics identify Temurin 25.0.1+8,
 GraalVM 25.0.1+8-jvmci-b01, .NET 10.0.14, Node 26.0.0 with V8
 14.6.202.33-node.19, and CPython 3.14.0. The manifests do not contain artifact
 hashes or diagnostic-tool versions, so exact artifact identity and decoder
@@ -40,7 +43,7 @@ need not be identical even with the same seed.
 | `go` | `go tool objdump`, Go 1.25.3 assembly build with symbols retained | `main.run`; interface itab and data loaded, method pointer loaded from itab offset `0x18`, indirect `CALL CX`, then 32-bit `ADDL` | Usable |
 | `temurin-c2` | HotSpot `PrintAssembly`, Temurin 25.0.1+8 | C1 begins with interface dispatch; level-4 C2 OSR uses receiver-class guards for `AddOperation`/`MulOperation`, inlines operand loads and add/multiply, and retains uncommon-trap fallback paths | Usable; C1 and C2/OSR captured |
 | `graalvm-jit` | HotSpot/JVMCI `PrintAssembly`, GraalVM 25.0.1+8-jvmci-b01 | Level-4 JVMCI OSR uses guarded polymorphic inlining of both operation classes, with direct operand arithmetic and deoptimization paths | Usable; C1 and JVMCI/OSR captured |
-| `graalvm-native` | GNU `objdump`, Native Image 25.0.1 `-O3` | Not determined: the 71.7 MB listing has no workload symbol or reliable address-to-source mapping | Command succeeded, evidence incomplete |
+| `graalvm-native` | Focused GNU `objdump`, Native Image 25.0.1 diagnostic build, `-O3` with retained debug info and local symbols | Receiver hub/type data selects a method-table entry at offset `0x80`; indirect call; returned 32-bit value added to checksum; concrete Add/Mul bodies remain out of line | Usable; modified symbol-retaining diagnostic artifact |
 | `cpython` | CPython 3.14 bytecode via `dis` | `LOAD_ATTR process`, generic `CALL`, generic integer `BINARY_OP +`, then call to `i32`; process bodies load `operand` and use `BINARY_OP +` or `*` | Usable baseline bytecode; not warmed/specialized |
 | `coreclr` | `DOTNET_JitDisasm=Program:Run`, .NET 10.0.14 Release | Instrumented Tier 0 profiles receiver classes and uses an interface call; Tier1 OSR still uses an indirect `IOperation.Process` interface call and 32-bit accumulation | Usable; Tier 0 and Tier1 OSR captured |
 | `dotnet-native` | GNU `objdump`, .NET SDK 10.0.403 Native AOT | Not determined: the 25.5 MB stripped listing exposes no `Program.Run`, interface, or operation symbols and has no reliable address-to-source mapping | Command succeeded, evidence incomplete |
@@ -135,6 +138,42 @@ main.go:131  ADDL AX, DX
 See the [Go `main.run` listing](virtual-dispatch-test/assembly/go/docker/assembly-001/raw.txt#L195650).
 The concrete process functions are a single `ADDL` or `IMULL` followed by
 return ([Go process bodies](virtual-dispatch-test/assembly/go/docker/assembly-001/raw.txt#L194814)).
+
+### GraalVM Native Image
+
+The focused symbol-retaining diagnostic build exposes `VirtualDispatch.run`
+and both concrete `process` methods. In `run`, Native Image obtains the next
+`Operation`, checks its interface type, derives a receiver hub/type index from
+the object header, and loads a method target from dispatch-table offset `0x80`.
+It then calls the selected target indirectly and adds the returned low 32 bits
+to the checksum:
+
+```text
+42e3f8: mov    $0xfffffffffffffff8,%rdi
+42e3ff: and    (%rax),%rdi
+42e402: mov    0x80(%r14,%rdi,1),%rcx
+42e40a: mov    %rax,%rdi
+42e40d: mov    0x30(%rsp),%esi
+42e411: mov    %rcx,%rax
+42e414: call   *%rax
+42e417: add    0x24(%rsp),%eax
+```
+
+The loop contains an equivalent second call site after the iterator's
+concurrent-modification check. See the [GraalVM Native `run` listing](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L92)
+and its two dispatch sites at [line 178](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L178)
+and [line 210](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L210).
+
+The separate [Add and Mul bodies](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L2)
+load the operand at object offset 8 and perform 32-bit `add` or `imul`
+([multiply body](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L47)).
+The code therefore preserves dynamic interface dispatch rather than inlining
+the two arithmetic implementations into `run`.
+
+This conclusion applies to the `-O3` diagnostic build with debug information
+and retained local symbols. `-H:+SourceLevelDebug` may change code generation,
+so the listing is not proof that the exact stripped performance artifact has
+identical instruction addresses or layout.
 
 ## Managed JIT dispatch
 
@@ -238,29 +277,29 @@ bytecode, not a post-warmup specialized form. It is sufficient to identify the
 lookup and call mechanism but not to characterize CPython's warmed adaptive
 specializations.
 
-## Incomplete AOT captures
+## Incomplete .NET Native AOT capture
 
-The GraalVM Native Image and .NET Native AOT commands both exited successfully
-and produced nonempty full-binary disassemblies. However, their raw files do
-not expose `run`, `Program.Run`, `VirtualDispatch`, `Operation`, or the concrete
-operation names. There is no symbol/address map connecting an anonymous range
-to the timed loop. Under the assembly-analysis rule, a successful decoder exit
-without identification of the requested hot region is incomplete evidence.
+The .NET Native AOT command exited successfully and produced a nonempty
+full-binary disassembly. However, the raw file does not expose `Program.Run`,
+`IOperation`, or the concrete operation names. There is no symbol/address map
+connecting an anonymous range to the timed loop. Under the assembly-analysis
+rule, a successful decoder exit without identification of the requested hot
+region is incomplete evidence.
 
-- [GraalVM Native raw listing](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L1)
 - [.NET Native AOT raw listing](virtual-dispatch-test/assembly/dotnet-native/docker/assembly-001/raw.txt#L1)
 
 A future diagnostic build should retain symbols or emit a linker map while
 recording that difference from the measured artifact. No dispatch conclusion
-is made for these two targets from the current anonymous listings.
+is made for this target from the current anonymous listing.
 
 ## Conclusions and limitations
 
 The static native implementations that retain identifiable code all preserve
 dynamic dispatch in the hot loop: a C function pointer, C++ vtable slot, Rust
-trait-object vtable slot, or Go interface itab slot. Their concrete callees use
-32-bit add/multiply and their callers use 32-bit checksum addition, naturally
-retaining the low 32 bits on x86-64.
+trait-object vtable slot, Go interface itab slot, or GraalVM Native Image
+method-table entry. Their concrete callees use 32-bit add/multiply and their
+callers use 32-bit checksum addition, naturally retaining the low 32 bits on
+x86-64.
 
 HotSpot C2, GraalVM JVMCI, and V8 instead produce guarded paths for the two
 observed receiver types and inline the concrete arithmetic, with uncommon-trap
@@ -275,4 +314,4 @@ matched host, execution engine, resource controls, exact artifacts, and clean
 runtime settings. The current manifests omit artifact hashes, diagnostic-tool
 versions, flags/environment details, and mislabel the Podman shim as Docker.
 Those omissions limit reproducibility but do not change the instruction-level
-conclusions for the eleven identifiable captures.
+conclusions for the twelve identifiable captures.
