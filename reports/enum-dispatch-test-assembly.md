@@ -185,6 +185,74 @@ The out-of-line iterator and object representation help explain why this code
 does more work than the flat native arrays, but assembly inspection does not
 quantify each component.
 
+### Relationship to C++ performance
+
+The clean Task 2.2 medians were 60.735 ms/op for C++ with GCC, 71.809 ms/op
+for C++ with Clang, 96.068 ms/op for Java with Eclipse Temurin/HotSpot C2,
+106.103 ms/op for Java with GraalVM JIT, and 167.491 ms/op for Java with
+GraalVM Native Image. These are complete-workload observations from one trial,
+not measurements of cache misses or isolated iterator costs.
+
+C++ stores each `Instruction` value directly in a contiguous `std::vector`.
+The captured scalar loops can therefore obtain the tag and operand from one
+eight-byte record before branching to add or multiply. For example, the
+[C++/GCC loop](enum-dispatch-test/assembly/cpp-gcc/docker/enum-assembly-001/raw.txt#L1453)
+loads both fields from the current record without following an object
+reference.
+
+Java's `ArrayList<Instruction>` instead contains a contiguous array of object
+references. Each reference points to a separately allocated `Instruction`
+record, whose operation field points to an enum object. This representation
+has a larger working set and requires dependent reference loads before the
+operand and ordinal are available. It therefore has less spatial locality than
+the C++ value array. The listings establish the additional load chain, but do
+not contain hardware-counter data proving how many cache misses it caused.
+
+The Java JIT compilers remove much of the abstraction overhead without
+changing that underlying object layout. HotSpot C2 inlines the `ArrayList`
+iterator, record accessors, enum ordinal access, and arithmetic in the
+[optimized Java region](enum-dispatch-test/assembly/temurin-c2/docker/enum-assembly-001/raw.txt#L10930).
+The Java GraalVM JIT listing similarly contains the iterator checks, field
+loads, switch, and arithmetic in one optimized body
+([JVMCI region](enum-dispatch-test/assembly/graalvm-jit/docker/enum-assembly-001/raw.txt#L42735)).
+Escape analysis can eliminate the short-lived iterator object and inlining can
+remove calls, but neither captured JIT turns the `ArrayList` of separately
+allocated records into a flat array of tag/operand values. Thus the JIT
+versions retain the pointer-chasing/locality disadvantage while avoiding much
+of the iterator call and allocation overhead.
+
+The captured Java GraalVM Native Image code retains more machinery. It creates
+an `ArrayList$Itr` for a pass and calls `ArrayList$Itr::next()` out of line
+([Native Image iterator path](enum-dispatch-test/assembly/graalvm-native/docker/enum-assembly-001/raw.txt#L45),
+[call site](enum-dispatch-test/assembly/graalvm-native/docker/enum-assembly-001/raw.txt#L75)).
+It also retains iterator-state, type, safepoint, and allocation checks around
+the scalar ordinal branch. This provides a code-generation explanation for why
+Native Image can do more work than the two optimized JIT versions in this
+case. It does not prove that any single check or cache effect accounts for a
+specific fraction of the measured gap.
+
+The comparison can therefore be summarized as:
+
+```text
+C++ value vector:
+  contiguous tag/operand record -> scalar branch -> arithmetic
+
+Java JIT ArrayList:
+  reference array -> Instruction object -> enum/operand loads
+  + mostly inlined/eliminated iterator machinery -> scalar branch -> arithmetic
+
+Java Native Image ArrayList:
+  same reference/object layout
+  + retained iterator allocation/call and additional checks -> scalar branch -> arithmetic
+```
+
+This result is not evidence that Java JIT or Native Image is intrinsically
+slower than C++ by these ratios. A controlled layout comparison would use Java
+primitive tag and operand arrays, an indexed loop, fresh clean timing trials,
+and preferably hardware counters. That would remove record-object pointer
+chasing and test the compiler/runtime code generation on a representation
+closer to the C++ `vector<Instruction>`.
+
 ## C#, JavaScript, and Python
 
 CoreCLR first emits instrumented Tier 0 and then a smaller optimized Tier1 OSR
