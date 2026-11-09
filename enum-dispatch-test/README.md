@@ -109,6 +109,67 @@ batch scripts select each target automatically. Native batches skip targets
 whose required host toolchains or previously built artifacts are unavailable,
 continue through the matrix, and print a summary.
 
+## Capture assembly diagnostics
+
+Assembly and generated-code capture is a separate diagnostic workflow. It
+does not append samples to the performance CSV files. Build the isolated
+diagnostic images, then capture all targets with the same representative
+workload settings used by Task 2.2:
+
+```sh
+./enum-dispatch-test/build-all-assembly.sh \
+  --diagnostic-profile assembly
+
+./enum-dispatch-test/capture-all-assembly.sh \
+  --diagnostic-profile assembly \
+  --diagnostic-run-id enum-assembly-001 \
+  --size 100000 --seed 42 --repeats 100 --value 7 \
+  --warmup-samples 10 --samples 30
+```
+
+The scripts use Docker by default. To invoke Podman directly, set
+`CONTAINER_ENGINE=podman` for both commands:
+
+```sh
+CONTAINER_ENGINE=podman ./enum-dispatch-test/build-all-assembly.sh \
+  --diagnostic-profile assembly
+
+CONTAINER_ENGINE=podman ./enum-dispatch-test/capture-all-assembly.sh \
+  --diagnostic-profile assembly \
+  --diagnostic-run-id enum-assembly-001 \
+  --size 100000 --seed 42 --repeats 100 --value 7 \
+  --warmup-samples 10 --samples 30
+```
+
+Raw output, standard error, the exact capture command, and a manifest are
+written beneath:
+
+```text
+reports/enum-dispatch-test/assembly/<target-id>/<docker|podman>/enum-assembly-001/
+```
+
+The batch capture continues through the target matrix when an individual
+target fails and prints a summary at the end. Preserve failed manifests and
+stderr files because Task 2.3 accounts for unavailable decoders and incomplete
+captures as well as successful evidence.
+
+For host-toolchain diagnostics, use the corresponding native workflow:
+
+```sh
+./enum-dispatch-test/build-all-assembly-native.sh \
+  --diagnostic-profile assembly
+
+./enum-dispatch-test/capture-all-assembly-native.sh \
+  --diagnostic-profile assembly \
+  --diagnostic-run-id enum-assembly-native-001 \
+  --size 100000 --seed 42 --repeats 100 --value 7 \
+  --warmup-samples 10 --samples 30
+```
+
+Native evidence is stored under
+`reports/enum-dispatch-test/assembly/<target-id>/native/`. Keep container and
+native evidence separate because they are distinct diagnostic configurations.
+
 The native scripts fail when the requested toolchain or built artifact is
 unavailable. Java native builds accept an installed JDK that supports
 `--release 25`; Temurin JDK 25 remains preferred, and GraalVM targets still
