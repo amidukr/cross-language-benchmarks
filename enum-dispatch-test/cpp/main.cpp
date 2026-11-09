@@ -1,0 +1,241 @@
+#include <array>
+#include <charconv>
+#include <chrono>
+#include <cstdint>
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <random>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+using Clock = std::chrono::steady_clock;
+static constexpr auto Usage =
+    "usage: enum-dispatch [--size N] [--seed U64] [--repeats N] [--value "
+    "I32] [--warmup-samples N] [--samples N] --output DIR --run-id ID [--trial "
+    "N] --target TARGET [--config-id ID]";
+enum class Operation { Add, Mul };
+struct Instruction {
+  Operation operation;
+  std::int32_t operand;
+};
+struct Direct {
+  bool add;
+  std::int32_t operand;
+};
+struct Config {
+  std::uint32_t size, repeats, warmup, samples, trial;
+  std::int32_t value;
+  std::uint64_t seed;
+  std::string output, run_id, target, config_id;
+};
+[[noreturn]] static void fail(const std::string &s) {
+  std::cerr << "error: " << s << '\n' << Usage << '\n';
+  std::exit(2);
+}
+static bool id(const std::string &s) {
+  if (s.empty() || !std::isalnum(static_cast<unsigned char>(s[0])))
+    return false;
+  for (char c : s)
+    if (!std::isalnum(static_cast<unsigned char>(c)) &&
+        std::string("._-").find(c) == std::string::npos)
+      return false;
+  return true;
+}
+template <class T>
+static T num(const std::string &s, T lo, T hi, const char *k) {
+  T v{};
+  auto [e, ec] = std::from_chars(s.data(), s.data() + s.size(), v);
+  if (ec != std::errc{} || e != s.data() + s.size() || v < lo || v > hi)
+    fail(std::string("invalid ") + k);
+  return v;
+}
+static Config parse(int argc, char **argv) {
+  if (argc == 2 && std::string(argv[1]) == "--help") {
+    std::cout << Usage << '\n';
+    std::exit(0);
+  }
+  std::unordered_map<std::string, std::string> m;
+  const std::array allowed{"--size",   "--seed",           "--repeats",
+                           "--value",  "--warmup-samples", "--samples",
+                           "--output", "--run-id",         "--trial",
+                           "--target", "--config-id"};
+  for (int i = 1; i < argc; i += 2) {
+    std::string k = argv[i];
+    if (std::find(allowed.begin(), allowed.end(), k) == allowed.end())
+      fail("unknown option: " + k);
+    if (m.contains(k))
+      fail("duplicate option: " + k);
+    if (i + 1 >= argc)
+      fail("missing value for " + k);
+    m[k] = argv[i + 1];
+  }
+  auto get = [&](const char *k, const char *d = nullptr) {
+    if (m.contains(k))
+      return m[k];
+    if (d)
+      return std::string(d);
+    fail(std::string(k) + " is required");
+  };
+  auto target = get("--target");
+  if (target != "cpp-gcc" && target != "cpp-clang")
+    fail("invalid C++ target");
+  auto runid = get("--run-id"), config = get("--config-id", "default");
+  if (!id(runid) || !id(config))
+    fail("invalid identifier");
+  std::uint64_t seed;
+  if (m.contains("--seed"))
+    seed = num<std::uint64_t>(
+        m["--seed"], 0, std::numeric_limits<std::uint64_t>::max(), "--seed");
+  else {
+    std::random_device r;
+    seed = (static_cast<std::uint64_t>(r()) << 32) ^ r();
+  }
+  return {
+      num<std::uint32_t>(get("--size", "100000"), 1, INT32_MAX, "--size"),
+      num<std::uint32_t>(get("--repeats", "100"), 1, INT32_MAX, "--repeats"),
+      num<std::uint32_t>(get("--warmup-samples", "5"), 0, INT32_MAX,
+                         "--warmup-samples"),
+      num<std::uint32_t>(get("--samples", "20"), 1, INT32_MAX, "--samples"),
+      num<std::uint32_t>(get("--trial", "1"), 1, INT32_MAX, "--trial"),
+      num<std::int32_t>(get("--value", "1"), INT32_MIN, INT32_MAX, "--value"),
+      seed,
+      get("--output"),
+      runid,
+      target,
+      config};
+}
+static std::uint64_t next(std::uint64_t &s) {
+  s += UINT64_C(0x9e3779b97f4a7c15);
+  auto z = s;
+  z = (z ^ (z >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
+  z = (z ^ (z >> 27)) * UINT64_C(0x94d049bb133111eb);
+  return z ^ (z >> 31);
+}
+static std::int32_t run(const std::vector<Instruction> &ops,
+                        std::uint32_t repeats, std::int32_t value) {
+  std::uint32_t sum = 0;
+  for (std::uint32_t n = 0; n < repeats; n++)
+    for (auto instruction : ops) {
+      auto operand = static_cast<std::uint32_t>(instruction.operand);
+      switch (instruction.operation) {
+      case Operation::Add:
+        sum += static_cast<std::uint32_t>(value) + operand;
+        break;
+      case Operation::Mul:
+        sum += static_cast<std::uint32_t>(value) * operand;
+        break;
+      }
+    }
+  return static_cast<std::int32_t>(sum);
+}
+static std::int32_t expected(const std::vector<Direct> &d,
+                             std::uint32_t repeats, std::int32_t value) {
+  std::uint32_t one = 0;
+  for (auto x : d)
+    one += x.add ? static_cast<std::uint32_t>(value) + x.operand
+                 : static_cast<std::uint32_t>(value) * x.operand;
+  return static_cast<std::int32_t>(one * repeats);
+}
+static std::string csv(std::string s) {
+  if (s.find_first_of(",\"\r\n") != std::string::npos) {
+    std::size_t p = 0;
+    while ((p = s.find('"', p)) != std::string::npos) {
+      s.insert(p, "\"");
+      p += 2;
+    }
+    return '"' + s + '"';
+  }
+  return s;
+}
+int main(int argc, char **argv) {
+  auto c = parse(argc, argv);
+  std::vector<Instruction> ops;
+  std::vector<Direct> d;
+  ops.reserve(c.size);
+  d.reserve(c.size);
+  auto state = c.seed;
+  for (std::uint32_t i = 0; i < c.size; i++) {
+    auto b = next(state);
+    bool add = b & 1;
+    auto operand = static_cast<std::int32_t>((b >> 1) & 15) + 1;
+    ops.push_back({add ? Operation::Add : Operation::Mul, operand});
+    d.push_back({add, operand});
+  }
+  auto want = expected(d, c.repeats, c.value), last = std::int32_t{};
+  auto start = Clock::now();
+  std::ostringstream rows;
+  auto environment = std::getenv("BENCH_ENVIRONMENT")
+                         ? std::getenv("BENCH_ENVIRONMENT")
+                         : "unknown";
+  auto caseid = "size-" + std::to_string(c.size) + "-repeats-" +
+                std::to_string(c.repeats) + "-value-" +
+                std::to_string(c.value) + "-seed-" + std::to_string(c.seed);
+#if defined(__clang__)
+  std::string tool = "Clang " __clang_version__;
+#elif defined(__GNUC__)
+  std::string tool = "GCC " __VERSION__;
+#else
+  std::string tool = "unknown C++ compiler";
+#endif
+  for (std::uint32_t i = 1; i <= c.warmup + c.samples; i++) {
+    auto before = Clock::now();
+    auto actual = run(ops, c.repeats, c.value);
+    auto after = Clock::now();
+    if (actual != want)
+      fail("checksum mismatch");
+    last = actual;
+    std::array<std::string, 17> r = {
+        "2",
+        c.run_id,
+        "enum-dispatch",
+        caseid,
+        "C++",
+        c.target,
+        c.config_id,
+        tool,
+        "CMake Release; -O3 -DNDEBUG",
+        environment,
+        std::to_string(c.trial),
+        i <= c.warmup ? "warmup" : "unclassified",
+        std::to_string(i),
+        std::to_string(
+            std::chrono::duration<double, std::milli>(after - start).count()),
+        "time_per_op",
+        std::to_string(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(after - before)
+                .count()),
+        "ns/op"};
+    for (std::size_t j = 0; j < r.size(); j++) {
+      if (j)
+        rows << ',';
+      rows << csv(r[j]);
+    }
+    rows << '\n';
+  }
+  std::filesystem::create_directories(c.output);
+  auto path = std::filesystem::path(c.output) / (c.target + "-report.csv");
+  bool exists =
+      std::filesystem::exists(path) && std::filesystem::file_size(path) > 0;
+  std::ofstream out(path, std::ios::app);
+  if (!out)
+    fail("cannot open report CSV");
+  if (!exists)
+    out << "schema_version,run_id,benchmark,case_id,language,target,config_id,"
+           "toolchain,flags,environment,trial,phase,sample,elapsed_ms,metric,"
+           "value,unit\n";
+  out << rows.str();
+  if (!out)
+    fail("cannot write report CSV");
+  std::cerr << "effective size=" << c.size << " seed=" << c.seed
+            << " repeats=" << c.repeats << " value=" << c.value
+            << " warmup_samples=" << c.warmup << " samples=" << c.samples
+            << " run_id=" << c.run_id << " trial=" << c.trial
+            << " target=" << c.target << " config_id=" << c.config_id
+            << "\ntoolchain=" << tool
+            << " flags=CMake Release; -O3 -DNDEBUG environment=" << environment
+            << "\nchecksum=" << last << '\n';
+}
