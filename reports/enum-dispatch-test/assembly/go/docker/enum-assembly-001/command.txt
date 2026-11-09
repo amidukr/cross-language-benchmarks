@@ -1,0 +1,1 @@
+docker run --rm --entrypoint go enum-dispatch-go-assembly:latest tool objdump /enum-dispatch 

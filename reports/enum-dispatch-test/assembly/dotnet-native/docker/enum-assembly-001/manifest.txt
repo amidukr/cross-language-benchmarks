@@ -1,0 +1,16 @@
+target=dotnet-native
+diagnostic_profile=assembly
+diagnostic_run_id=enum-assembly-001
+execution_mode=docker
+container_engine=docker
+container_engine_version=podman version 5.7.0
+image=enum-dispatch-dotnet-native-assembly:latest
+size=100000
+seed=42
+repeats=100
+value=7
+warmup_samples=10
+samples=30
+capture_status=success
+exit_status=0
+reason=

@@ -1,0 +1,5 @@
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+OpenJDK 64-Bit Server VM warning: PrintAssembly is enabled; turning on DebugNonSafepoints to gain additional output
+effective size=100000 seed=42 repeats=100 value=7 warmup_samples=10 samples=30 run_id=enum-assembly-001 trial=1 target=graalvm-jit config_id=diagnostic
+toolchain=OpenJDK Runtime Environment 25.0.1+8-jvmci-b01 flags=javac --release 25 environment=unknown
+checksum=375564700

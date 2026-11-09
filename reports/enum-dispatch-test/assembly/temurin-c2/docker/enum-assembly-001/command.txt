@@ -1,0 +1,1 @@
+docker run --rm --entrypoint java enum-dispatch-temurin-c2-assembly:latest -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp /build EnumDispatch --size 100000 --seed 42 --repeats 100 --value 7 --warmup-samples 10 --samples 30 --output /tmp/diagnostic --run-id enum-assembly-001 --trial 1 --target temurin-c2 --config-id diagnostic 

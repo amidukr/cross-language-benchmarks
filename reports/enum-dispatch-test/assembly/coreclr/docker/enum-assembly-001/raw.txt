@@ -1,0 +1,482 @@
+; Assembly listing for method Program:Run(Instruction[],int,int):int (Instrumented Tier0)
+; Emitting BLENDED_CODE for generic X64 + VEX on Unix
+; Instrumented Tier0 code
+; rbp based frame
+; fully interruptible
+; compiling with minopt
+
+G_M000_IG01:                ;; offset=0x0000
+       push     rbp
+       sub      rsp, 128
+       lea      rbp, [rsp+0x80]
+       vxorps   xmm8, xmm8, xmm8
+       vmovdqu  ymmword ptr [rbp-0x70], ymm8
+       vmovdqa  xmmword ptr [rbp-0x50], xmm8
+       xor      eax, eax
+       mov      qword ptr [rbp-0x40], rax
+       mov      gword ptr [rbp-0x30], rdi
+       mov      dword ptr [rbp-0x34], esi
+       mov      dword ptr [rbp-0x38], edx
+ 
+G_M000_IG02:                ;; offset=0x002F
+       mov      dword ptr [rbp-0x78], 0x3E8
+       xor      eax, eax
+       mov      dword ptr [rbp-0x3C], eax
+       xor      eax, eax
+       mov      dword ptr [rbp-0x40], eax
+       jmp      G_M000_IG12
+ 
+G_M000_IG03:                ;; offset=0x0045
+       mov      rax, gword ptr [rbp-0x30]
+       mov      gword ptr [rbp-0x48], rax
+       xor      eax, eax
+       mov      dword ptr [rbp-0x4C], eax
+       jmp      G_M000_IG09
+ 
+G_M000_IG04:                ;; offset=0x0057
+       mov      rax, gword ptr [rbp-0x48]
+       mov      ecx, dword ptr [rbp-0x4C]
+       cmp      ecx, dword ptr [rax+0x08]
+       jae      G_M000_IG16
+       mov      edx, ecx
+       lea      rax, bword ptr [rax+8*rdx+0x10]
+       mov      rax, qword ptr [rax]
+       mov      qword ptr [rbp-0x58], rax
+       mov      eax, dword ptr [rbp-0x3C]
+       mov      dword ptr [rbp-0x5C], eax
+       lea      rdi, [rbp-0x58]
+       call     [Instruction:get_Operation():int:this]
+       mov      dword ptr [rbp-0x64], eax
+       cmp      dword ptr [rbp-0x64], 0
+       je       SHORT G_M000_IG05
+       cmp      dword ptr [rbp-0x64], 1
+       je       SHORT G_M000_IG06
+       jmp      SHORT G_M000_IG07
+ 
+G_M000_IG05:                ;; offset=0x0096
+       mov      rdi, 0x7C833FFFE1B8
+       call     CORINFO_HELP_COUNTPROFILE32
+       lea      rdi, [rbp-0x58]
+       call     [Instruction:get_Operand():int:this]
+       add      eax, dword ptr [rbp-0x38]
+       mov      dword ptr [rbp-0x60], eax
+       jmp      SHORT G_M000_IG08
+ 
+G_M000_IG06:                ;; offset=0x00B7
+       lea      rdi, [rbp-0x58]
+       call     [Instruction:get_Operand():int:this]
+       imul     eax, dword ptr [rbp-0x38]
+       mov      dword ptr [rbp-0x60], eax
+       jmp      SHORT G_M000_IG08
+ 
+G_M000_IG07:                ;; offset=0x00CA
+       mov      rdi, 0x7C833FE66C70
+       call     CORINFO_HELP_NEWSFAST
+       mov      gword ptr [rbp-0x70], rax
+       mov      rdi, gword ptr [rbp-0x70]
+       call     [System.InvalidOperationException:.ctor():this]
+       mov      rdi, gword ptr [rbp-0x70]
+       call     CORINFO_HELP_THROW
+       int3     
+ 
+G_M000_IG08:                ;; offset=0x00F1
+       mov      rdi, 0x7C833FFFE1BC
+       call     CORINFO_HELP_COUNTPROFILE32
+       mov      eax, dword ptr [rbp-0x5C]
+       add      eax, dword ptr [rbp-0x60]
+       mov      dword ptr [rbp-0x3C], eax
+       mov      eax, dword ptr [rbp-0x4C]
+       inc      eax
+       mov      dword ptr [rbp-0x4C], eax
+ 
+G_M000_IG09:                ;; offset=0x0111
+       mov      eax, dword ptr [rbp-0x78]
+       dec      eax
+       mov      dword ptr [rbp-0x78], eax
+       cmp      dword ptr [rbp-0x78], 0
+       jg       SHORT G_M000_IG11
+ 
+G_M000_IG10:                ;; offset=0x011F
+       lea      rdi, [rbp-0x78]
+       mov      esi, 86
+       call     CORINFO_HELP_PATCHPOINT
+ 
+G_M000_IG11:                ;; offset=0x012D
+       mov      rax, gword ptr [rbp-0x48]
+       mov      eax, dword ptr [rax+0x08]
+       cmp      eax, dword ptr [rbp-0x4C]
+       jg       G_M000_IG04
+       mov      rdi, 0x7C833FFFE1C0
+       call     CORINFO_HELP_COUNTPROFILE32
+       mov      eax, dword ptr [rbp-0x40]
+       inc      eax
+       mov      dword ptr [rbp-0x40], eax
+ 
+G_M000_IG12:                ;; offset=0x0154
+       mov      eax, dword ptr [rbp-0x78]
+       dec      eax
+       mov      dword ptr [rbp-0x78], eax
+       cmp      dword ptr [rbp-0x78], 0
+       jg       SHORT G_M000_IG14
+ 
+G_M000_IG13:                ;; offset=0x0162
+       lea      rdi, [rbp-0x78]
+       mov      esi, 96
+       call     CORINFO_HELP_PATCHPOINT
+ 
+G_M000_IG14:                ;; offset=0x0170
+       mov      eax, dword ptr [rbp-0x40]
+       cmp      eax, dword ptr [rbp-0x34]
+       jl       G_M000_IG03
+       mov      rdi, 0x7C833FFFE1C4
+       call     CORINFO_HELP_COUNTPROFILE32
+       mov      eax, dword ptr [rbp-0x3C]
+ 
+G_M000_IG15:                ;; offset=0x018E
+       add      rsp, 128
+       pop      rbp
+       ret      
+ 
+G_M000_IG16:                ;; offset=0x0197
+       call     CORINFO_HELP_RNGCHKFAIL
+       int3     
+ 
+; Total bytes of code 413
+
+; Assembly listing for method Program:Run(Instruction[],int,int):int (Tier1-OSR)
+; Emitting BLENDED_CODE for generic X64 + VEX on Unix
+; Tier1-OSR code
+; OSR variant for entry point 0x56
+; optimized code
+; optimized using Synthesized PGO
+; rbp based frame
+; fully interruptible
+; with Synthesized PGO: fgCalledCount is 1
+; 0 inlinees with PGO data; 3 single block inlinees; 0 inlinees without PGO data
+
+G_M000_IG01:                ;; offset=0x0000
+       mov      rax, qword ptr [rbp]
+       push     rax
+       sub      rsp, 16
+       mov      qword ptr [rsp+0x98], rbx
+       lea      rbp, [rsp+0x10]
+       mov      rcx, gword ptr [rbp+0x60]
+       mov      eax, dword ptr [rbp+0x5C]
+       mov      edi, dword ptr [rbp+0x58]
+       mov      r8d, dword ptr [rbp+0x54]
+       mov      r9d, dword ptr [rbp+0x50]
+       mov      rsi, gword ptr [rbp+0x48]
+       mov      edx, dword ptr [rbp+0x44]
+ 
+G_M000_IG02:                ;; offset=0x002F
+       jmp      SHORT G_M000_IG08
+ 
+G_M000_IG03:                ;; offset=0x0031
+       inc      r9d
+       cmp      r9d, eax
+       jge      SHORT G_M000_IG12
+ 
+G_M000_IG04:                ;; offset=0x0039
+       mov      rsi, rcx
+       xor      edx, edx
+       mov      r10d, dword ptr [rsi+0x08]
+       cmp      r10d, edx
+       jg       SHORT G_M000_IG09
+       jmp      SHORT G_M000_IG03
+ 
+G_M000_IG05:                ;; offset=0x0049
+       cmp      r11d, 1
+       jne      SHORT G_M000_IG11
+ 
+G_M000_IG06:                ;; offset=0x004F
+       imul     r10d, edi
+ 
+G_M000_IG07:                ;; offset=0x0053
+       add      r8d, r10d
+       inc      edx
+ 
+G_M000_IG08:                ;; offset=0x0058
+       mov      r10d, dword ptr [rsi+0x08]
+       cmp      r10d, edx
+       jle      SHORT G_M000_IG03
+ 
+G_M000_IG09:                ;; offset=0x0061
+       cmp      edx, r10d
+       jae      SHORT G_M000_IG14
+       mov      r10d, edx
+       lea      r10, bword ptr [rsi+8*r10+0x10]
+       mov      r11d, dword ptr [r10]
+       mov      r10d, dword ptr [r10+0x04]
+       test     r11d, r11d
+       jne      SHORT G_M000_IG05
+ 
+G_M000_IG10:                ;; offset=0x007A
+       add      r10d, edi
+       jmp      SHORT G_M000_IG07
+ 
+G_M000_IG11:                ;; offset=0x007F
+       mov      rdi, 0x7C833FE66C70
+       call     CORINFO_HELP_NEWSFAST
+       mov      rbx, rax
+       mov      rdi, rbx
+       call     [System.InvalidOperationException:.ctor():this]
+       mov      rdi, rbx
+       call     CORINFO_HELP_THROW
+       int3     
+ 
+G_M000_IG12:                ;; offset=0x00A3
+       mov      eax, r8d
+ 
+G_M000_IG13:                ;; offset=0x00A6
+       add      rsp, 152
+       pop      rbx
+       pop      rbp
+       ret      
+ 
+G_M000_IG14:                ;; offset=0x00B0
+       call     CORINFO_HELP_RNGCHKFAIL
+       int3     
+ 
+; Total bytes of code 182
+
+; Assembly listing for method Program:Run(Instruction[],int,int):int (Instrumented Tier0)
+; Emitting BLENDED_CODE for generic X64 + VEX on Unix
+; Instrumented Tier0 code
+; rbp based frame
+; fully interruptible
+; compiling with minopt
+
+G_M000_IG01:                ;; offset=0x0000
+       push     rbp
+       sub      rsp, 128
+       lea      rbp, [rsp+0x80]
+       vxorps   xmm8, xmm8, xmm8
+       vmovdqu  ymmword ptr [rbp-0x70], ymm8
+       vmovdqa  xmmword ptr [rbp-0x50], xmm8
+       xor      eax, eax
+       mov      qword ptr [rbp-0x40], rax
+       mov      gword ptr [rbp-0x30], rdi
+       mov      dword ptr [rbp-0x34], esi
+       mov      dword ptr [rbp-0x38], edx
+ 
+G_M000_IG02:                ;; offset=0x002F
+       mov      dword ptr [rbp-0x78], 0x3E8
+       xor      eax, eax
+       mov      dword ptr [rbp-0x3C], eax
+       xor      eax, eax
+       mov      dword ptr [rbp-0x40], eax
+       jmp      G_M000_IG12
+ 
+G_M000_IG03:                ;; offset=0x0045
+       mov      rax, gword ptr [rbp-0x30]
+       mov      gword ptr [rbp-0x48], rax
+       xor      eax, eax
+       mov      dword ptr [rbp-0x4C], eax
+       jmp      G_M000_IG09
+ 
+G_M000_IG04:                ;; offset=0x0057
+       mov      rax, gword ptr [rbp-0x48]
+       mov      ecx, dword ptr [rbp-0x4C]
+       cmp      ecx, dword ptr [rax+0x08]
+       jae      G_M000_IG16
+       mov      edx, ecx
+       lea      rax, bword ptr [rax+8*rdx+0x10]
+       mov      rax, qword ptr [rax]
+       mov      qword ptr [rbp-0x58], rax
+       mov      eax, dword ptr [rbp-0x3C]
+       mov      dword ptr [rbp-0x5C], eax
+       lea      rdi, [rbp-0x58]
+       call     [Instruction:get_Operation():int:this]
+       mov      dword ptr [rbp-0x64], eax
+       cmp      dword ptr [rbp-0x64], 0
+       je       SHORT G_M000_IG05
+       cmp      dword ptr [rbp-0x64], 1
+       je       SHORT G_M000_IG06
+       jmp      SHORT G_M000_IG07
+ 
+G_M000_IG05:                ;; offset=0x0096
+       mov      rdi, 0x7C833FFFE1B8
+       call     CORINFO_HELP_COUNTPROFILE32
+       lea      rdi, [rbp-0x58]
+       call     [Instruction:get_Operand():int:this]
+       add      eax, dword ptr [rbp-0x38]
+       mov      dword ptr [rbp-0x60], eax
+       jmp      SHORT G_M000_IG08
+ 
+G_M000_IG06:                ;; offset=0x00B7
+       lea      rdi, [rbp-0x58]
+       call     [Instruction:get_Operand():int:this]
+       imul     eax, dword ptr [rbp-0x38]
+       mov      dword ptr [rbp-0x60], eax
+       jmp      SHORT G_M000_IG08
+ 
+G_M000_IG07:                ;; offset=0x00CA
+       mov      rdi, 0x7C833FE66C70
+       call     CORINFO_HELP_NEWSFAST
+       mov      gword ptr [rbp-0x70], rax
+       mov      rdi, gword ptr [rbp-0x70]
+       call     [System.InvalidOperationException:.ctor():this]
+       mov      rdi, gword ptr [rbp-0x70]
+       call     CORINFO_HELP_THROW
+       int3     
+ 
+G_M000_IG08:                ;; offset=0x00F1
+       mov      rdi, 0x7C833FFFE1BC
+       call     CORINFO_HELP_COUNTPROFILE32
+       mov      eax, dword ptr [rbp-0x5C]
+       add      eax, dword ptr [rbp-0x60]
+       mov      dword ptr [rbp-0x3C], eax
+       mov      eax, dword ptr [rbp-0x4C]
+       inc      eax
+       mov      dword ptr [rbp-0x4C], eax
+ 
+G_M000_IG09:                ;; offset=0x0111
+       mov      eax, dword ptr [rbp-0x78]
+       dec      eax
+       mov      dword ptr [rbp-0x78], eax
+       cmp      dword ptr [rbp-0x78], 0
+       jg       SHORT G_M000_IG11
+ 
+G_M000_IG10:                ;; offset=0x011F
+       lea      rdi, [rbp-0x78]
+       mov      esi, 86
+       call     CORINFO_HELP_PATCHPOINT
+ 
+G_M000_IG11:                ;; offset=0x012D
+       mov      rax, gword ptr [rbp-0x48]
+       mov      eax, dword ptr [rax+0x08]
+       cmp      eax, dword ptr [rbp-0x4C]
+       jg       G_M000_IG04
+       mov      rdi, 0x7C833FFFE1C0
+       call     CORINFO_HELP_COUNTPROFILE32
+       mov      eax, dword ptr [rbp-0x40]
+       inc      eax
+       mov      dword ptr [rbp-0x40], eax
+ 
+G_M000_IG12:                ;; offset=0x0154
+       mov      eax, dword ptr [rbp-0x78]
+       dec      eax
+       mov      dword ptr [rbp-0x78], eax
+       cmp      dword ptr [rbp-0x78], 0
+       jg       SHORT G_M000_IG14
+ 
+G_M000_IG13:                ;; offset=0x0162
+       lea      rdi, [rbp-0x78]
+       mov      esi, 96
+       call     CORINFO_HELP_PATCHPOINT
+ 
+G_M000_IG14:                ;; offset=0x0170
+       mov      eax, dword ptr [rbp-0x40]
+       cmp      eax, dword ptr [rbp-0x34]
+       jl       G_M000_IG03
+       mov      rdi, 0x7C833FFFE1C4
+       call     CORINFO_HELP_COUNTPROFILE32
+       mov      eax, dword ptr [rbp-0x3C]
+ 
+G_M000_IG15:                ;; offset=0x018E
+       add      rsp, 128
+       pop      rbp
+       ret      
+ 
+G_M000_IG16:                ;; offset=0x0197
+       call     CORINFO_HELP_RNGCHKFAIL
+       int3     
+ 
+; Total bytes of code 413
+
+; Assembly listing for method Program:Run(Instruction[],int,int):int (Tier1-OSR)
+; Emitting BLENDED_CODE for generic X64 + VEX on Unix
+; Tier1-OSR code
+; OSR variant for entry point 0x56
+; optimized code
+; optimized using Synthesized PGO
+; rbp based frame
+; fully interruptible
+; with Synthesized PGO: fgCalledCount is 1
+; 0 inlinees with PGO data; 3 single block inlinees; 0 inlinees without PGO data
+
+G_M000_IG01:                ;; offset=0x0000
+       mov      rax, qword ptr [rbp]
+       push     rax
+       sub      rsp, 16
+       mov      qword ptr [rsp+0x98], rbx
+       lea      rbp, [rsp+0x10]
+       mov      rcx, gword ptr [rbp+0x60]
+       mov      eax, dword ptr [rbp+0x5C]
+       mov      edi, dword ptr [rbp+0x58]
+       mov      r8d, dword ptr [rbp+0x54]
+       mov      r9d, dword ptr [rbp+0x50]
+       mov      rsi, gword ptr [rbp+0x48]
+       mov      edx, dword ptr [rbp+0x44]
+ 
+G_M000_IG02:                ;; offset=0x002F
+       jmp      SHORT G_M000_IG05
+ 
+G_M000_IG03:                ;; offset=0x0031
+       add      r10d, edi
+ 
+G_M000_IG04:                ;; offset=0x0034
+       add      r8d, r10d
+       inc      edx
+ 
+G_M000_IG05:                ;; offset=0x0039
+       mov      r10d, dword ptr [rsi+0x08]
+       cmp      r10d, edx
+       jle      SHORT G_M000_IG09
+ 
+G_M000_IG06:                ;; offset=0x0042
+       cmp      edx, r10d
+       jae      SHORT G_M000_IG14
+       mov      r10d, edx
+       lea      r10, bword ptr [rsi+8*r10+0x10]
+       mov      r11d, dword ptr [r10]
+       mov      r10d, dword ptr [r10+0x04]
+       test     r11d, r11d
+       je       SHORT G_M000_IG03
+ 
+G_M000_IG07:                ;; offset=0x005B
+       cmp      r11d, 1
+       jne      SHORT G_M000_IG11
+ 
+G_M000_IG08:                ;; offset=0x0061
+       imul     r10d, edi
+       jmp      SHORT G_M000_IG04
+ 
+G_M000_IG09:                ;; offset=0x0067
+       inc      r9d
+       cmp      r9d, eax
+       jge      SHORT G_M000_IG12
+ 
+G_M000_IG10:                ;; offset=0x006F
+       mov      rsi, rcx
+       xor      edx, edx
+       mov      r10d, dword ptr [rsi+0x08]
+       cmp      r10d, edx
+       jg       SHORT G_M000_IG06
+       jmp      SHORT G_M000_IG09
+ 
+G_M000_IG11:                ;; offset=0x007F
+       mov      rdi, 0x7C833FE66C70
+       call     CORINFO_HELP_NEWSFAST
+       mov      rbx, rax
+       mov      rdi, rbx
+       call     [System.InvalidOperationException:.ctor():this]
+       mov      rdi, rbx
+       call     CORINFO_HELP_THROW
+       int3     
+ 
+G_M000_IG12:                ;; offset=0x00A3
+       mov      eax, r8d
+ 
+G_M000_IG13:                ;; offset=0x00A6
+       add      rsp, 152
+       pop      rbx
+       pop      rbp
+       ret      
+ 
+G_M000_IG14:                ;; offset=0x00B0
+       call     CORINFO_HELP_RNGCHKFAIL
+       int3     
+ 
+; Total bytes of code 182
+

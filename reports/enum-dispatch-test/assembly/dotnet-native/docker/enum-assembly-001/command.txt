@@ -1,0 +1,1 @@
+docker run --rm --entrypoint objdump enum-dispatch-dotnet-native-assembly:latest -d -C /app/EnumDispatch 

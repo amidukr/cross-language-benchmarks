@@ -1,0 +1,1 @@
+docker run --rm --entrypoint python3 enum-dispatch-cpython-assembly:latest -c import\ dis\,runpy\;\ n=runpy.run_path\(\"/benchmark/enum_dispatch.py\"\)\;\ dis.dis\(n\[\"run\"\]\,adaptive=True\,show_caches=True\) 

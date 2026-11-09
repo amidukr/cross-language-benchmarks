@@ -1,0 +1,152 @@
+132           RESUME                   0
+
+133           LOAD_SMALL_INT           0
+              STORE_FAST               3 (checksum)
+
+134           LOAD_GLOBAL              1 (range + NULL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_FAST_BORROW         1 (repeats)
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              GET_ITER
+      L1:     FOR_ITER               120 (to L6)
+              CACHE                    0 (counter: 17)
+              STORE_FAST               4 (_)
+
+135           LOAD_FAST_BORROW         0 (operations)
+              GET_ITER
+      L2:     FOR_ITER               111 (to L5)
+              CACHE                    0 (counter: 17)
+              STORE_FAST               5 (instruction)
+
+136           LOAD_FAST_BORROW         5 (instruction)
+              LOAD_ATTR                2 (operation)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+
+137           COPY                     1
+              LOAD_GLOBAL              4 (Operation)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_ATTR                6 (ADD)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              COMPARE_OP              88 (bool(==))
+              CACHE                    0 (counter: 17)
+              POP_JUMP_IF_FALSE       21 (to L3)
+              CACHE                    0 (counter: 21845)
+              NOT_TAKEN
+
+138           POP_TOP
+              LOAD_FAST_BORROW_LOAD_FAST_BORROW 37 (value, instruction)
+              LOAD_ATTR                8 (operand)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              BINARY_OP                0 (+)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              STORE_FAST               6 (result)
+              JUMP_FORWARD            38 (to L4)
+
+139   L3:     LOAD_GLOBAL              4 (Operation)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_ATTR               10 (MUL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              COMPARE_OP              88 (bool(==))
+              CACHE                    0 (counter: 17)
+              POP_JUMP_IF_FALSE       19 (to L4)
+              CACHE                    0 (counter: 21845)
+              NOT_TAKEN
+
+140           LOAD_FAST_BORROW_LOAD_FAST_BORROW 37 (value, instruction)
+              LOAD_ATTR                8 (operand)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              BINARY_OP                5 (*)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              STORE_FAST               6 (result)
+
+141   L4:     LOAD_GLOBAL             13 (i32 + NULL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_FAST_BORROW         3 (checksum)
+              LOAD_FAST_CHECK          6 (result)
+              BINARY_OP                0 (+)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              STORE_FAST               3 (checksum)
+              JUMP_BACKWARD          113 (to L2)
+              CACHE                    0 (counter: 65532)
+
+135   L5:     END_FOR
+              POP_ITER
+              JUMP_BACKWARD          122 (to L1)
+              CACHE                    0 (counter: 65532)
+
+134   L6:     END_FOR
+              POP_ITER
+
+142           LOAD_FAST_BORROW         3 (checksum)
+              RETURN_VALUE

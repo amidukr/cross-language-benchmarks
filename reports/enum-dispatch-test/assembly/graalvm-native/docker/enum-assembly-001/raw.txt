@@ -1,0 +1,331 @@
+
+===== int EnumDispatch::run(java.util.List*, int, int) [000000000042e0e0,000000000042e520) =====
+
+/build/enum-dispatch:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+000000000042e0e0 <int EnumDispatch::run(java.util.List*, int, int)>:
+  42e0e0:	48 83 ec 38          	sub    $0x38,%rsp
+  42e0e4:	49 3b 67 08          	cmp    0x8(%r15),%rsp
+  42e0e8:	0f 86 64 02 00 00    	jbe    42e352 <int EnumDispatch::run(java.util.List*, int, int)+0x272>
+  42e0ee:	48 89 7c 24 18       	mov    %rdi,0x18(%rsp)
+  42e0f3:	89 74 24 34          	mov    %esi,0x34(%rsp)
+  42e0f7:	89 54 24 30          	mov    %edx,0x30(%rsp)
+  42e0fb:	90                   	nop
+  42e0fc:	90                   	nop
+  42e0fd:	90                   	nop
+  42e0fe:	48 8b c7             	mov    %rdi,%rax
+  42e101:	49 2b c6             	sub    %r14,%rax
+  42e104:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+  42e109:	b9 00 00 00 00       	mov    $0x0,%ecx
+  42e10e:	ba 00 00 00 00       	mov    $0x0,%edx
+  42e113:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  42e11a:	00 00 
+  42e11c:	66 66 66 90          	data16 data16 xchg %ax,%ax
+  42e120:	3b f2                	cmp    %edx,%esi
+  42e122:	0f 8e 06 02 00 00    	jle    42e32e <int EnumDispatch::run(java.util.List*, int, int)+0x24e>
+  42e128:	90                   	nop
+  42e129:	49 3b fe             	cmp    %r14,%rdi
+  42e12c:	0f 84 1a 02 00 00    	je     42e34c <int EnumDispatch::run(java.util.List*, int, int)+0x26c>
+  42e132:	89 54 24 2c          	mov    %edx,0x2c(%rsp)
+  42e136:	48 bd b8 f8 38 00 00 	movabs $0x38f8b8,%rbp
+  42e13d:	00 00 00 
+  42e140:	90                   	nop
+  42e141:	90                   	nop
+  42e142:	90                   	nop
+  42e143:	90                   	nop
+  42e144:	90                   	nop
+  42e145:	90                   	nop
+  42e146:	90                   	nop
+  42e147:	90                   	nop
+  42e148:	90                   	nop
+  42e149:	90                   	nop
+  42e14a:	44 8b 47 08          	mov    0x8(%rdi),%r8d
+  42e14e:	90                   	nop
+  42e14f:	90                   	nop
+  42e150:	4d 8b 4f 28          	mov    0x28(%r15),%r9
+  42e154:	4d 8d 51 28          	lea    0x28(%r9),%r10
+  42e158:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+  42e15f:	00 
+  42e160:	4d 3b 57 20          	cmp    0x20(%r15),%r10
+  42e164:	0f 87 6e 01 00 00    	ja     42e2d8 <int EnumDispatch::run(java.util.List*, int, int)+0x1f8>
+  42e16a:	4d 89 57 28          	mov    %r10,0x28(%r15)
+  42e16e:	49 89 29             	mov    %rbp,(%r9)
+  42e171:	49 c7 41 08 00 00 00 	movq   $0x0,0x8(%r9)
+  42e178:	00 
+  42e179:	49 c7 41 10 00 00 00 	movq   $0x0,0x10(%r9)
+  42e180:	00 
+  42e181:	49 c7 41 18 00 00 00 	movq   $0x0,0x18(%r9)
+  42e188:	00 
+  42e189:	49 c7 41 20 00 00 00 	movq   $0x0,0x20(%r9)
+  42e190:	00 
+  42e191:	4c 89 4c 24 08       	mov    %r9,0x8(%rsp)
+  42e196:	45 89 41 18          	mov    %r8d,0x18(%r9)
+  42e19a:	41 c7 41 14 ff ff ff 	movl   $0xffffffff,0x14(%r9)
+  42e1a1:	ff 
+  42e1a2:	49 89 41 08          	mov    %rax,0x8(%r9)
+  42e1a6:	49 f7 01 02 00 00 00 	testq  $0x2,(%r9)
+  42e1ad:	0f 85 f3 00 00 00    	jne    42e2a6 <int EnumDispatch::run(java.util.List*, int, int)+0x1c6>
+  42e1b3:	89 4c 24 28          	mov    %ecx,0x28(%rsp)
+  42e1b7:	e9 a2 00 00 00       	jmp    42e25e <int EnumDispatch::run(java.util.List*, int, int)+0x17e>
+  42e1bc:	0f 1f 40 00          	nopl   0x0(%rax)
+  42e1c0:	90                   	nop
+  42e1c1:	45 8b 41 10          	mov    0x10(%r9),%r8d
+  42e1c5:	45 3b 44 2e 0c       	cmp    0xc(%r14,%rbp,1),%r8d
+  42e1ca:	0f 84 ae 00 00 00    	je     42e27e <int EnumDispatch::run(java.util.List*, int, int)+0x19e>
+  42e1d0:	49 8b f9             	mov    %r9,%rdi
+  42e1d3:	e8 a8 4a 2a 00       	call   6d2c80 <java.lang.Object* java.util.ArrayList$Itr::next()>
+  42e1d8:	90                   	nop
+  42e1d9:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  42e1e0:	49 3b c6             	cmp    %r14,%rax
+  42e1e3:	74 24                	je     42e209 <int EnumDispatch::run(java.util.List*, int, int)+0x129>
+  42e1e5:	48 c7 c7 f8 ff ff ff 	mov    $0xfffffffffffffff8,%rdi
+  42e1ec:	48 23 38             	and    (%rax),%rdi
+  42e1ef:	48 b9 f8 b5 3b 00 00 	movabs $0x3bb5f8,%rcx
+  42e1f6:	00 00 00 
+  42e1f9:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  42e200:	48 3b cf             	cmp    %rdi,%rcx
+  42e203:	0f 85 57 02 00 00    	jne    42e460 <int EnumDispatch::run(java.util.List*, int, int)+0x380>
+  42e209:	90                   	nop
+  42e20a:	49 3b c6             	cmp    %r14,%rax
+  42e20d:	0f 84 39 01 00 00    	je     42e34c <int EnumDispatch::run(java.util.List*, int, int)+0x26c>
+  42e213:	90                   	nop
+  42e214:	90                   	nop
+  42e215:	90                   	nop
+  42e216:	48 8b 78 08          	mov    0x8(%rax),%rdi
+  42e21a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+  42e220:	48 85 ff             	test   %rdi,%rdi
+  42e223:	0f 84 23 01 00 00    	je     42e34c <int EnumDispatch::run(java.util.List*, int, int)+0x26c>
+  42e229:	49 8d 0c 3e          	lea    (%r14,%rdi,1),%rcx
+  42e22d:	90                   	nop
+  42e22e:	90                   	nop
+  42e22f:	90                   	nop
+  42e230:	41 8b 7c 3e 10       	mov    0x10(%r14,%rdi,1),%edi
+  42e235:	8b 48 10             	mov    0x10(%rax),%ecx
+  42e238:	83 ff 00             	cmp    $0x0,%edi
+  42e23b:	74 35                	je     42e272 <int EnumDispatch::run(java.util.List*, int, int)+0x192>
+  42e23d:	83 ff 01             	cmp    $0x1,%edi
+  42e240:	0f 85 12 01 00 00    	jne    42e358 <int EnumDispatch::run(java.util.List*, int, int)+0x278>
+  42e246:	90                   	nop
+  42e247:	90                   	nop
+  42e248:	90                   	nop
+  42e249:	90                   	nop
+  42e24a:	8b 54 24 30          	mov    0x30(%rsp),%edx
+  42e24e:	0f af d1             	imul   %ecx,%edx
+  42e251:	03 54 24 28          	add    0x28(%rsp),%edx
+  42e255:	89 54 24 28          	mov    %edx,0x28(%rsp)
+  42e259:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
+  42e25e:	90                   	nop
+  42e25f:	90                   	nop
+  42e260:	49 8b 69 08          	mov    0x8(%r9),%rbp
+  42e264:	48 85 ed             	test   %rbp,%rbp
+  42e267:	0f 85 53 ff ff ff    	jne    42e1c0 <int EnumDispatch::run(java.util.List*, int, int)+0xe0>
+  42e26d:	e9 da 00 00 00       	jmp    42e34c <int EnumDispatch::run(java.util.List*, int, int)+0x26c>
+  42e272:	90                   	nop
+  42e273:	90                   	nop
+  42e274:	90                   	nop
+  42e275:	90                   	nop
+  42e276:	8b 54 24 30          	mov    0x30(%rsp),%edx
+  42e27a:	03 d1                	add    %ecx,%edx
+  42e27c:	eb d3                	jmp    42e251 <int EnumDispatch::run(java.util.List*, int, int)+0x171>
+  42e27e:	8b 54 24 2c          	mov    0x2c(%rsp),%edx
+  42e282:	ff c2                	inc    %edx
+  42e284:	41 83 7f 10 00       	cmpl   $0x0,0x10(%r15)
+  42e289:	0f 8e 7e 00 00 00    	jle    42e30d <int EnumDispatch::run(java.util.List*, int, int)+0x22d>
+  42e28f:	8b 4c 24 28          	mov    0x28(%rsp),%ecx
+  42e293:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+  42e298:	8b 74 24 34          	mov    0x34(%rsp),%esi
+  42e29c:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  42e2a1:	e9 7a fe ff ff       	jmp    42e120 <int EnumDispatch::run(java.util.List*, int, int)+0x40>
+  42e2a6:	49 8b e9             	mov    %r9,%rbp
+  42e2a9:	4c 8b c5             	mov    %rbp,%r8
+  42e2ac:	49 81 e0 00 00 f8 ff 	and    $0xfffffffffff80000,%r8
+  42e2b3:	4d 8d 90 38 08 00 00 	lea    0x838(%r8),%r10
+  42e2ba:	49 2b ea             	sub    %r10,%rbp
+  42e2bd:	48 c1 ed 09          	shr    $0x9,%rbp
+  42e2c1:	41 80 7c 28 38 00    	cmpb   $0x0,0x38(%r8,%rbp,1)
+  42e2c7:	0f 84 e6 fe ff ff    	je     42e1b3 <int EnumDispatch::run(java.util.List*, int, int)+0xd3>
+  42e2cd:	41 c6 44 28 38 00    	movb   $0x0,0x38(%r8,%rbp,1)
+  42e2d3:	e9 db fe ff ff       	jmp    42e1b3 <int EnumDispatch::run(java.util.List*, int, int)+0xd3>
+  42e2d8:	44 89 44 24 28       	mov    %r8d,0x28(%rsp)
+  42e2dd:	89 4c 24 24          	mov    %ecx,0x24(%rsp)
+  42e2e1:	48 8b fd             	mov    %rbp,%rdi
+  42e2e4:	e8 b7 d2 08 00       	call   4bb5a0 <java.lang.Object* com.oracle.svm.core.genscavenge.graal.GenScavengeAllocationSupport::slowNewInstance(jdk.graal.compiler.word.Word)>
+  42e2e9:	90                   	nop
+  42e2ea:	4c 8b c8             	mov    %rax,%r9
+  42e2ed:	44 8b 44 24 28       	mov    0x28(%rsp),%r8d
+  42e2f2:	8b 54 24 2c          	mov    0x2c(%rsp),%edx
+  42e2f6:	8b 4c 24 24          	mov    0x24(%rsp),%ecx
+  42e2fa:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+  42e2ff:	8b 74 24 34          	mov    0x34(%rsp),%esi
+  42e303:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  42e308:	e9 84 fe ff ff       	jmp    42e191 <int EnumDispatch::run(java.util.List*, int, int)+0xb1>
+  42e30d:	8b 44 24 2c          	mov    0x2c(%rsp),%eax
+  42e311:	e8 2a 36 10 00       	call   531940 <void com.oracle.svm.core.thread.SafepointSlowpath::enterSlowPathSafepointCheck()>
+  42e316:	90                   	nop
+  42e317:	8b 4c 24 28          	mov    0x28(%rsp),%ecx
+  42e31b:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+  42e320:	8b 74 24 34          	mov    0x34(%rsp),%esi
+  42e324:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  42e329:	e9 f2 fd ff ff       	jmp    42e120 <int EnumDispatch::run(java.util.List*, int, int)+0x40>
+  42e32e:	89 4c 24 24          	mov    %ecx,0x24(%rsp)
+  42e332:	90                   	nop
+  42e333:	90                   	nop
+  42e334:	41 83 7f 10 00       	cmpl   $0x0,0x10(%r15)
+  42e339:	7e 09                	jle    42e344 <int EnumDispatch::run(java.util.List*, int, int)+0x264>
+  42e33b:	8b 44 24 24          	mov    0x24(%rsp),%eax
+  42e33f:	48 83 c4 38          	add    $0x38,%rsp
+  42e343:	c3                   	ret
+  42e344:	e8 f7 35 10 00       	call   531940 <void com.oracle.svm.core.thread.SafepointSlowpath::enterSlowPathSafepointCheck()>
+  42e349:	90                   	nop
+  42e34a:	eb ef                	jmp    42e33b <int EnumDispatch::run(java.util.List*, int, int)+0x25b>
+  42e34c:	e8 4f b6 0f 00       	call   5299a0 <void com.oracle.svm.core.snippets.ImplicitExceptions::throwOptNullPointerException()>
+  42e351:	90                   	nop
+  42e352:	e8 a9 ad 09 00       	call   4c9100 <void com.oracle.svm.core.graal.snippets.StackOverflowCheckImpl::throwNewStackOverflowError()>
+  42e357:	90                   	nop
+  42e358:	90                   	nop
+  42e359:	90                   	nop
+  42e35a:	90                   	nop
+  42e35b:	90                   	nop
+  42e35c:	90                   	nop
+  42e35d:	90                   	nop
+  42e35e:	90                   	nop
+  42e35f:	90                   	nop
+  42e360:	90                   	nop
+  42e361:	90                   	nop
+  42e362:	90                   	nop
+  42e363:	90                   	nop
+  42e364:	90                   	nop
+  42e365:	90                   	nop
+  42e366:	49 8b 7f 28          	mov    0x28(%r15),%rdi
+  42e36a:	48 8d 77 40          	lea    0x40(%rdi),%rsi
+  42e36e:	48 b8 50 74 39 00 00 	movabs $0x397450,%rax
+  42e375:	00 00 00 
+  42e378:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+  42e37f:	00 
+  42e380:	49 3b 77 20          	cmp    0x20(%r15),%rsi
+  42e384:	0f 87 6c 01 00 00    	ja     42e4f6 <int EnumDispatch::run(java.util.List*, int, int)+0x416>
+  42e38a:	49 89 77 28          	mov    %rsi,0x28(%r15)
+  42e38e:	48 89 07             	mov    %rax,(%rdi)
+  42e391:	48 c7 47 08 00 00 00 	movq   $0x0,0x8(%rdi)
+  42e398:	00 
+  42e399:	48 c7 47 10 00 00 00 	movq   $0x0,0x10(%rdi)
+  42e3a0:	00 
+  42e3a1:	48 c7 47 18 00 00 00 	movq   $0x0,0x18(%rdi)
+  42e3a8:	00 
+  42e3a9:	48 c7 47 20 00 00 00 	movq   $0x0,0x20(%rdi)
+  42e3b0:	00 
+  42e3b1:	48 c7 47 28 00 00 00 	movq   $0x0,0x28(%rdi)
+  42e3b8:	00 
+  42e3b9:	48 c7 47 30 00 00 00 	movq   $0x0,0x30(%rdi)
+  42e3c0:	00 
+  42e3c1:	48 c7 47 38 00 00 00 	movq   $0x0,0x38(%rdi)
+  42e3c8:	00 
+  42e3c9:	48 be 68 c0 69 00 00 	movabs $0x69c068,%rsi
+  42e3d0:	00 00 00 
+  42e3d3:	48 89 77 28          	mov    %rsi,0x28(%rdi)
+  42e3d7:	48 f7 07 02 00 00 00 	testq  $0x2,(%rdi)
+  42e3de:	66 90                	xchg   %ax,%ax
+  42e3e0:	0f 85 80 00 00 00    	jne    42e466 <int EnumDispatch::run(java.util.List*, int, int)+0x386>
+  42e3e6:	48 be d8 1a 6a 00 00 	movabs $0x6a1ad8,%rsi
+  42e3ed:	00 00 00 
+  42e3f0:	48 89 77 20          	mov    %rsi,0x20(%rdi)
+  42e3f4:	48 f7 07 02 00 00 00 	testq  $0x2,(%rdi)
+  42e3fb:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  42e400:	0f 85 c0 00 00 00    	jne    42e4c6 <int EnumDispatch::run(java.util.List*, int, int)+0x3e6>
+  42e406:	48 8b f7             	mov    %rdi,%rsi
+  42e409:	49 2b f6             	sub    %r14,%rsi
+  42e40c:	48 89 77 18          	mov    %rsi,0x18(%rdi)
+  42e410:	48 f7 07 02 00 00 00 	testq  $0x2,(%rdi)
+  42e417:	0f 85 79 00 00 00    	jne    42e496 <int EnumDispatch::run(java.util.List*, int, int)+0x3b6>
+  42e41d:	48 8b c7             	mov    %rdi,%rax
+  42e420:	be 00 00 00 00       	mov    $0x0,%esi
+  42e425:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+  42e42a:	e8 d1 50 19 00       	call   5c3500 <java.lang.Throwable* java.lang.Throwable::fillInStackTrace(int)>
+  42e42f:	90                   	nop
+  42e430:	90                   	nop
+  42e431:	90                   	nop
+  42e432:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+  42e437:	48 c7 40 10 00 00 00 	movq   $0x0,0x10(%rax)
+  42e43e:	00 
+  42e43f:	90                   	nop
+  42e440:	48 c7 40 18 00 00 00 	movq   $0x0,0x18(%rax)
+  42e447:	00 
+  42e448:	90                   	nop
+  42e449:	90                   	nop
+  42e44a:	90                   	nop
+  42e44b:	90                   	nop
+  42e44c:	90                   	nop
+  42e44d:	90                   	nop
+  42e44e:	90                   	nop
+  42e44f:	90                   	nop
+  42e450:	90                   	nop
+  42e451:	90                   	nop
+  42e452:	48 8d 74 24 40       	lea    0x40(%rsp),%rsi
+  42e457:	48 8b f8             	mov    %rax,%rdi
+  42e45a:	e8 21 03 0f 00       	call   51e780 <void com.oracle.svm.core.snippets.ExceptionUnwind::unwindExceptionWithoutCalleeSavedRegisters(java.lang.Throwable*, org.graalvm.word.Pointer)>
+  42e45f:	90                   	nop
+  42e460:	e8 7b af 0f 00       	call   5293e0 <void com.oracle.svm.core.snippets.ImplicitExceptions::throwOptClassCastException()>
+  42e465:	90                   	nop
+  42e466:	48 8b f7             	mov    %rdi,%rsi
+  42e469:	48 8b c6             	mov    %rsi,%rax
+  42e46c:	48 81 e0 00 00 f8 ff 	and    $0xfffffffffff80000,%rax
+  42e473:	48 8d 88 38 08 00 00 	lea    0x838(%rax),%rcx
+  42e47a:	48 2b f1             	sub    %rcx,%rsi
+  42e47d:	48 c1 ee 09          	shr    $0x9,%rsi
+  42e481:	80 7c 30 38 00       	cmpb   $0x0,0x38(%rax,%rsi,1)
+  42e486:	0f 84 5a ff ff ff    	je     42e3e6 <int EnumDispatch::run(java.util.List*, int, int)+0x306>
+  42e48c:	c6 44 30 38 00       	movb   $0x0,0x38(%rax,%rsi,1)
+  42e491:	e9 50 ff ff ff       	jmp    42e3e6 <int EnumDispatch::run(java.util.List*, int, int)+0x306>
+  42e496:	48 8b f7             	mov    %rdi,%rsi
+  42e499:	48 8b c6             	mov    %rsi,%rax
+  42e49c:	48 81 e0 00 00 f8 ff 	and    $0xfffffffffff80000,%rax
+  42e4a3:	48 8d 88 38 08 00 00 	lea    0x838(%rax),%rcx
+  42e4aa:	48 2b f1             	sub    %rcx,%rsi
+  42e4ad:	48 c1 ee 09          	shr    $0x9,%rsi
+  42e4b1:	80 7c 30 38 00       	cmpb   $0x0,0x38(%rax,%rsi,1)
+  42e4b6:	0f 84 61 ff ff ff    	je     42e41d <int EnumDispatch::run(java.util.List*, int, int)+0x33d>
+  42e4bc:	c6 44 30 38 00       	movb   $0x0,0x38(%rax,%rsi,1)
+  42e4c1:	e9 57 ff ff ff       	jmp    42e41d <int EnumDispatch::run(java.util.List*, int, int)+0x33d>
+  42e4c6:	48 8b f7             	mov    %rdi,%rsi
+  42e4c9:	48 8b c6             	mov    %rsi,%rax
+  42e4cc:	48 81 e0 00 00 f8 ff 	and    $0xfffffffffff80000,%rax
+  42e4d3:	48 8d 88 38 08 00 00 	lea    0x838(%rax),%rcx
+  42e4da:	48 2b f1             	sub    %rcx,%rsi
+  42e4dd:	48 c1 ee 09          	shr    $0x9,%rsi
+  42e4e1:	80 7c 30 38 00       	cmpb   $0x0,0x38(%rax,%rsi,1)
+  42e4e6:	0f 84 1a ff ff ff    	je     42e406 <int EnumDispatch::run(java.util.List*, int, int)+0x326>
+  42e4ec:	c6 44 30 38 00       	movb   $0x0,0x38(%rax,%rsi,1)
+  42e4f1:	e9 10 ff ff ff       	jmp    42e406 <int EnumDispatch::run(java.util.List*, int, int)+0x326>
+  42e4f6:	48 8b f8             	mov    %rax,%rdi
+  42e4f9:	e8 a2 d0 08 00       	call   4bb5a0 <java.lang.Object* com.oracle.svm.core.genscavenge.graal.GenScavengeAllocationSupport::slowNewInstance(jdk.graal.compiler.word.Word)>
+  42e4fe:	90                   	nop
+  42e4ff:	48 8b f8             	mov    %rax,%rdi
+  42e502:	e9 c2 fe ff ff       	jmp    42e3c9 <int EnumDispatch::run(java.util.List*, int, int)+0x2e9>
+  42e507:	cc                   	int3
+  42e508:	cc                   	int3
+  42e509:	cc                   	int3
+  42e50a:	cc                   	int3
+  42e50b:	cc                   	int3
+  42e50c:	cc                   	int3
+  42e50d:	cc                   	int3
+  42e50e:	cc                   	int3
+  42e50f:	cc                   	int3
+  42e510:	cc                   	int3
+  42e511:	cc                   	int3
+  42e512:	cc                   	int3
+  42e513:	cc                   	int3
+  42e514:	cc                   	int3
+  42e515:	cc                   	int3
+  42e516:	cc                   	int3
+  42e517:	cc                   	int3
+  42e518:	cc                   	int3
+  42e519:	cc                   	int3
+  42e51a:	cc                   	int3
+  42e51b:	cc                   	int3
+  42e51c:	cc                   	int3
+  42e51d:	cc                   	int3
+  42e51e:	cc                   	int3
+  42e51f:	cc                   	int3

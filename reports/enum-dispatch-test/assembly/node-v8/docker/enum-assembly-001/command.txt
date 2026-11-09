@@ -1,0 +1,1 @@
+docker run --rm --entrypoint node enum-dispatch-node-v8-assembly:latest --print-opt-code --trace-opt --trace-deopt /benchmark/enum-dispatch.js --size 100000 --seed 42 --repeats 100 --value 7 --warmup-samples 10 --samples 30 --output /tmp/diagnostic --run-id enum-assembly-001 --trial 1 --target node-v8 --config-id diagnostic 
