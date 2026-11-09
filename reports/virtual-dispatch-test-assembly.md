@@ -16,12 +16,13 @@ disagreement prevents treating the directory label as proof of a Docker run.
 
 The C, C++, Rust, Go, and AOT captures are static disassemblies. The configured
 compiler/runtime versions come from their pinned build images: GCC 15.2.0,
-Clang 21, Rust 1.90.0, Go 1.25.3, GraalVM Native Image 25.0.1, and .NET SDK
-10.0.403 Native AOT. The GraalVM Native diagnostic build retains DWARF and local
-Java method symbols with `-g -H:+SourceLevelDebug -H:-DeleteLocalSymbols` while
-preserving the performance build's `-O3` level; it is not the exact measured
-artifact. The runtime diagnostics identify Temurin 25.0.1+8,
-GraalVM 25.0.1+8-jvmci-b01, .NET 10.0.14, Node 26.0.0 with V8
+Clang 21, Rust 1.90.0, Go 1.25.3, Java GraalVM Native Image 25.0.1, and .NET
+SDK 10.0.403 Native AOT. The Java (GraalVM Native Image) diagnostic build
+retains DWARF and local Java method symbols with
+`-g -H:+SourceLevelDebug -H:-DeleteLocalSymbols` while preserving the
+performance build's `-O3` level; it is not the exact measured artifact. The
+runtime diagnostics identify Java (Eclipse Temurin, HotSpot C2) 25.0.1+8,
+Java (GraalVM JIT) 25.0.1+8-jvmci-b01, .NET 10.0.14, Node 26.0.0 with V8
 14.6.202.33-node.19, and CPython 3.14.0. The manifests do not contain artifact
 hashes or diagnostic-tool versions, so exact artifact identity and decoder
 provenance cannot be reconstructed from this collection.
@@ -41,9 +42,9 @@ need not be identical even with the same seed.
 | `cpp-clang` | `llvm-objdump`, Clang 21, CMake Release | Same vtable dispatch as GCC; no devirtualization in the captured hot loop | Usable |
 | `rust` | GNU `objdump`, Rust 1.90.0 release with LTO | Inlined `run`; data pointer and vtable pointer loaded from each 16-byte trait object, then indirect call through vtable offset `0x18` | Usable |
 | `go` | `go tool objdump`, Go 1.25.3 assembly build with symbols retained | `main.run`; interface itab and data loaded, method pointer loaded from itab offset `0x18`, indirect `CALL CX`, then 32-bit `ADDL` | Usable |
-| `temurin-c2` | HotSpot `PrintAssembly`, Temurin 25.0.1+8 | C1 begins with interface dispatch; level-4 C2 OSR uses receiver-class guards for `AddOperation`/`MulOperation`, inlines operand loads and add/multiply, and retains uncommon-trap fallback paths | Usable; C1 and C2/OSR captured |
-| `graalvm-jit` | HotSpot/JVMCI `PrintAssembly`, GraalVM 25.0.1+8-jvmci-b01 | Level-4 JVMCI OSR uses guarded polymorphic inlining of both operation classes, with direct operand arithmetic and deoptimization paths | Usable; C1 and JVMCI/OSR captured |
-| `graalvm-native` | Focused GNU `objdump`, Native Image 25.0.1 diagnostic build, `-O3` with retained debug info and local symbols | Receiver hub/type data selects a method-table entry at offset `0x80`; indirect call; returned 32-bit value added to checksum; concrete Add/Mul bodies remain out of line | Usable; modified symbol-retaining diagnostic artifact |
+| Java (Eclipse Temurin, HotSpot C2) [`temurin-c2`] | HotSpot `PrintAssembly`, Eclipse Temurin 25.0.1+8 | C1 begins with interface dispatch; level-4 C2 OSR uses receiver-class guards for `AddOperation`/`MulOperation`, inlines operand loads and add/multiply, and retains uncommon-trap fallback paths | Usable; C1 and C2/OSR captured |
+| Java (GraalVM JIT) [`graalvm-jit`] | HotSpot/JVMCI `PrintAssembly`, GraalVM 25.0.1+8-jvmci-b01 | Level-4 JVMCI OSR uses guarded polymorphic inlining of both operation classes, with direct operand arithmetic and deoptimization paths | Usable; C1 and JVMCI/OSR captured |
+| Java (GraalVM Native Image) [`graalvm-native`] | Focused GNU `objdump`, Native Image 25.0.1 diagnostic build, `-O3` with retained debug info and local symbols | Receiver hub/type data selects a method-table entry at offset `0x80`; indirect call; returned 32-bit value added to checksum; concrete Add/Mul bodies remain out of line | Usable; modified symbol-retaining diagnostic artifact |
 | `cpython` | CPython 3.14 bytecode via `dis` | `LOAD_ATTR process`, generic `CALL`, generic integer `BINARY_OP +`, then call to `i32`; process bodies load `operand` and use `BINARY_OP +` or `*` | Usable baseline bytecode; not warmed/specialized |
 | `coreclr` | `DOTNET_JitDisasm=Program:Run`, .NET 10.0.14 Release | Instrumented Tier 0 profiles receiver classes and uses an interface call; Tier1 OSR still uses an indirect `IOperation.Process` interface call and 32-bit accumulation | Usable; Tier 0 and Tier1 OSR captured |
 | `dotnet-native` | GNU `objdump`, .NET SDK 10.0.403 Native AOT | Not determined: the 25.5 MB stripped listing exposes no `Program.Run`, interface, or operation symbols and has no reliable address-to-source mapping | Command succeeded, evidence incomplete |
@@ -139,7 +140,7 @@ See the [Go `main.run` listing](virtual-dispatch-test/assembly/go/docker/assembl
 The concrete process functions are a single `ADDL` or `IMULL` followed by
 return ([Go process bodies](virtual-dispatch-test/assembly/go/docker/assembly-001/raw.txt#L194814)).
 
-### GraalVM Native Image
+### Java (GraalVM Native Image)
 
 The focused symbol-retaining diagnostic build exposes `VirtualDispatch.run`
 and both concrete `process` methods. In `run`, Native Image obtains the next
@@ -160,7 +161,7 @@ to the checksum:
 ```
 
 The loop contains an equivalent second call site after the iterator's
-concurrent-modification check. See the [GraalVM Native `run` listing](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L92)
+concurrent-modification check. See the [Java GraalVM Native `run` listing](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L92)
 and its two dispatch sites at [line 178](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L178)
 and [line 210](virtual-dispatch-test/assembly/graalvm-native/docker/assembly-001/raw.txt#L210).
 
@@ -177,7 +178,7 @@ identical instruction addresses or layout.
 
 ## Managed JIT dispatch
 
-### HotSpot C2
+### Java (Eclipse Temurin, HotSpot C2)
 
 The diagnostic stream first records a level-3 C1 OSR compilation of `run`, then
 a level-4 C2 OSR compilation and invalidation of the lower-level OSR version
@@ -201,7 +202,7 @@ and [line 13823](virtual-dispatch-test/assembly/temurin-c2/docker/assembly-001/r
 Thus the optimized hot path is guarded polymorphic inlining, not an interface
 call on every iteration.
 
-### GraalVM JIT
+### Java (GraalVM JIT)
 
 The stream records C1 level-3 code, a level-4 JVMCI OSR compilation, an uncommon
 trap that makes that version not entrant, and a later level-4 JVMCI OSR
@@ -296,14 +297,15 @@ is made for this target from the current anonymous listing.
 
 The static native implementations that retain identifiable code all preserve
 dynamic dispatch in the hot loop: a C function pointer, C++ vtable slot, Rust
-trait-object vtable slot, Go interface itab slot, or GraalVM Native Image
-method-table entry. Their concrete callees use 32-bit add/multiply and their
-callers use 32-bit checksum addition, naturally retaining the low 32 bits on
-x86-64.
+trait-object vtable slot, Go interface itab slot, or Java (GraalVM Native
+Image) method-table entry. Their concrete callees use 32-bit add/multiply and
+their callers use 32-bit checksum addition, naturally retaining the low 32
+bits on x86-64.
 
-HotSpot C2, GraalVM JVMCI, and V8 instead produce guarded paths for the two
-observed receiver types and inline the concrete arithmetic, with uncommon-trap
-or deoptimization fallbacks. The captured CoreCLR Tier1 OSR version retains an
+Java (Eclipse Temurin, HotSpot C2), Java (GraalVM JIT with JVMCI), and
+JavaScript (Node.js/V8) instead produce guarded paths for the two observed
+receiver types and inline the concrete arithmetic, with uncommon-trap or
+deoptimization fallbacks. The captured CoreCLR Tier1 OSR version retains an
 interface call. These are observations about separate diagnostic processes;
 they do not prove which generated version executed during a clean timing
 sample, how frequently each path ran, or that one dispatch mechanism caused a
