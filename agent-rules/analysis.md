@@ -50,6 +50,11 @@ input paths, output path, and any workload-specific interpretation.
 
 - Define the primary metric and unit before comparing targets. Clearly label
   any derived metric and show how it is calculated.
+- Follow the human-readable target naming rules in [report.md](report.md).
+  Markdown tables, charts, headings, and first mentions must identify the
+  implementation language, not only a runtime, distribution, compiler, or
+  canonical target ID. Keep the ID available when it is needed to trace a
+  result to its CSV, log, or diagnostic artifact.
 - Summarize each trial first, then compare the trial summaries so a trial with
   more samples cannot dominate the result.
 - For each comparable group, report at least the target, trial count, sample

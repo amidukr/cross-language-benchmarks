@@ -57,6 +57,21 @@ access instructions. Report uncertainty when the evidence cannot distinguish
 two explanations. Instruction listings alone do not establish execution
 frequency or the cost of an individual operation.
 
+## Present findings
+
+- Follow the human-readable target naming rules in [report.md](report.md).
+  In Markdown generated-code and assembly reports, first mentions, target
+  comparison tables, charts, and target-specific headings must identify the
+  implementation language as well as the runtime or toolchain.
+- Use labels such as `Java (Eclipse Temurin, HotSpot C2)`,
+  `Java (GraalVM JIT)`, `Java (GraalVM Native Image)`, and
+  `C# (.NET CoreCLR)`, rather than using `Temurin`, `GraalVM`, or `CoreCLR`
+  alone. When multiple targets use the same language, retain the qualifier so
+  readers can distinguish their code-generation modes.
+- Keep canonical target IDs unchanged in capture paths, manifests, commands,
+  raw-file links, and other artifact references. Include the ID alongside the
+  human-readable label when it helps connect a conclusion to its evidence.
+
 ## References
 
 - [GNU objdump](https://sourceware.org/binutils/docs/binutils/objdump.html)

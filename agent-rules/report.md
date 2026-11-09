@@ -5,6 +5,22 @@ schema, where `<target-id>` is the canonical target ID passed with `--target`.
 Each row records one metric for one sample. A suite can combine reports by
 keeping one header and appending the data rows.
 
+## Human-readable target names
+
+In Markdown reports, make the implementation language explicit. A runtime,
+distribution, compiler, or target ID must not stand alone as though it were the
+language. On first mention and in every target-oriented table or chart, use a
+label that starts with the language and qualifies it with the relevant runtime
+or toolchain, for example `Java (Eclipse Temurin, HotSpot C2)`,
+`Java (GraalVM JIT)`, `C# (.NET CoreCLR)`, or `Python (CPython)`.
+
+Include the canonical target ID where it helps readers connect the prose to
+artifacts, such as `Java (Eclipse Temurin, HotSpot C2) [temurin-c2]`. Canonical
+IDs remain unchanged in filenames, command-line arguments, logs, links, and
+CSV `target` fields. After an unambiguous introduction, prose may use a shorter
+runtime or toolchain name, but it must not describe that name as a different
+language.
+
 ## CSV format
 
 - Use UTF-8, comma-separated fields, a header, and a period as the decimal

@@ -21,6 +21,12 @@
 Use these target IDs in command-line arguments, image and artifact names,
 result rows, and run logs.
 
+In human-readable Markdown, identify each target by language plus runtime or
+toolchain according to [report.md](report.md). For example, display
+`temurin-c2` as `Java (Eclipse Temurin, HotSpot C2)`, not merely `Temurin`, and
+display `coreclr` as `C# (.NET CoreCLR)`, not merely `.NET` or `CoreCLR`.
+Target IDs remain the stable machine-readable identifiers.
+
 Prefer JDK 25, with Eclipse Temurin as the HotSpot reference distribution, for
 the common Java baseline. Native runs may use another installed OpenJDK version
 or distribution when it supports the workload. Record the exact compiler and
