@@ -1,0 +1,1 @@
+docker run --rm --entrypoint objdump virtual-dispatch-dotnet-native-assembly:latest -d -C /app/VirtualDispatch 

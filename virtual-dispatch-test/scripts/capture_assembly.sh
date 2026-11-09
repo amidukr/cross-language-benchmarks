@@ -46,7 +46,33 @@ case $target in
     cpp-clang) cmd=("$engine" run --rm --entrypoint llvm-objdump "$tag" -d -C /src/build/virtual-dispatch-cpp) ;;
     rust) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /src/target/release/virtual-dispatch) ;;
     go) cmd=("$engine" run --rm --entrypoint go "$tag" tool objdump /virtual-dispatch) ;;
-    graalvm-native) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /build/virtual-dispatch) ;;
+    graalvm-native)
+        cmd=("$engine" run --rm --entrypoint sh "$tag" -c '
+binary=$1
+ranges=/tmp/virtual-dispatch-ranges.txt
+nm -n -C --defined-only "$binary" | awk '\''
+  pending && $1 != start {
+    print start, $1, name
+    pending = 0
+  }
+  /VirtualDispatch.*(run|AddOperation.*process|MulOperation.*process)/ {
+    start = $1
+    name = $0
+    sub(/^[^ ]+ [^ ]+ /, "", name)
+    pending = 1
+  }
+'\'' > "$ranges"
+if [ ! -s "$ranges" ]; then
+  echo "no retained VirtualDispatch hot-method symbols found" >&2
+  exit 3
+fi
+while read -r start stop name; do
+  echo
+  echo "===== $name [$start,$stop) ====="
+  objdump -d -C --start-address="0x$start" --stop-address="0x$stop" "$binary"
+done < "$ranges"
+' sh /build/virtual-dispatch)
+        ;;
     dotnet-native) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /app/VirtualDispatch) ;;
     temurin-c2 | graalvm-jit) cmd=("$engine" run --rm --entrypoint java "$tag" -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp /build VirtualDispatch "${args[@]}") ;;
     coreclr) cmd=("$engine" run --rm -e 'DOTNET_JitDisasm=Program:Run' --entrypoint dotnet "$tag" /app/VirtualDispatch.dll "${args[@]}") ;;
@@ -71,6 +97,10 @@ if ((status)); then
 elif [[ ! -s $dir/raw.txt ]]; then
     capture_status=incomplete
     reason="capture produced no raw output"
+    status=1
+elif [[ $target == graalvm-native ]] && ! grep -q 'VirtualDispatch.*run' "$dir/raw.txt"; then
+    capture_status=incomplete
+    reason="capture did not identify the VirtualDispatch.run hot region"
     status=1
 fi
 {

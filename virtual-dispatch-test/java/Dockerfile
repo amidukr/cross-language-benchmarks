@@ -14,6 +14,17 @@ WORKDIR /build
 COPY java/VirtualDispatch.java .
 RUN javac --release 25 VirtualDispatch.java && native-image --no-fallback -O3 VirtualDispatch virtual-dispatch
 
+FROM ghcr.io/graalvm/native-image-community:25.0.1 AS assembly-graal-native
+WORKDIR /build
+COPY java/VirtualDispatch.java .
+# Keep the performance build's -O3 optimization level, but add DWARF information
+# and local Java method symbols so the diagnostic capture can isolate the hot
+# methods. SourceLevelDebug can affect generated code, so this remains a
+# separate diagnostic artifact rather than the measured executable.
+RUN javac --release 25 -g VirtualDispatch.java && \
+    native-image --no-fallback -O3 -g -H:+SourceLevelDebug \
+      -H:-DeleteLocalSymbols VirtualDispatch virtual-dispatch
+
 FROM docker.io/library/eclipse-temurin:25.0.1_8-jre AS final-temurin-c2
 WORKDIR /benchmark
 COPY --from=build-temurin /build/*.class ./

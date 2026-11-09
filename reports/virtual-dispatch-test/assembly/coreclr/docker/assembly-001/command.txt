@@ -1,0 +1,1 @@
+docker run --rm -e DOTNET_JitDisasm=Program:Run --entrypoint dotnet virtual-dispatch-coreclr-assembly:latest /app/VirtualDispatch.dll --size 100000 --seed 42 --repeats 100 --value 1 --warmup-samples 5 --samples 20 --output /tmp/diagnostic --run-id assembly-001 --trial 1 --target coreclr --config-id diagnostic 

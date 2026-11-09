@@ -1,0 +1,1 @@
+docker run --rm --entrypoint go virtual-dispatch-go-assembly:latest tool objdump /virtual-dispatch 

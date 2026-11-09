@@ -1,0 +1,129 @@
+137           RESUME                   0
+
+138           LOAD_SMALL_INT           0
+              STORE_FAST               3 (checksum)
+
+139           LOAD_GLOBAL              1 (range + NULL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_FAST_BORROW         1 (repeats)
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              GET_ITER
+      L1:     FOR_ITER                44 (to L4)
+              CACHE                    0 (counter: 17)
+              STORE_FAST               4 (_)
+
+140           LOAD_FAST_BORROW         0 (operations)
+              GET_ITER
+      L2:     FOR_ITER                35 (to L3)
+              CACHE                    0 (counter: 17)
+              STORE_FAST               5 (operation)
+
+141           LOAD_GLOBAL              3 (i32 + NULL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_FAST_BORROW_LOAD_FAST_BORROW 53 (checksum, operation)
+              LOAD_ATTR                5 (process + NULL|self)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              LOAD_FAST_BORROW         2 (value)
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              BINARY_OP                0 (+)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              STORE_FAST               3 (checksum)
+              JUMP_BACKWARD           37 (to L2)
+              CACHE                    0 (counter: 65532)
+
+140   L3:     END_FOR
+              POP_ITER
+              JUMP_BACKWARD           46 (to L1)
+              CACHE                    0 (counter: 65532)
+
+139   L4:     END_FOR
+              POP_ITER
+
+142           LOAD_FAST_BORROW         3 (checksum)
+              RETURN_VALUE
+ 46           RESUME                   0
+
+ 47           LOAD_GLOBAL              1 (i32 + NULL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_FAST_BORROW_LOAD_FAST_BORROW 16 (value, self)
+              LOAD_ATTR                2 (operand)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              BINARY_OP                0 (+)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              RETURN_VALUE
+ 54           RESUME                   0
+
+ 55           LOAD_GLOBAL              1 (i32 + NULL)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (index: 0)
+              CACHE                    0 (module_keys_version: 0)
+              CACHE                    0 (builtin_keys_version: 0)
+              LOAD_FAST_BORROW_LOAD_FAST_BORROW 16 (value, self)
+              LOAD_ATTR                2 (operand)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (version: 0)
+              CACHE                    0
+              CACHE                    0 (keys_version: 0)
+              CACHE                    0
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              BINARY_OP                5 (*)
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (descr: 0)
+              CACHE                    0
+              CACHE                    0
+              CACHE                    0
+              CALL                     1
+              CACHE                    0 (counter: 17)
+              CACHE                    0 (func_version: 0)
+              CACHE                    0
+              RETURN_VALUE

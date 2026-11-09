@@ -1,0 +1,1 @@
+docker run --rm --entrypoint objdump virtual-dispatch-rust-assembly:latest -d -C /src/target/release/virtual-dispatch 

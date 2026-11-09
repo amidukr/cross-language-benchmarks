@@ -1,0 +1,16 @@
+target=c-clang
+diagnostic_profile=assembly
+diagnostic_run_id=assembly-001
+execution_mode=docker
+container_engine=docker
+container_engine_version=podman version 5.7.0
+image=virtual-dispatch-c-clang-assembly:latest
+size=100000
+seed=42
+repeats=100
+value=1
+warmup_samples=5
+samples=20
+capture_status=success
+exit_status=0
+reason=

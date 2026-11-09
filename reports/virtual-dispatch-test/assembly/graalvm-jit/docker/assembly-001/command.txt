@@ -1,0 +1,1 @@
+docker run --rm --entrypoint java virtual-dispatch-graalvm-jit-assembly:latest -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp /build VirtualDispatch --size 100000 --seed 42 --repeats 100 --value 1 --warmup-samples 5 --samples 20 --output /tmp/diagnostic --run-id assembly-001 --trial 1 --target graalvm-jit --config-id diagnostic 

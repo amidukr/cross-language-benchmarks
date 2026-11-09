@@ -1,0 +1,299 @@
+
+===== int VirtualDispatch$AddOperation::process(int) [0000000000420140,0000000000420180) =====
+
+/build/virtual-dispatch:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000420140 <int VirtualDispatch$AddOperation::process(int)>:
+  420140:	48 83 ec 08          	sub    $0x8,%rsp
+  420144:	49 3b 67 08          	cmp    0x8(%r15),%rsp
+  420148:	76 1e                	jbe    420168 <int VirtualDispatch$AddOperation::process(int)+0x28>
+  42014a:	90                   	nop
+  42014b:	90                   	nop
+  42014c:	8b c6                	mov    %esi,%eax
+  42014e:	03 47 08             	add    0x8(%rdi),%eax
+  420151:	90                   	nop
+  420152:	41 83 7f 10 00       	cmpl   $0x0,0x10(%r15)
+  420157:	7e 05                	jle    42015e <int VirtualDispatch$AddOperation::process(int)+0x1e>
+  420159:	48 83 c4 08          	add    $0x8,%rsp
+  42015d:	c3                   	ret
+  42015e:	66 90                	xchg   %ax,%ax
+  420160:	e8 bb 17 11 00       	call   531920 <void com.oracle.svm.core.thread.SafepointSlowpath::enterSlowPathSafepointCheck()>
+  420165:	90                   	nop
+  420166:	eb f1                	jmp    420159 <int VirtualDispatch$AddOperation::process(int)+0x19>
+  420168:	e8 13 90 0a 00       	call   4c9180 <void com.oracle.svm.core.graal.snippets.StackOverflowCheckImpl::throwNewStackOverflowError()>
+  42016d:	90                   	nop
+  42016e:	cc                   	int3
+  42016f:	cc                   	int3
+  420170:	cc                   	int3
+  420171:	cc                   	int3
+  420172:	cc                   	int3
+  420173:	cc                   	int3
+  420174:	cc                   	int3
+  420175:	cc                   	int3
+  420176:	cc                   	int3
+  420177:	cc                   	int3
+  420178:	cc                   	int3
+  420179:	cc                   	int3
+  42017a:	cc                   	int3
+  42017b:	cc                   	int3
+  42017c:	cc                   	int3
+  42017d:	cc                   	int3
+  42017e:	cc                   	int3
+  42017f:	cc                   	int3
+
+===== int VirtualDispatch$MulOperation::process(int) [0000000000422540,0000000000422580) =====
+
+/build/virtual-dispatch:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000422540 <int VirtualDispatch$MulOperation::process(int)>:
+  422540:	48 83 ec 08          	sub    $0x8,%rsp
+  422544:	49 3b 67 08          	cmp    0x8(%r15),%rsp
+  422548:	76 1e                	jbe    422568 <int VirtualDispatch$MulOperation::process(int)+0x28>
+  42254a:	90                   	nop
+  42254b:	90                   	nop
+  42254c:	8b c6                	mov    %esi,%eax
+  42254e:	0f af 47 08          	imul   0x8(%rdi),%eax
+  422552:	90                   	nop
+  422553:	41 83 7f 10 00       	cmpl   $0x0,0x10(%r15)
+  422558:	7e 05                	jle    42255f <int VirtualDispatch$MulOperation::process(int)+0x1f>
+  42255a:	48 83 c4 08          	add    $0x8,%rsp
+  42255e:	c3                   	ret
+  42255f:	90                   	nop
+  422560:	e8 bb f3 10 00       	call   531920 <void com.oracle.svm.core.thread.SafepointSlowpath::enterSlowPathSafepointCheck()>
+  422565:	90                   	nop
+  422566:	eb f2                	jmp    42255a <int VirtualDispatch$MulOperation::process(int)+0x1a>
+  422568:	e8 13 6c 0a 00       	call   4c9180 <void com.oracle.svm.core.graal.snippets.StackOverflowCheckImpl::throwNewStackOverflowError()>
+  42256d:	90                   	nop
+  42256e:	cc                   	int3
+  42256f:	cc                   	int3
+  422570:	cc                   	int3
+  422571:	cc                   	int3
+  422572:	cc                   	int3
+  422573:	cc                   	int3
+  422574:	cc                   	int3
+  422575:	cc                   	int3
+  422576:	cc                   	int3
+  422577:	cc                   	int3
+  422578:	cc                   	int3
+  422579:	cc                   	int3
+  42257a:	cc                   	int3
+  42257b:	cc                   	int3
+  42257c:	cc                   	int3
+  42257d:	cc                   	int3
+  42257e:	cc                   	int3
+  42257f:	cc                   	int3
+
+===== int VirtualDispatch::run(java.util.List*, int, int) [000000000042e2e0,000000000042e5a0) =====
+
+/build/virtual-dispatch:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+000000000042e2e0 <int VirtualDispatch::run(java.util.List*, int, int)>:
+  42e2e0:	48 83 ec 38          	sub    $0x38,%rsp
+  42e2e4:	48 89 7c 24 18       	mov    %rdi,0x18(%rsp)
+  42e2e9:	89 74 24 34          	mov    %esi,0x34(%rsp)
+  42e2ed:	89 54 24 30          	mov    %edx,0x30(%rsp)
+  42e2f1:	49 3b 67 08          	cmp    0x8(%r15),%rsp
+  42e2f5:	0f 86 8e 02 00 00    	jbe    42e589 <int VirtualDispatch::run(java.util.List*, int, int)+0x2a9>
+  42e2fb:	90                   	nop
+  42e2fc:	90                   	nop
+  42e2fd:	90                   	nop
+  42e2fe:	b9 00 00 00 00       	mov    $0x0,%ecx
+  42e303:	b8 00 00 00 00       	mov    $0x0,%eax
+  42e308:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+  42e30f:	00 
+  42e310:	3b f1                	cmp    %ecx,%esi
+  42e312:	0f 8e 4d 02 00 00    	jle    42e565 <int VirtualDispatch::run(java.util.List*, int, int)+0x285>
+  42e318:	90                   	nop
+  42e319:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  42e320:	49 3b fe             	cmp    %r14,%rdi
+  42e323:	0f 84 5a 02 00 00    	je     42e583 <int VirtualDispatch::run(java.util.List*, int, int)+0x2a3>
+  42e329:	89 4c 24 2c          	mov    %ecx,0x2c(%rsp)
+  42e32d:	90                   	nop
+  42e32e:	90                   	nop
+  42e32f:	90                   	nop
+  42e330:	90                   	nop
+  42e331:	90                   	nop
+  42e332:	90                   	nop
+  42e333:	90                   	nop
+  42e334:	90                   	nop
+  42e335:	90                   	nop
+  42e336:	90                   	nop
+  42e337:	8b 5f 08             	mov    0x8(%rdi),%ebx
+  42e33a:	90                   	nop
+  42e33b:	90                   	nop
+  42e33c:	90                   	nop
+  42e33d:	90                   	nop
+  42e33e:	90                   	nop
+  42e33f:	8b e9                	mov    %ecx,%ebp
+  42e341:	ff c5                	inc    %ebp
+  42e343:	89 6c 24 28          	mov    %ebp,0x28(%rsp)
+  42e347:	83 7f 0c 00          	cmpl   $0x0,0xc(%rdi)
+  42e34b:	0f 84 67 01 00 00    	je     42e4b8 <int VirtualDispatch::run(java.util.List*, int, int)+0x1d8>
+  42e351:	4d 8b 47 28          	mov    0x28(%r15),%r8
+  42e355:	4d 8d 48 28          	lea    0x28(%r8),%r9
+  42e359:	49 ba 08 e7 38 00 00 	movabs $0x38e708,%r10
+  42e360:	00 00 00 
+  42e363:	4d 3b 4f 20          	cmp    0x20(%r15),%r9
+  42e367:	0f 87 aa 01 00 00    	ja     42e517 <int VirtualDispatch::run(java.util.List*, int, int)+0x237>
+  42e36d:	4d 89 4f 28          	mov    %r9,0x28(%r15)
+  42e371:	4d 89 10             	mov    %r10,(%r8)
+  42e374:	49 c7 40 08 00 00 00 	movq   $0x0,0x8(%r8)
+  42e37b:	00 
+  42e37c:	49 c7 40 10 00 00 00 	movq   $0x0,0x10(%r8)
+  42e383:	00 
+  42e384:	49 c7 40 18 00 00 00 	movq   $0x0,0x18(%r8)
+  42e38b:	00 
+  42e38c:	49 c7 40 20 00 00 00 	movq   $0x0,0x20(%r8)
+  42e393:	00 
+  42e394:	4c 89 44 24 10       	mov    %r8,0x10(%rsp)
+  42e399:	41 89 58 18          	mov    %ebx,0x18(%r8)
+  42e39d:	41 c7 40 14 ff ff ff 	movl   $0xffffffff,0x14(%r8)
+  42e3a4:	ff 
+  42e3a5:	48 8b df             	mov    %rdi,%rbx
+  42e3a8:	49 2b de             	sub    %r14,%rbx
+  42e3ab:	49 89 58 08          	mov    %rbx,0x8(%r8)
+  42e3af:	49 f7 00 02 00 00 00 	testq  $0x2,(%r8)
+  42e3b6:	0f 85 29 01 00 00    	jne    42e4e5 <int VirtualDispatch::run(java.util.List*, int, int)+0x205>
+  42e3bc:	89 44 24 24          	mov    %eax,0x24(%rsp)
+  42e3c0:	49 8b f8             	mov    %r8,%rdi
+  42e3c3:	e8 38 44 2a 00       	call   6d2800 <java.lang.Object* java.util.ArrayList$Itr::next()>
+  42e3c8:	90                   	nop
+  42e3c9:	49 3b c6             	cmp    %r14,%rax
+  42e3cc:	74 20                	je     42e3ee <int VirtualDispatch::run(java.util.List*, int, int)+0x10e>
+  42e3ce:	48 c7 c7 f8 ff ff ff 	mov    $0xfffffffffffffff8,%rdi
+  42e3d5:	48 23 38             	and    (%rax),%rdi
+  42e3d8:	be ff ff 00 00       	mov    $0xffff,%esi
+  42e3dd:	41 23 74 3e 12       	and    0x12(%r14,%rdi,1),%esi
+  42e3e2:	81 fe 4f 02 00 00    	cmp    $0x24f,%esi
+  42e3e8:	0f 85 a1 01 00 00    	jne    42e58f <int VirtualDispatch::run(java.util.List*, int, int)+0x2af>
+  42e3ee:	90                   	nop
+  42e3ef:	49 3b c6             	cmp    %r14,%rax
+  42e3f2:	0f 84 8b 01 00 00    	je     42e583 <int VirtualDispatch::run(java.util.List*, int, int)+0x2a3>
+  42e3f8:	48 c7 c7 f8 ff ff ff 	mov    $0xfffffffffffffff8,%rdi
+  42e3ff:	48 23 38             	and    (%rax),%rdi
+  42e402:	49 8b 8c 3e 80 00 00 	mov    0x80(%r14,%rdi,1),%rcx
+  42e409:	00 
+  42e40a:	48 8b f8             	mov    %rax,%rdi
+  42e40d:	8b 74 24 30          	mov    0x30(%rsp),%esi
+  42e411:	48 8b c1             	mov    %rcx,%rax
+  42e414:	ff d0                	call   *%rax
+  42e416:	90                   	nop
+  42e417:	03 44 24 24          	add    0x24(%rsp),%eax
+  42e41b:	e9 7b 00 00 00       	jmp    42e49b <int VirtualDispatch::run(java.util.List*, int, int)+0x1bb>
+  42e420:	90                   	nop
+  42e421:	41 8b 48 10          	mov    0x10(%r8),%ecx
+  42e425:	41 3b 4c 3e 0c       	cmp    0xc(%r14,%rdi,1),%ecx
+  42e42a:	0f 84 9d 00 00 00    	je     42e4cd <int VirtualDispatch::run(java.util.List*, int, int)+0x1ed>
+  42e430:	49 8b f8             	mov    %r8,%rdi
+  42e433:	e8 c8 43 2a 00       	call   6d2800 <java.lang.Object* java.util.ArrayList$Itr::next()>
+  42e438:	90                   	nop
+  42e439:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  42e440:	49 3b c6             	cmp    %r14,%rax
+  42e443:	74 27                	je     42e46c <int VirtualDispatch::run(java.util.List*, int, int)+0x18c>
+  42e445:	48 c7 c7 f8 ff ff ff 	mov    $0xfffffffffffffff8,%rdi
+  42e44c:	48 23 38             	and    (%rax),%rdi
+  42e44f:	b9 ff ff 00 00       	mov    $0xffff,%ecx
+  42e454:	41 23 4c 3e 12       	and    0x12(%r14,%rdi,1),%ecx
+  42e459:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  42e460:	81 f9 4f 02 00 00    	cmp    $0x24f,%ecx
+  42e466:	0f 85 23 01 00 00    	jne    42e58f <int VirtualDispatch::run(java.util.List*, int, int)+0x2af>
+  42e46c:	8b 54 24 30          	mov    0x30(%rsp),%edx
+  42e470:	90                   	nop
+  42e471:	49 3b c6             	cmp    %r14,%rax
+  42e474:	0f 84 09 01 00 00    	je     42e583 <int VirtualDispatch::run(java.util.List*, int, int)+0x2a3>
+  42e47a:	49 c7 c1 f8 ff ff ff 	mov    $0xfffffffffffffff8,%r9
+  42e481:	4c 23 08             	and    (%rax),%r9
+  42e484:	4f 8b 8c 0e 80 00 00 	mov    0x80(%r14,%r9,1),%r9
+  42e48b:	00 
+  42e48c:	48 8b f8             	mov    %rax,%rdi
+  42e48f:	8b f2                	mov    %edx,%esi
+  42e491:	49 8b c1             	mov    %r9,%rax
+  42e494:	ff d0                	call   *%rax
+  42e496:	90                   	nop
+  42e497:	03 44 24 20          	add    0x20(%rsp),%eax
+  42e49b:	89 44 24 20          	mov    %eax,0x20(%rsp)
+  42e49f:	4c 8b 44 24 10       	mov    0x10(%rsp),%r8
+  42e4a4:	90                   	nop
+  42e4a5:	90                   	nop
+  42e4a6:	49 8b 78 08          	mov    0x8(%r8),%rdi
+  42e4aa:	48 85 ff             	test   %rdi,%rdi
+  42e4ad:	0f 85 6d ff ff ff    	jne    42e420 <int VirtualDispatch::run(java.util.List*, int, int)+0x140>
+  42e4b3:	e9 cb 00 00 00       	jmp    42e583 <int VirtualDispatch::run(java.util.List*, int, int)+0x2a3>
+  42e4b8:	41 83 7f 10 00       	cmpl   $0x0,0x10(%r15)
+  42e4bd:	66 66 90             	data16 xchg %ax,%ax
+  42e4c0:	0f 8e 83 00 00 00    	jle    42e549 <int VirtualDispatch::run(java.util.List*, int, int)+0x269>
+  42e4c6:	8b cd                	mov    %ebp,%ecx
+  42e4c8:	e9 43 fe ff ff       	jmp    42e310 <int VirtualDispatch::run(java.util.List*, int, int)+0x30>
+  42e4cd:	8b 4c 24 28          	mov    0x28(%rsp),%ecx
+  42e4d1:	8b 44 24 20          	mov    0x20(%rsp),%eax
+  42e4d5:	8b 74 24 34          	mov    0x34(%rsp),%esi
+  42e4d9:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  42e4de:	66 90                	xchg   %ax,%ax
+  42e4e0:	e9 2b fe ff ff       	jmp    42e310 <int VirtualDispatch::run(java.util.List*, int, int)+0x30>
+  42e4e5:	49 8b d8             	mov    %r8,%rbx
+  42e4e8:	4c 8b cb             	mov    %rbx,%r9
+  42e4eb:	49 81 e1 00 00 f8 ff 	and    $0xfffffffffff80000,%r9
+  42e4f2:	4d 8d 91 38 08 00 00 	lea    0x838(%r9),%r10
+  42e4f9:	49 2b da             	sub    %r10,%rbx
+  42e4fc:	48 c1 eb 09          	shr    $0x9,%rbx
+  42e500:	41 80 7c 19 38 00    	cmpb   $0x0,0x38(%r9,%rbx,1)
+  42e506:	0f 84 b0 fe ff ff    	je     42e3bc <int VirtualDispatch::run(java.util.List*, int, int)+0xdc>
+  42e50c:	41 c6 44 19 38 00    	movb   $0x0,0x38(%r9,%rbx,1)
+  42e512:	e9 a5 fe ff ff       	jmp    42e3bc <int VirtualDispatch::run(java.util.List*, int, int)+0xdc>
+  42e517:	89 5c 24 20          	mov    %ebx,0x20(%rsp)
+  42e51b:	89 44 24 24          	mov    %eax,0x24(%rsp)
+  42e51f:	49 8b fa             	mov    %r10,%rdi
+  42e522:	e8 f9 d0 08 00       	call   4bb620 <java.lang.Object* com.oracle.svm.core.genscavenge.graal.GenScavengeAllocationSupport::slowNewInstance(jdk.graal.compiler.word.Word)>
+  42e527:	90                   	nop
+  42e528:	4c 8b c0             	mov    %rax,%r8
+  42e52b:	8b 6c 24 28          	mov    0x28(%rsp),%ebp
+  42e52f:	8b 5c 24 20          	mov    0x20(%rsp),%ebx
+  42e533:	8b 4c 24 2c          	mov    0x2c(%rsp),%ecx
+  42e537:	8b 44 24 24          	mov    0x24(%rsp),%eax
+  42e53b:	8b 74 24 34          	mov    0x34(%rsp),%esi
+  42e53f:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  42e544:	e9 4b fe ff ff       	jmp    42e394 <int VirtualDispatch::run(java.util.List*, int, int)+0xb4>
+  42e549:	89 44 24 24          	mov    %eax,0x24(%rsp)
+  42e54d:	e8 ce 33 10 00       	call   531920 <void com.oracle.svm.core.thread.SafepointSlowpath::enterSlowPathSafepointCheck()>
+  42e552:	90                   	nop
+  42e553:	8b 4c 24 28          	mov    0x28(%rsp),%ecx
+  42e557:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  42e55c:	0f 1f 40 00          	nopl   0x0(%rax)
+  42e560:	e9 ab fd ff ff       	jmp    42e310 <int VirtualDispatch::run(java.util.List*, int, int)+0x30>
+  42e565:	89 44 24 24          	mov    %eax,0x24(%rsp)
+  42e569:	90                   	nop
+  42e56a:	90                   	nop
+  42e56b:	41 83 7f 10 00       	cmpl   $0x0,0x10(%r15)
+  42e570:	7e 09                	jle    42e57b <int VirtualDispatch::run(java.util.List*, int, int)+0x29b>
+  42e572:	8b 44 24 24          	mov    0x24(%rsp),%eax
+  42e576:	48 83 c4 38          	add    $0x38,%rsp
+  42e57a:	c3                   	ret
+  42e57b:	e8 a0 33 10 00       	call   531920 <void com.oracle.svm.core.thread.SafepointSlowpath::enterSlowPathSafepointCheck()>
+  42e580:	90                   	nop
+  42e581:	eb ef                	jmp    42e572 <int VirtualDispatch::run(java.util.List*, int, int)+0x292>
+  42e583:	e8 f8 b3 0f 00       	call   529980 <void com.oracle.svm.core.snippets.ImplicitExceptions::throwOptNullPointerException()>
+  42e588:	90                   	nop
+  42e589:	e8 f2 ab 09 00       	call   4c9180 <void com.oracle.svm.core.graal.snippets.StackOverflowCheckImpl::throwNewStackOverflowError()>
+  42e58e:	90                   	nop
+  42e58f:	e8 2c ae 0f 00       	call   5293c0 <void com.oracle.svm.core.snippets.ImplicitExceptions::throwOptClassCastException()>
+  42e594:	90                   	nop
+  42e595:	cc                   	int3
+  42e596:	cc                   	int3
+  42e597:	cc                   	int3
+  42e598:	cc                   	int3
+  42e599:	cc                   	int3
+  42e59a:	cc                   	int3
+  42e59b:	cc                   	int3
+  42e59c:	cc                   	int3
+  42e59d:	cc                   	int3
+  42e59e:	cc                   	int3
+  42e59f:	cc                   	int3

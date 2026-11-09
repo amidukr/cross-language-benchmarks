@@ -1,0 +1,4 @@
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+effective size=100000 seed=42 repeats=100 value=1 warmup_samples=5 samples=20 run_id=assembly-001 trial=1 target=node-v8 config_id=diagnostic
+toolchain=Node.js v26.0.0; V8 14.6.202.33-node.19 flags=<defaults> environment=unknown
+checksum=90108500

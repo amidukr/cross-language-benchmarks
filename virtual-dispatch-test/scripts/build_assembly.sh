@@ -64,7 +64,7 @@ case $target in
     c-gcc | c-clang | cpp-gcc | cpp-clang) stage="build-$target" ;;
     temurin-c2) stage=build-temurin ;;
     graalvm-jit) stage=build-graal-jit ;;
-    graalvm-native) stage=build-graal-native ;;
+    graalvm-native) stage=assembly-graal-native ;;
     coreclr) stage=build-coreclr ;;
     dotnet-native) stage=build-native ;;
     *) stage=assembly ;;

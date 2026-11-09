@@ -1,0 +1,1 @@
+docker run --rm --entrypoint python3 virtual-dispatch-cpython-assembly:latest -c import\ dis\,runpy\;\ n=runpy.run_path\(\"/benchmark/virtual_dispatch.py\"\)\;\ dis.dis\(n\[\"run\"\]\,adaptive=True\,show_caches=True\)\;\ dis.dis\(n\[\"AddOperation\"\].process\,adaptive=True\,show_caches=True\)\;\ dis.dis\(n\[\"MulOperation\"\].process\,adaptive=True\,show_caches=True\) 

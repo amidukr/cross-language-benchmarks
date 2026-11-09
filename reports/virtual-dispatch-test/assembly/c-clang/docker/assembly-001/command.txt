@@ -1,0 +1,1 @@
+docker run --rm --entrypoint llvm-objdump virtual-dispatch-c-clang-assembly:latest -d -C /src/build/virtual-dispatch-c 
