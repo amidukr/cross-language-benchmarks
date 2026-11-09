@@ -26,7 +26,7 @@ case $target in
     rust) cmd=(objdump -d -C "$build/release/virtual-dispatch") ;; go) cmd=(go tool objdump "$build/virtual-dispatch") ;;
     graalvm-native) cmd=(objdump -d -C "$build/virtual-dispatch") ;; dotnet-native) cmd=(objdump -d -C "$build/VirtualDispatch") ;;
     temurin-c2 | graalvm-jit) cmd=(java -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp "$build" VirtualDispatch "${args[@]}") ;;
-    coreclr) cmd=(env 'DOTNET_JitDisasm=VirtualDispatch:*' dotnet "$build/VirtualDispatch.dll" "${args[@]}") ;;
+    coreclr) cmd=(env 'DOTNET_JitDisasm=Program:Run' dotnet "$build/VirtualDispatch.dll" "${args[@]}") ;;
     node-v8) cmd=(node --print-opt-code --trace-opt --trace-deopt "$build/virtual-dispatch.js" "${args[@]}") ;;
     cpython) cmd=(python3 -c "import dis,runpy; n=runpy.run_path('$build/virtual_dispatch.py'); dis.dis(n['run'],adaptive=True,show_caches=True); dis.dis(n['AddOperation'].process,adaptive=True,show_caches=True); dis.dis(n['MulOperation'].process,adaptive=True,show_caches=True)") ;;
     *) exit 2 ;; esac

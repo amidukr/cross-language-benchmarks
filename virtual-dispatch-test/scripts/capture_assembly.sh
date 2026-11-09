@@ -49,7 +49,7 @@ case $target in
     graalvm-native) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /build/virtual-dispatch) ;;
     dotnet-native) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /app/VirtualDispatch) ;;
     temurin-c2 | graalvm-jit) cmd=("$engine" run --rm --entrypoint java "$tag" -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp /build VirtualDispatch "${args[@]}") ;;
-    coreclr) cmd=("$engine" run --rm -e 'DOTNET_JitDisasm=VirtualDispatch:*' --entrypoint dotnet "$tag" /app/VirtualDispatch.dll "${args[@]}") ;;
+    coreclr) cmd=("$engine" run --rm -e 'DOTNET_JitDisasm=Program:Run' --entrypoint dotnet "$tag" /app/VirtualDispatch.dll "${args[@]}") ;;
     node-v8) cmd=("$engine" run --rm --entrypoint node "$tag" --print-opt-code --trace-opt --trace-deopt /benchmark/virtual-dispatch.js "${args[@]}") ;;
     cpython) cmd=("$engine" run --rm --entrypoint python3 "$tag" -c 'import dis,runpy; n=runpy.run_path("/benchmark/virtual_dispatch.py"); dis.dis(n["run"],adaptive=True,show_caches=True); dis.dis(n["AddOperation"].process,adaptive=True,show_caches=True); dis.dis(n["MulOperation"].process,adaptive=True,show_caches=True)') ;;
     *)
