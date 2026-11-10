@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+properties="$root/.mvn/wrapper/maven-wrapper.properties"
+url=$(sed -n 's/^distributionUrl=//p' "$properties")
+version=$(printf '%s\n' "$url" | sed -n 's|.*/apache-maven-\([^/]*\)-bin.zip|\1|p')
+[ -n "$version" ] || { echo "cannot parse Maven version" >&2; exit 2; }
+cache="$root/.mvn/wrapper/dists/apache-maven-$version"
+archive="$cache/apache-maven-$version-bin.zip"
+if [ ! -x "$cache/apache-maven-$version/bin/mvn" ]; then
+  command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 127; }
+  command -v unzip >/dev/null 2>&1 || { echo "unzip is required" >&2; exit 127; }
+  mkdir -p "$cache"
+  curl --fail --location --output "$archive" "$url"
+  unzip -q "$archive" -d "$cache"
+fi
+exec "$cache/apache-maven-$version/bin/mvn" -f "$root/pom.xml" "$@"
