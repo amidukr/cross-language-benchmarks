@@ -153,6 +153,51 @@ target fails and prints a summary at the end. Preserve failed manifests and
 stderr files because Task 2.3 accounts for unavailable decoders and incomplete
 captures as well as successful evidence.
 
+### C and C++ vectorization diagnostics
+
+Task 2.4 uses the same assembly workflow with diagnostic profile
+`vectorization`. This profile recompiles only for diagnostics with the normal
+Release optimization level plus compiler reporting flags. GCC emits
+`-fopt-info-vec-all`; Clang emits loop-vectorization pass, missed-pass, and
+analysis remarks plus its YAML optimization record. The capture concatenates
+those reports and the linked executable disassembly into `raw.txt`. These
+diagnostic artifacts are not performance binaries, and their timings must not
+be added to or compared with the clean benchmark CSVs.
+
+Build the four diagnostic images:
+
+```sh
+./enum-dispatch-test/c/build_assembly.sh \
+  --target c-gcc --diagnostic-profile vectorization
+./enum-dispatch-test/c/build_assembly.sh \
+  --target c-clang --diagnostic-profile vectorization
+./enum-dispatch-test/cpp/build_assembly.sh \
+  --target cpp-gcc --diagnostic-profile vectorization
+./enum-dispatch-test/cpp/build_assembly.sh \
+  --target cpp-clang --diagnostic-profile vectorization
+```
+
+Then capture their reports and disassembly:
+
+```sh
+./enum-dispatch-test/c/capture_assembly.sh \
+  --target c-gcc --diagnostic-profile vectorization \
+  --diagnostic-run-id enum-vectorization-001
+./enum-dispatch-test/c/capture_assembly.sh \
+  --target c-clang --diagnostic-profile vectorization \
+  --diagnostic-run-id enum-vectorization-001
+./enum-dispatch-test/cpp/capture_assembly.sh \
+  --target cpp-gcc --diagnostic-profile vectorization \
+  --diagnostic-run-id enum-vectorization-001
+./enum-dispatch-test/cpp/capture_assembly.sh \
+  --target cpp-clang --diagnostic-profile vectorization \
+  --diagnostic-run-id enum-vectorization-001
+```
+
+Set `CONTAINER_ENGINE=podman` on every command when using Podman directly. The
+evidence is written under
+`reports/enum-dispatch-test/assembly/<target-id>/<engine>/enum-vectorization-001/`.
+
 For host-toolchain diagnostics, use the corresponding native workflow:
 
 ```sh

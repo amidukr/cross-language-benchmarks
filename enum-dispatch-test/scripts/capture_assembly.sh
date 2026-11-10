@@ -39,14 +39,64 @@ dir="$output/$target/$engine/$run_id"
 mkdir -p "$dir"
 tag="enum-dispatch-$target-$profile:latest"
 args=(--size "$size" --seed "$seed" --repeats "$repeats" --value "$value" --warmup-samples "$warmup" --samples "$samples" --output /tmp/diagnostic --run-id "$run_id" --trial 1 --target "$target" --config-id diagnostic)
-case $target in
+case $target:$profile in
+    c-gcc:vectorization)
+        cmd=("$engine" run --rm --entrypoint sh "$tag" -c '
+set -eu
+echo "===== GCC vectorization remarks ====="
+cat /src/vectorization.txt
+echo
+echo "===== linked executable disassembly ====="
+objdump -d -C /src/build-vectorization/enum-dispatch-c
+')
+        ;;
+    cpp-gcc:vectorization)
+        cmd=("$engine" run --rm --entrypoint sh "$tag" -c '
+set -eu
+echo "===== GCC vectorization remarks ====="
+cat /src/vectorization.txt
+echo
+echo "===== linked executable disassembly ====="
+objdump -d -C /src/build-vectorization/enum-dispatch-cpp
+')
+        ;;
+    c-clang:vectorization)
+        cmd=("$engine" run --rm --entrypoint sh "$tag" -c '
+set -eu
+echo "===== Clang vectorization remarks ====="
+cat /src/vectorization-build.txt
+echo
+echo "===== Clang optimization record ====="
+cat /src/vectorization.yaml
+echo
+echo "===== linked executable disassembly ====="
+llvm-objdump -d -C /src/build-vectorization/enum-dispatch-c
+')
+        ;;
+    cpp-clang:vectorization)
+        cmd=("$engine" run --rm --entrypoint sh "$tag" -c '
+set -eu
+echo "===== Clang vectorization remarks ====="
+cat /src/vectorization-build.txt
+echo
+echo "===== Clang optimization record ====="
+cat /src/vectorization.yaml
+echo
+echo "===== linked executable disassembly ====="
+llvm-objdump -d -C /src/build-vectorization/enum-dispatch-cpp
+')
+        ;;
+    c-gcc:* | c-clang:* | cpp-gcc:* | cpp-clang:*)
+        case $target in
     c-gcc) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /src/build/enum-dispatch-c) ;;
     c-clang) cmd=("$engine" run --rm --entrypoint llvm-objdump "$tag" -d -C /src/build/enum-dispatch-c) ;;
     cpp-gcc) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /src/build/enum-dispatch-cpp) ;;
     cpp-clang) cmd=("$engine" run --rm --entrypoint llvm-objdump "$tag" -d -C /src/build/enum-dispatch-cpp) ;;
-    rust) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /src/target/release/enum-dispatch) ;;
-    go) cmd=("$engine" run --rm --entrypoint go "$tag" tool objdump /enum-dispatch) ;;
-    graalvm-native)
+        esac
+        ;;
+    rust:*) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /src/target/release/enum-dispatch) ;;
+    go:*) cmd=("$engine" run --rm --entrypoint go "$tag" tool objdump /enum-dispatch) ;;
+    graalvm-native:*)
         cmd=("$engine" run --rm --entrypoint sh "$tag" -c '
 binary=$1
 ranges=/tmp/enum-dispatch-ranges.txt
@@ -73,11 +123,11 @@ while read -r start stop name; do
 done < "$ranges"
 ' sh /build/enum-dispatch)
         ;;
-    dotnet-native) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /app/EnumDispatch) ;;
-    temurin-c2 | graalvm-jit) cmd=("$engine" run --rm --entrypoint java "$tag" -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp /build EnumDispatch "${args[@]}") ;;
-    coreclr) cmd=("$engine" run --rm -e 'DOTNET_JitDisasm=Program:Run' --entrypoint dotnet "$tag" /app/EnumDispatch.dll "${args[@]}") ;;
-    node-v8) cmd=("$engine" run --rm --entrypoint node "$tag" --print-opt-code --trace-opt --trace-deopt /benchmark/enum-dispatch.js "${args[@]}") ;;
-    cpython) cmd=("$engine" run --rm --entrypoint python3 "$tag" -c 'import dis,runpy; n=runpy.run_path("/benchmark/enum_dispatch.py"); dis.dis(n["run"],adaptive=True,show_caches=True)') ;;
+    dotnet-native:*) cmd=("$engine" run --rm --entrypoint objdump "$tag" -d -C /app/EnumDispatch) ;;
+    temurin-c2:* | graalvm-jit:*) cmd=("$engine" run --rm --entrypoint java "$tag" -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintAssembly -cp /build EnumDispatch "${args[@]}") ;;
+    coreclr:*) cmd=("$engine" run --rm -e 'DOTNET_JitDisasm=Program:Run' --entrypoint dotnet "$tag" /app/EnumDispatch.dll "${args[@]}") ;;
+    node-v8:*) cmd=("$engine" run --rm --entrypoint node "$tag" --print-opt-code --trace-opt --trace-deopt /benchmark/enum-dispatch.js "${args[@]}") ;;
+    cpython:*) cmd=("$engine" run --rm --entrypoint python3 "$tag" -c 'import dis,runpy; n=runpy.run_path("/benchmark/enum_dispatch.py"); dis.dis(n["run"],adaptive=True,show_caches=True)') ;;
     *)
         echo "unsupported target" >&2
         exit 2

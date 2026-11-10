@@ -60,13 +60,15 @@ command -v "$engine" >/dev/null || {
     exit 127
 }
 root=$(cd -- "$(dirname -- "$0")/.." && pwd)
-case $target in
-    c-gcc | c-clang | cpp-gcc | cpp-clang) stage="build-$target" ;;
-    temurin-c2) stage=build-temurin ;;
-    graalvm-jit) stage=build-graal-jit ;;
-    graalvm-native) stage=assembly-graal-native ;;
-    coreclr) stage=build-coreclr ;;
-    dotnet-native) stage=build-native ;;
+case $target:$profile in
+    c-gcc:vectorization | c-clang:vectorization | \
+        cpp-gcc:vectorization | cpp-clang:vectorization) stage="vectorization-$target" ;;
+    c-gcc:* | c-clang:* | cpp-gcc:* | cpp-clang:*) stage="build-$target" ;;
+    temurin-c2:*) stage=build-temurin ;;
+    graalvm-jit:*) stage=build-graal-jit ;;
+    graalvm-native:*) stage=assembly-graal-native ;;
+    coreclr:*) stage=build-coreclr ;;
+    dotnet-native:*) stage=build-native ;;
     *) stage=assembly ;;
 esac
 tag="enum-dispatch-$target-$profile:latest"
