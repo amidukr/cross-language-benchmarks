@@ -111,10 +111,37 @@ may share the same new run ID because their paths cannot collide.
 
 ## Run the complete staged matrix
 
-After building, choose a run ID that does not exist:
+Run these steps from the repository root, using new IDs that have not been
+used before:
+
+1. Build the container images for all applications and targets. This attempts
+   the Native Image default, Serial, Epsilon, and G1 builds as well.
+
+   ```sh
+   ./java-memory-test/build-all.sh memory-build-001
+   ```
+
+2. Run the full matrix. This automatically probes collector and heap-option
+   support first, so a separate `probe-collectors.sh` run is optional.
 
 ```sh
 ./java-memory-test/run-matrix.sh memory-001
+```
+
+3. Validate the trials and write the per-trial summary:
+
+   ```sh
+   ./java-memory-test/validate.sh memory-001
+   ./java-memory-test/summarize.sh memory-001
+   ```
+
+For Podman, set `CONTAINER_ENGINE=podman` on each command, for example:
+
+```sh
+CONTAINER_ENGINE=podman ./java-memory-test/build-all.sh memory-build-001
+CONTAINER_ENGINE=podman ./java-memory-test/run-matrix.sh memory-001
+CONTAINER_ENGINE=podman ./java-memory-test/validate.sh memory-001
+CONTAINER_ENGINE=podman ./java-memory-test/summarize.sh memory-001
 ```
 
 The script runs sequentially and prints the application, target, collector,
