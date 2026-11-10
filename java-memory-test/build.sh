@@ -6,6 +6,7 @@ app=
 target=
 collector=default
 log_dir=
+stream=false
 app_seen=false
 target_seen=false
 collector_seen=false
@@ -16,6 +17,7 @@ while (($#)); do
     --target) (($# >= 2)) || die "missing value for $1"; [[ $target_seen == false ]] || die "duplicate $1"; target_seen=true; target=$2; shift 2 ;;
     --collector) (($# >= 2)) || die "missing value for $1"; [[ $collector_seen == false ]] || die "duplicate $1"; collector_seen=true; collector=$2; shift 2 ;;
     --log-dir) (($# >= 2)) || die "missing value for $1"; [[ $log_dir_seen == false ]] || die "duplicate $1"; log_dir_seen=true; log_dir=$2; shift 2 ;;
+    --stream) [[ $stream == false ]] || die "duplicate $1"; stream=true; shift ;;
     --help) echo "Usage: $0 --application ID --target ID [--collector ID] [--log-dir DIR]"; exit 0 ;;
     *) die "unknown option: $1" ;;
   esac
@@ -38,8 +40,16 @@ if [[ -n $log_dir ]]; then
   printf '%q ' "$container_engine" "${args[@]}" >"$log_dir/command.txt"
   printf '\n' >>"$log_dir/command.txt"
   set +e
-  "$container_engine" "${args[@]}" >"$log_dir/stdout.txt" 2>"$log_dir/stderr.txt"
-  status=$?
+  if [[ $stream == true ]]; then
+    set -o pipefail
+    "$container_engine" "${args[@]}" 2>&1 | tee "$log_dir/build.log"
+    status=${PIPESTATUS[0]}
+    cp "$log_dir/build.log" "$log_dir/stdout.txt"
+    : >"$log_dir/stderr.txt"
+  else
+    "$container_engine" "${args[@]}" >"$log_dir/stdout.txt" 2>"$log_dir/stderr.txt"
+    status=$?
+  fi
   set -e
   {
     echo "application=$app"
@@ -53,4 +63,8 @@ if [[ -n $log_dir ]]; then
   } >"$log_dir/manifest.txt"
   exit "$status"
 fi
-exec "$container_engine" "${args[@]}"
+if [[ $stream == true ]]; then
+  exec "$container_engine" "${args[@]}"
+else
+  exec "$container_engine" "${args[@]}"
+fi

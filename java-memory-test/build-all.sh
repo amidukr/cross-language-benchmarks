@@ -11,19 +11,30 @@ output="$repo_root/reports/java-memory-test/build/$build_id"
 mkdir -p "$output"
 failed=0
 total=0
+started_at=$(date +%s)
+run_build() {
+  local app=$1 target=$2 collector=$3 log_dir=$4 image_started image_finished status
+  ((total += 1))
+  image_started=$(date +%s)
+  echo "[$(date -u +%FT%TZ)] BUILD $total/24 START application=$app target=$target collector=$collector"
+  if "$memory_root/build.sh" --application "$app" --target "$target" \
+      --collector "$collector" --log-dir "$log_dir" --stream; then
+    status=0
+  else
+    status=$?
+    ((failed += 1))
+  fi
+  image_finished=$(date +%s)
+  echo "[$(date -u +%FT%TZ)] BUILD $total/24 DONE application=$app target=$target collector=$collector status=$status elapsed_seconds=$((image_finished - image_started)) log=$log_dir"
+}
 for app in console swing spring-boot quarkus; do
   for target in temurin-c2 graalvm-jit; do
-    ((total += 1))
-    echo "BUILD $total application=$app target=$target collector=runtime-selected"
-    "$memory_root/build.sh" --application "$app" --target "$target" \
-      --log-dir "$output/$app/$target/default" || ((failed += 1))
+    run_build "$app" "$target" default "$output/$app/$target/default"
   done
   for collector in default serial epsilon g1; do
-    ((total += 1))
-    echo "BUILD $total application=$app target=graalvm-native collector=$collector"
-    "$memory_root/build.sh" --application "$app" --target graalvm-native \
-      --collector "$collector" --log-dir "$output/$app/graalvm-native/$collector" || ((failed += 1))
+    run_build "$app" graalvm-native "$collector" "$output/$app/graalvm-native/$collector"
   done
 done
-echo "builds=$total failures=$failed output=$output"
+finished_at=$(date +%s)
+echo "[$(date -u +%FT%TZ)] BUILDS_DONE builds=$total failures=$failed elapsed_seconds=$((finished_at - started_at)) output=$output"
 ((failed == 0))
