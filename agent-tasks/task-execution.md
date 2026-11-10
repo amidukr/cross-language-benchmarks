@@ -16,7 +16,7 @@ replacement for the task specification, evidence, or acceptance criteria.
 | 2.3 | Analyze enum dispatch assembly | done | done | done | done | done | done | not applicable | done |
 | 2.4 | Diagnose enum-dispatch vectorization | done | done | done | not applicable | done | done | not applicable | done |
 | 3.1 | Validate virtual-versus-enum dispatch differences | done | done | done | done | done | done | done | not applicable |
-| 3.2 | Create the project README | to be done | to be done | to be done | to be done | to be done | to be done | to be done | to be done |
+| 3.2 | Create the project README | done | done | done | done | done | done | done | done |
 | 4.1 | Measure minimum Java application RSS | to be done | to be done | to be done | to be done | to be done | to be done | to be done | not applicable |
 
 ## Status values
