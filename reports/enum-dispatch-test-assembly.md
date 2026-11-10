@@ -16,6 +16,61 @@ measured artifacts. JIT listings come from separate diagnostic processes and
 show tier transitions rather than proving which tier ran during a clean timing
 sample. All conclusions below are limited to these captured versions.
 
+Task 2.4 adds diagnostic run `enum-vectorization-001` for the four C and C++
+targets using diagnostic profile `vectorization`. These builds preserve the
+Release optimization settings `-O3 -DNDEBUG` and add compiler reporting flags.
+GCC 15.2 uses:
+
+```text
+-fopt-info-vec-all=/src/vectorization.txt
+```
+
+Clang 21 uses:
+
+```text
+-Rpass=loop-vectorize
+-Rpass-missed=loop-vectorize
+-Rpass-analysis=loop-vectorize
+-fsave-optimization-record
+-foptimization-record-file=/src/vectorization.yaml
+```
+
+The GCC profile captures all optimized, missed, and analysis notes emitted by
+its vectorizer. The Clang profile captures successful, missed, and explanatory
+loop-vectorizer remarks plus the complete YAML optimization record. Each
+capture also disassembles the resulting linked diagnostic executable so the
+remarks can be checked against generated code. These reporting-enabled builds
+are diagnostic artifacts, not the binaries used for Task 2.2 timing, and no
+timings from them are used in this report.
+
+The decisive compiler output is reproduced below. GCC gives the same reason
+for the timed inner loop in C and C++:
+
+```text
+/src/c/main.c:133:28: missed: couldn't vectorize loop
+/src/c/main.c:133:28: missed: not vectorized: unsupported control flow in loop.
+
+/src/cpp/main.cpp:122:29: missed: couldn't vectorize loop
+/src/cpp/main.cpp:122:29: missed: not vectorized: unsupported control flow in loop.
+```
+
+These lines come from the locally generated C/GCC and C++/GCC
+`enum-vectorization-001/raw.txt` diagnostics. The large vectorization output
+directories are excluded from Git; the exact decisive excerpts are retained
+here so the published report remains self-contained.
+
+Clang reports opposite profitability decisions for the two source forms:
+
+```text
+../c/main.c:133:5: remark: vectorized loop (vectorization width: 4, interleaved count: 2) [-Rpass=loop-vectorize]
+
+../cpp/main.cpp:122:5: remark: the cost-model indicates that vectorization is not beneficial [-Rpass-missed=loop-vectorize]
+../cpp/main.cpp:122:5: remark: the cost-model indicates that interleaving is not beneficial [-Rpass-missed=loop-vectorize]
+```
+
+These lines come from the locally generated C/Clang and C++/Clang
+`enum-vectorization-001/raw.txt` diagnostics.
+
 ## Target comparison
 
 | Target | Evidence / tier | Tag decision in the hot loop | Status |
@@ -65,6 +120,16 @@ no indirect call in either loop. This similarity agrees with their close Task
 2.2 medians (61.832 and 60.735 ms/op respectively); it does not establish that
 all remaining costs are identical.
 
+The separate `enum-vectorization-001` diagnostic build supplies GCC's direct
+reason for this outcome. GCC 15.2 reports `unsupported control flow in loop`
+for both the outer and inner timed loops in C
+(`c-gcc/docker/enum-vectorization-001/raw.txt`, lines 32–35)
+and for the corresponding C++ loops
+(`cpp-gcc/docker/enum-vectorization-001/raw.txt`, lines 902–905).
+Thus GCC did not if-convert this ADD/MUL switch into a vector mask operation in
+either language. The diagnostic identifies the rejected construct, but does
+not say whether a small source rewrite would enable GCC's vectorizer.
+
 ### C and C++ with Clang
 
 Clang's C result is fundamentally different. Its main loop loads eight
@@ -102,16 +167,34 @@ especially the tag and operand operations at
 [line 2440](enum-dispatch-test/assembly/cpp-clang/docker/enum-assembly-001/raw.txt#L2440).
 The compiler duplicates some scalar paths, but emits no vector main loop.
 
+The `enum-vectorization-001` compiler remarks make the Clang distinction more
+precise. For C, Clang 21 explicitly reports that the inner loop was vectorized
+with vectorization width 4 and interleave count 2
+(`c-clang/docker/enum-vectorization-001/raw.txt`, line 81).
+This agrees with the eight-record main loop in the disassembly. For C++, Clang
+does not report an illegal iterator, unsupported switch, or other legality
+failure at the timed loop. It instead reports that its cost model considers
+both vectorization and interleaving not beneficial
+(`cpp-clang/docker/enum-vectorization-001/raw.txt`, lines 224–227).
+In other words, Clang formed or considered vector plans but selected scalar
+execution as the estimated cheapest plan for this C++ intermediate
+representation.
+
 This is the best-supported answer to why C was much faster than C++ in the
 Clang results. The clean run observed 8.478 versus 71.809 ms/op. The assembly
 shows that C performs eight branchless SIMD decisions at a
 time, while C++ performs scalar conditional decisions over a random-looking
 50/50 tag stream. Unpredictable branches are a plausible additional cost, but
-the listings alone do not measure branch misses. A compiler-vectorization
-remark or source-form control experiment would be needed to prove why Clang
-accepted the C indexed loop but rejected the C++ range/iterator loop. The GCC
-pair demonstrates that this is a compiler/source-form outcome, not an inherent
-C-versus-C++ performance property.
+the listings alone do not measure branch misses. The compiler remarks explain
+the immediate decisions—Clang found C profitable and C++ unprofitable—but not
+why its estimated costs differ so sharply for these logically equivalent
+loops. In particular, the ordinary remarks contain no per-instruction scalar
+and vector cost breakdown. Controlled C++ variants (`const auto&`, indexed
+access, and raw pointer plus size), optionally forced-vector diagnostic builds,
+or LLVM internal cost-model debugging are still needed to isolate the decisive
+IR or cost estimate. This remaining question must not be presented as solved.
+The GCC pair demonstrates that the measured gap is a compiler/source-form
+outcome, not an inherent C-versus-C++ performance property.
 
 ### Rust and Go
 
@@ -298,6 +381,18 @@ an isolated measurement of enum-dispatch cost.
 In particular, C's large advantage over C++ is specific to the Clang code in
 this experiment. Clang vectorized the C representation and did not vectorize
 the C++ loop; GCC generated similar scalar code for both and measured them at
-similar speeds. Establishing the precise optimizer inhibition would require a
-matched source transformation (for example, indexed C++ access or equivalent
-flat arrays) plus vectorization diagnostics and fresh clean timing trials.
+similar speeds. The compiler diagnostics resolve one level of explanation:
+GCC rejects both loops because of unsupported control flow, while Clang reports
+C as profitable at width 4 with interleave count 2 and C++ as legal enough to
+cost but not beneficial.
+
+One important mystery remains unresolved. Clang's public optimization remarks
+do not explain why the vector cost model reaches opposite profitability
+decisions for the C and C++ source forms, nor which C++ IR operation accounts
+for the estimated cost. Claims that the range iterator, value copy, switch, or
+another particular construct is the cause would therefore be speculative.
+Resolving it requires controlled C++ source variants and comparison of their
+remarks and generated code; forced-vectorization or a debug LLVM cost trace can
+then show whether Clang avoided genuinely expensive vector code or made a
+conservative estimate. Any performance effect of such a rewrite requires new
+clean timing trials separate from these diagnostic builds.
