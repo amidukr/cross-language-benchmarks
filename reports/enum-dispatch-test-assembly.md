@@ -16,61 +16,6 @@ measured artifacts. JIT listings come from separate diagnostic processes and
 show tier transitions rather than proving which tier ran during a clean timing
 sample. All conclusions below are limited to these captured versions.
 
-Task 2.4 adds diagnostic run `enum-vectorization-001` for the four C and C++
-targets using diagnostic profile `vectorization`. These builds preserve the
-Release optimization settings `-O3 -DNDEBUG` and add compiler reporting flags.
-GCC 15.2 uses:
-
-```text
--fopt-info-vec-all=/src/vectorization.txt
-```
-
-Clang 21 uses:
-
-```text
--Rpass=loop-vectorize
--Rpass-missed=loop-vectorize
--Rpass-analysis=loop-vectorize
--fsave-optimization-record
--foptimization-record-file=/src/vectorization.yaml
-```
-
-The GCC profile captures all optimized, missed, and analysis notes emitted by
-its vectorizer. The Clang profile captures successful, missed, and explanatory
-loop-vectorizer remarks plus the complete YAML optimization record. Each
-capture also disassembles the resulting linked diagnostic executable so the
-remarks can be checked against generated code. These reporting-enabled builds
-are diagnostic artifacts, not the binaries used for Task 2.2 timing, and no
-timings from them are used in this report.
-
-The decisive compiler output is reproduced below. GCC gives the same reason
-for the timed inner loop in C and C++:
-
-```text
-/src/c/main.c:133:28: missed: couldn't vectorize loop
-/src/c/main.c:133:28: missed: not vectorized: unsupported control flow in loop.
-
-/src/cpp/main.cpp:122:29: missed: couldn't vectorize loop
-/src/cpp/main.cpp:122:29: missed: not vectorized: unsupported control flow in loop.
-```
-
-These lines come from the locally generated C/GCC and C++/GCC
-`enum-vectorization-001/raw.txt` diagnostics. The large vectorization output
-directories are excluded from Git; the exact decisive excerpts are retained
-here so the published report remains self-contained.
-
-Clang reports opposite profitability decisions for the two source forms:
-
-```text
-../c/main.c:133:5: remark: vectorized loop (vectorization width: 4, interleaved count: 2) [-Rpass=loop-vectorize]
-
-../cpp/main.cpp:122:5: remark: the cost-model indicates that vectorization is not beneficial [-Rpass-missed=loop-vectorize]
-../cpp/main.cpp:122:5: remark: the cost-model indicates that interleaving is not beneficial [-Rpass-missed=loop-vectorize]
-```
-
-These lines come from the locally generated C/Clang and C++/Clang
-`enum-vectorization-001/raw.txt` diagnostics.
-
 ## Target comparison
 
 | Target | Evidence / tier | Tag decision in the hot loop | Status |
@@ -166,6 +111,59 @@ See the [C++/Clang scalar paths](enum-dispatch-test/assembly/cpp-clang/docker/en
 especially the tag and operand operations at
 [line 2440](enum-dispatch-test/assembly/cpp-clang/docker/enum-assembly-001/raw.txt#L2440).
 The compiler duplicates some scalar paths, but emits no vector main loop.
+
+#### Vectorization diagnostics
+
+Task 2.4 adds diagnostic run `enum-vectorization-001` for all four C and C++
+targets using diagnostic profile `vectorization`. These builds preserve the
+Release optimization settings `-O3 -DNDEBUG` and add compiler reporting flags.
+GCC 15.2 uses:
+
+```text
+-fopt-info-vec-all=/src/vectorization.txt
+```
+
+Clang 21 uses:
+
+```text
+-Rpass=loop-vectorize
+-Rpass-missed=loop-vectorize
+-Rpass-analysis=loop-vectorize
+-fsave-optimization-record
+-foptimization-record-file=/src/vectorization.yaml
+```
+
+The GCC flag records optimized, missed, and analysis notes from its vectorizer.
+The Clang flags record successful, missed, and explanatory loop-vectorizer
+remarks plus the complete YAML optimization record. Each capture also
+disassembles the linked diagnostic executable so the remarks can be checked
+against generated code. These reporting-enabled builds are diagnostic
+artifacts, not the binaries used for Task 2.2 timing, and no timings from them
+are used here.
+
+GCC gives the same direct reason for the timed inner loop in C and C++:
+
+```text
+/src/c/main.c:133:28: missed: couldn't vectorize loop
+/src/c/main.c:133:28: missed: not vectorized: unsupported control flow in loop.
+
+/src/cpp/main.cpp:122:29: missed: couldn't vectorize loop
+/src/cpp/main.cpp:122:29: missed: not vectorized: unsupported control flow in loop.
+```
+
+Clang reports opposite profitability decisions for the two source forms:
+
+```text
+../c/main.c:133:5: remark: vectorized loop (vectorization width: 4, interleaved count: 2) [-Rpass=loop-vectorize]
+
+../cpp/main.cpp:122:5: remark: the cost-model indicates that vectorization is not beneficial [-Rpass-missed=loop-vectorize]
+../cpp/main.cpp:122:5: remark: the cost-model indicates that interleaving is not beneficial [-Rpass-missed=loop-vectorize]
+```
+
+The excerpts come from the locally generated `enum-vectorization-001/raw.txt`
+files. The large vectorization output directories are excluded from Git, so
+the exact decisive compiler output is retained here to keep the published
+report self-contained.
 
 The `enum-vectorization-001` compiler remarks make the Clang distinction more
 precise. For C, Clang 21 explicitly reports that the inner loop was vectorized
