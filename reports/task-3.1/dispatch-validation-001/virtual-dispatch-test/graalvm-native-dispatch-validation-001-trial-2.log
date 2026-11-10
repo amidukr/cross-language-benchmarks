@@ -1,0 +1,20 @@
+run_id=dispatch-validation-001
+target=graalvm-native
+execution_mode=docker
+container_engine=docker
+container_engine_version=Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+podman version 5.7.0
+container_runtime=podman
+image=virtual-dispatch-graalvm-native:latest
+cpu=0
+cpu_control=taskset
+cpu_limit=one logical CPU
+memory_limit=none
+architecture=x86_64
+environment=Linux 7.0.0-42-generic x86_64 GNU/Linux; 12th Gen Intel(R) Core(TM) i7-1255U
+started_utc=2026-11-10T02:44:05Z
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+effective size=100000 seed=42 repeats=100 value=7 warmup_samples=10 samples=30 run_id=dispatch-validation-001 trial=2 target=graalvm-native config_id=default
+toolchain=GraalVM Runtime Environment 25.0.1+8-jvmci-b01 flags=javac --release 25; native-image --no-fallback -O3 environment=Linux 7.0.0-42-generic x86_64 GNU/Linux; 12th Gen Intel(R) Core(TM) i7-1255U
+checksum=375564700
+exit_status=0
