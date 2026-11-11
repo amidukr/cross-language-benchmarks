@@ -73,3 +73,18 @@ input paths, output path, and any workload-specific interpretation.
   evidence, or other limitations that constrain the conclusions.
 - Explain what the measurements support, what remains uncertain, and which
   additional measurements would resolve the uncertainty.
+
+## Code examples at the end
+
+- End every benchmark analysis document with a section titled `Code under
+  test`. This must be the final section and final content in the document.
+- Include a code example of the measured benchmark/test function for every
+  implementation language covered by the analysis. Use fenced code blocks
+  labeled with the language; do not substitute pseudocode.
+- Keep each example faithful to the source used for the reported run. Identify
+  its source file and function name immediately before the code block. If
+  implementations differ materially within one language, include each relevant
+  version.
+- Show only the function and the minimal surrounding declarations needed to
+  understand it. The examples are for readers who want to review the code; they
+  do not replace the full source files.
