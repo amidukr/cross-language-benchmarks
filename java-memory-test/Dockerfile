@@ -88,7 +88,7 @@ RUN apt-get update && \
 COPY --from=jvm-build /build /opt/apps
 ENV EXECUTION_KIND=jvm
 
-FROM ghcr.io/graalvm/jdk-community:25.0.1 AS runtime-graalvm-jit
+FROM ghcr.io/graalvm/jdk-community:25.0.1-ol9 AS runtime-graalvm-jit
 USER root
 RUN microdnf install -y bash curl procps-ng xorg-x11-server-Xvfb xorg-x11-xauth && \
     microdnf clean all

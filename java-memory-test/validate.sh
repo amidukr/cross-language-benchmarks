@@ -44,10 +44,24 @@ while IFS= read -r manifest; do
       ((failures += 1))
     fi
   done
-  ready_count=$(awk -F, 'NR>1 && $3=="ready-idle"{n++} END{print n+0}' "$dir/raw-samples.csv")
-  post_count=$(awk -F, 'NR>1 && $3=="post-exercise-idle"{n++} END{print n+0}' "$dir/raw-samples.csv")
-  if [[ $ready_count != 300 || $post_count != 300 ]]; then
-    echo "INVALID samples ready=$ready_count post=$post_count path=$dir"
+  duration_mode=$(sed -n 's/^duration_mode=//p' "$manifest" | tail -n 1)
+  if [[ $duration_mode == survey ]]; then
+    survey_count=$(awk -F, 'NR>1 && $3=="survey-idle"{n++} END{print n+0}' "$dir/raw-samples.csv")
+    if [[ $survey_count != 100 ]]; then
+      echo "INVALID samples survey=$survey_count path=$dir"
+      ((failures += 1))
+    fi
+  else
+    ready_count=$(awk -F, 'NR>1 && $3=="ready-idle"{n++} END{print n+0}' "$dir/raw-samples.csv")
+    post_count=$(awk -F, 'NR>1 && $3=="post-exercise-idle"{n++} END{print n+0}' "$dir/raw-samples.csv")
+    if [[ $ready_count != 300 || $post_count != 300 ]]; then
+      echo "INVALID samples ready=$ready_count post=$post_count path=$dir"
+      ((failures += 1))
+    fi
+  fi
+  malformed_results=$(awk -F, 'NF!=17{n++} END{print n+0}' "$dir/results.csv")
+  if [[ $malformed_results != 0 ]]; then
+    echo "INVALID result_csv_rows=$malformed_results path=$dir"
     ((failures += 1))
   fi
   if ! grep -q '^MEMORY_TEST_READY ' "$dir/app.stdout"; then

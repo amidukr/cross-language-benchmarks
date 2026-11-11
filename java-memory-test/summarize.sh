@@ -11,10 +11,13 @@ output_root=${2:-$repo_root/reports/java-memory-test}
 root="$output_root/$run_id"
 [[ -d $root ]] || die "run not found: $root"
 summary="$root/summary.csv"
-[[ ! -e $summary ]] || die "summary already exists: $summary"
-echo 'application,target,collector,heap_profile,trial,phase,metric,samples,min_bytes,p10_bytes,median_bytes,max_bytes,range_bytes,final_window_range_bytes' >"$summary"
+if [[ -e $summary ]]; then
+  [[ $(wc -l <"$summary") -le 1 ]] || die "summary already contains data: $summary"
+fi
+summary_tmp=$(mktemp "$root/summary.csv.tmp.XXXXXX")
+echo 'application,target,collector,heap_profile,trial,phase,metric,samples,min_bytes,p10_bytes,median_bytes,max_bytes,range_bytes,final_window_range_bytes' >"$summary_tmp"
 tmp_dir=$(mktemp -d)
-trap 'rm -rf -- "$tmp_dir"' EXIT
+trap 'rm -rf -- "$tmp_dir"; rm -f -- "$summary_tmp"' EXIT
 while IFS= read -r raw; do
   dir=${raw%/raw-samples.csv}
   manifest="$dir/manifest.txt"
@@ -24,7 +27,13 @@ while IFS= read -r raw; do
   collector=$(sed -n 's/^collector=//p' "$manifest")
   profile=$(sed -n 's/^heap_profile=//p' "$manifest")
   trial=$(sed -n 's/^trial=//p' "$manifest")
-  for phase in ready-idle post-exercise-idle; do
+  duration_mode=$(sed -n 's/^duration_mode=//p' "$manifest")
+  if [[ $duration_mode == survey ]]; then
+    phases=(survey-idle)
+  else
+    phases=(ready-idle post-exercise-idle)
+  fi
+  for phase in "${phases[@]}"; do
     for metric_column in rss_bytes:5 peak_rss_bytes:6 cgroup_memory_bytes:7; do
       metric=${metric_column%%:*}
       column=${metric_column#*:}
@@ -41,8 +50,9 @@ while IFS= read -r raw; do
       final_range=$(awk -F, -v p="$phase" -v c="$column" 'NR>1 && $3==p{v[n++]=$c} END{s=n-30;if(s<0)s=0;for(i=s;i<n;i++){if(min==""||v[i]<min)min=v[i];if(max==""||v[i]>max)max=v[i]} print max-min}' "$raw")
       printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
         "$app" "$target" "$collector" "$profile" "$trial" "$phase" "$metric" "$count" \
-        "$min" "$p10" "$median" "$max" "$((max - min))" "$final_range" >>"$summary"
+        "$min" "$p10" "$median" "$max" "$((max - min))" "$final_range" >>"$summary_tmp"
     done
   done
 done < <(find "$root" -type f -name raw-samples.csv | sort)
+mv -- "$summary_tmp" "$summary"
 echo "summary=$summary"

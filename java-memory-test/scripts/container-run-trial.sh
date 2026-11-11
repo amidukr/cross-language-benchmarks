@@ -235,7 +235,7 @@ sample_once() {
   elapsed_ms=$((elapsed / 1000000))
   flags="collector=$collector;xms=${heap_initial:-default};xmx=${heap_max:-default}"
   for metric_value in "rss_bytes:$rss" "peak_rss_bytes:$hwm" "cgroup_memory_bytes:$cgroup"; do
-    printf '2,%s,java-memory,%s,Java,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,bytes\n' \
+    printf '2,%s,java-memory,%s,Java,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,bytes\n' \
       "$run_id" "$app" "$target" "$heap_profile-$collector" "$target" "$flags" \
       "$host_environment" "$trial" "$phase" "$sample_number" "$elapsed_ms" \
       "${metric_value%%:*}" "${metric_value#*:}" >>"$results"
