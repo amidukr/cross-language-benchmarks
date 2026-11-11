@@ -1,271 +1,94 @@
 # Cross-language benchmarks
 
-## Overview
+This repository compares equivalent workloads across programming languages, compilers, and runtimes. Its objective is to measure complete programs under documented, reproducible conditions and explain observed results with benchmark and generated-code evidence. These measurements describe the tested workloads and configurations; they do not establish universal language rankings or isolate one instruction's cost.
 
-This project compares equivalent workloads across programming languages,
-compilers, and runtimes under documented, reproducible conditions. It keeps
-clean timing runs separate from generated-code diagnostics and preserves the
-CSV data, logs, commands, manifests, and analysis used for each conclusion.
+## Virtual dispatch (Tasks 1.1–1.3)
 
-The completed work currently covers two related workloads:
+Prepared operations perform addition or multiplication through dynamic dispatch. Timing results below are medians from one process trial per target. Each complete benchmark operation contains 10 million dispatches; values are milliseconds per operation (`ms/op`). They are provisional observations from the recorded configuration.
 
-- **Virtual dispatch:** prepared objects select addition or multiplication
-  through a virtual, interface, trait, or function-pointer call.
-- **Enum dispatch:** prepared records contain an operation tag, and the timed
-  loop selects addition or multiplication with a switch or branch.
+| Target | Median (ms/op) | Stability check |
+| --- | ---: | --- |
+| C (GCC) | 70.364 | Failed |
+| C (Clang) | 81.541 | Passed |
+| C# (.NET Native AOT) | 84.224 | Passed |
+| Rust (rustc) | 90.460 | Passed |
+| C++ (GCC) | 92.844 | Passed |
+| Java (Eclipse Temurin, HotSpot C2) | 96.107 | Passed |
+| C++ (Clang) | 96.108 | Passed |
+| Go | 100.623 | Passed |
+| Java (GraalVM JIT) | 104.341 | Passed |
+| JavaScript (Node.js/V8) | 111.522 | Passed |
+| C# (.NET CoreCLR) | 114.917 | Failed |
+| Java (GraalVM Native Image) | 176.672 | Passed |
+| Python (CPython) | 2654.789 | Passed |
 
-These are complete-workload comparisons, not isolated measurements of one
-dispatch instruction. Their representations, traversal costs, optimizer
-decisions, and generated code can differ. The exact contracts are in
-[`agent-tasks/`](agent-tasks/), and the shared measurement rules are in
-[`agent-rules/`](agent-rules/).
+The generated-code analysis highlights these code shapes:
 
-Tasks 1.x, 2.x, and 3.1 are implemented and analyzed. Task 4.1's
-[Java RSS-memory workload](java-memory-test/) is implemented, with the
-measurement matrix narrowed to five selected heap profiles, one initial trial,
-and default collectors.
-Its full container collection and analysis have not been completed. See the
-[task execution matrix](agent-tasks/task-execution.md) for current status.
-
-## Benchmark inventory and headline results
-
-The figures below are entry points into the detailed reports, not general
-language rankings. The original Tasks 1.2 and 2.2 results are single-process
-trials; Task 3.1 is the matched comparison with five fresh-process trials per
-target. Generated-code findings describe captured code shapes and do not
-measure the cost of an individual instruction.
-
-| Benchmark | What it measures | Headline result | Related analysis |
-| --- | --- | --- | --- |
-| Task 1.x: virtual dispatch | Complete workloads where prepared operation objects invoke addition or multiplication through dynamic dispatch. | In the original one-trial run, medians ranged from 70.364 ms/op for C (GCC) to 2654.789 ms/op for Python (CPython); C (GCC) failed the report's stability check. | [Timing](reports/virtual-dispatch-test.md) · [Generated code](reports/virtual-dispatch-test-assembly.md) |
-| Task 2.x: enum dispatch | Complete workloads where prepared records select addition or multiplication using an operation tag. | In the original one-trial run, medians ranged from 6.782 ms/op for Rust to 2275.403 ms/op for Python (CPython); C# (.NET Native AOT) failed the stability check. | [Timing](reports/enum-dispatch-test.md) · [Generated code and vectorization](reports/enum-dispatch-test-assembly.md) |
-| Task 3.1: matched virtual versus enum | Five paired fresh-process trials for C, C++, and Java under matched workload settings. | Java (Eclipse Temurin, HotSpot C2) was effectively tied (median enum/virtual ratio 1.003); Java (GraalVM JIT) showed a 0.991 ratio and Java (GraalVM Native Image) 0.962. C++ ratios were 0.653 (GCC) and 0.777 (Clang). | [Matched comparison](reports/dispatch-differences-analysis.md) · [Virtual generated code](reports/virtual-dispatch-test-assembly.md) · [Enum generated code and vectorization](reports/enum-dispatch-test-assembly.md) |
-| Task 4.1: Java application RSS | Minimum resident memory for console, Swing, Spring Boot, and Quarkus applications across selected Java runtimes, collectors, and heap profiles. | In progress. The reduced matrix is implemented, but collection and analysis are not complete; no headline measurement is reported yet. | [Task specification](agent-tasks/4.1-java-minimum-rss.md) · [Memory benchmark instructions](java-memory-test/README.md) |
-
-Tasks 1.x and 2.x use different workload settings and each original timing
-report contains one trial, so their figures should not be directly compared.
-Use Task 3.1 for the matched virtual-versus-enum comparison. Generated-code
-evidence helps describe compiler decisions, but does not replace timing data.
-
-## Evidence map
-
-| Subject | Workload | Analysis | Raw evidence | Commands |
-| --- | --- | --- | --- | --- |
-| Tasks 1.1–1.2: virtual-dispatch implementation and timing | [`virtual-dispatch-test/`](virtual-dispatch-test/) | [Timing analysis](reports/virtual-dispatch-test.md) | [`reports/virtual-dispatch-test/`](reports/virtual-dispatch-test/) | [Virtual-dispatch README](virtual-dispatch-test/README.md) |
-| Task 1.3: virtual-dispatch generated code | [`virtual-dispatch-test/`](virtual-dispatch-test/) | [Generated-code analysis](reports/virtual-dispatch-test-assembly.md) | [`reports/virtual-dispatch-test/assembly/`](reports/virtual-dispatch-test/assembly/) | [Assembly instructions](virtual-dispatch-test/README.md#capture-assembly-diagnostics) |
-| Tasks 2.1–2.2: enum-dispatch implementation and timing | [`enum-dispatch-test/`](enum-dispatch-test/) | [Timing analysis](reports/enum-dispatch-test.md) | [`reports/enum-dispatch-test/`](reports/enum-dispatch-test/) | [Enum-dispatch README](enum-dispatch-test/README.md) |
-| Tasks 2.3–2.4: enum generated code and vectorization | [`enum-dispatch-test/`](enum-dispatch-test/) | [Generated-code analysis](reports/enum-dispatch-test-assembly.md) | [`reports/enum-dispatch-test/assembly/`](reports/enum-dispatch-test/assembly/) | [Assembly and vectorization instructions](enum-dispatch-test/README.md#capture-assembly-diagnostics) |
-| Task 3.1: matched virtual-versus-enum validation | Both workloads | [Matched five-trial analysis](reports/dispatch-differences-analysis.md) | [`reports/task-3.1/dispatch-validation-001/`](reports/task-3.1/dispatch-validation-001/) | [Collection script](task-scripts/3.1-collect.sh) |
-
-The Markdown analyses are the entry points for results. The directories contain
-the underlying target CSVs and run logs; assembly directories additionally
-contain the exact diagnostic command, manifest, standard error, and raw output
-where retained. Diagnostic timings are not performance measurements and are
-not included in the timing CSV comparisons.
-
-## Workloads
-
-Both workloads prepare their data outside the timed region. One timed sample
-runs the full prepared collection for the requested number of repeats and
-accumulates a wrapping signed 32-bit checksum.
-
-For virtual dispatch, each inner iteration invokes the selected operation's
-`process` behavior. Its reported time includes collection traversal, dynamic
-dispatch or any optimized replacement, arithmetic, loop control, and checksum
-accumulation.
-
-For enum dispatch, each inner iteration reads an operation tag and selects the
-addition or multiplication path directly. Its reported time includes record
-traversal, tag loading and control flow, arithmetic, loop control, and checksum
-accumulation.
-
-Implementations use the language's specified random-number generator. A common
-seed therefore produces the required operation and operand distributions, but
-not necessarily byte-identical prepared sequences or checksums across all
-languages. The workloads are equivalent under their task contracts rather than
-source-identical.
-
-## Targets
-
-The same canonical target IDs are used in commands, artifacts, logs, and CSVs.
-
-| Language and execution mode | Target ID |
+| Target | Observed hot-path code shape |
 | --- | --- |
-| Java (Eclipse Temurin, HotSpot C2 JIT) | `temurin-c2` |
-| Java (GraalVM JIT) | `graalvm-jit` |
-| Java (GraalVM Native Image AOT) | `graalvm-native` |
-| C++ (GCC) | `cpp-gcc` |
-| C++ (Clang) | `cpp-clang` |
-| C (GCC) | `c-gcc` |
-| C (Clang) | `c-clang` |
-| Rust (rustc) | `rust` |
-| Go (standard toolchain) | `go` |
-| Python (CPython) | `cpython` |
-| C# (.NET CoreCLR JIT) | `coreclr` |
-| C# (.NET Native AOT) | `dotnet-native` |
-| JavaScript (Node.js/V8 JIT) | `node-v8` |
+| Java (Eclipse Temurin, HotSpot C2) and Java (GraalVM JIT) | Guarded polymorphic paths are inlined to direct arithmetic in captured optimized code. |
+| Java (GraalVM Native Image) | An indirect interface call remains in the captured diagnostic build. |
 
-JIT targets optimize while the process runs; the captured Java JIT and
-JavaScript JIT listings include tiering or OSR transitions. Native AOT and
-conventional native targets execute code produced before launch. These modes
-have different warmup and code-generation behavior and should not be treated
-as interchangeable merely because they implement the same workload.
+**References:** [Timing analysis](reports/virtual-dispatch-test.md); [generated-code analysis](reports/virtual-dispatch-test-assembly.md).
 
-## What the current results support
+## Enum dispatch (Tasks 2.1–2.4)
 
-The original [virtual-dispatch](reports/virtual-dispatch-test.md) and
-[enum-dispatch](reports/enum-dispatch-test.md) timing analyses each contain one
-fresh-process trial per target. They retain slow samples and transitions, but
-their measured source rows remain `unclassified`; a later descriptive
-stability check does not silently turn those rows into source
-`steady_state` data. Those reports are useful observations from their recorded
-host and configuration, not general language rankings.
+Prepared records store an operation tag that selects addition or multiplication. Timing results are medians from one process trial per target. Each complete benchmark operation contains 10 million tag decisions; values are milliseconds per operation (`ms/op`). They are provisional observations from the recorded configuration.
 
-The [Task 3.1 matched analysis](reports/dispatch-differences-analysis.md) is the
-preferred virtual-versus-enum comparison for C, C++, and Java. It uses the same
-workload settings and five fresh-process trials for each target:
+| Target | Median (ms/op) | Stability check |
+| --- | ---: | --- |
+| Rust (rustc) | 6.782 | Passed |
+| C (Clang) | 8.478 | Passed |
+| C++ (GCC) | 60.735 | Passed |
+| C (GCC) | 61.832 | Passed |
+| C# (.NET Native AOT) | 70.527 | Failed |
+| C++ (Clang) | 71.809 | Passed |
+| C# (.NET CoreCLR) | 77.896 | Passed |
+| Go | 78.013 | Passed |
+| Java (Eclipse Temurin, HotSpot C2) | 96.068 | Passed |
+| Java (GraalVM JIT) | 106.103 | Passed |
+| JavaScript (Node.js/V8) | 118.879 | Passed |
+| Java (GraalVM Native Image) | 167.491 | Passed |
+| Python (CPython) | 2275.403 | Passed |
 
-- Java (Eclipse Temurin, HotSpot C2) is effectively tied across the two
-  complete workloads at the target-level median. Java (GraalVM JIT) shows a
-  small, repeatable enum advantage, and Java (GraalVM Native Image) shows a
-  somewhat larger but still modest and consistent enum advantage.
-- Both C++ compiler targets show a materially larger enum advantage in every
-  paired trial, although several enum trials do not pass the conservative
-  final-window stability check.
-- C (Clang) shows the largest separation because the captured enum loop uses
-  branchless SIMD while its virtual loop retains an indirect function-pointer
-  call. C (GCC) is less conclusive because one retained enum trial reverses the
-  usual direction.
+The generated-code and vectorization review found:
 
-These comparisons still do not measure the latency of one indirect call. In
-particular, the generated-code evidence shows that Java (Eclipse Temurin,
-HotSpot C2) and Java (GraalVM JIT) use guarded polymorphic inlining and direct
-arithmetic in the captured optimized virtual hot paths. Their comparison is
-not simply “indirect call versus enum branch.” Java (GraalVM Native Image)
-retains an indirect interface call in the captured diagnostic build, while its
-enum implementation retains iterator and object machinery.
+| Target or compiler finding | Observed hot-path code shape |
+| --- | --- |
+| Rust and C (Clang) | Branchless SIMD in the captured enum loop. |
+| C++ (Clang) | Scalar loop; Clang reports vectorization is not beneficial. The reason for its different profitability decision from C remains unresolved. |
+| Other inspected implementations | Scalar code in the analyzed loop. |
 
-The [enum generated-code analysis](reports/enum-dispatch-test-assembly.md)
-shows branchless SIMD enum loops for Rust and C compiled with Clang in the
-captured configuration. GCC's C and C++ loops, C++ compiled with Clang, Go,
-and the captured C# (.NET CoreCLR) optimized loop remain scalar and branch on
-the tag. These code shapes help explain complete-workload observations; an
-instruction listing alone does not measure execution frequency or establish
-the cost of one instruction.
+**References:** [Timing analysis](reports/enum-dispatch-test.md); [generated-code and vectorization analysis](reports/enum-dispatch-test-assembly.md).
 
-One compiler question remains unresolved. Clang reports the C loop as
-profitable to vectorize at width 4 with interleave count 2 and reports the C++
-loop as not beneficial. Its published optimization remarks do not identify the
-specific C++ intermediate-representation operation responsible for that cost
-decision. Controlled C++ variants or deeper LLVM cost-model diagnostics are
-still needed. The GCC pair also shows that the measured split is not an
-inherent C-versus-C++ performance property.
+## Matched virtual-versus-enum comparison (Task 3.1)
 
-## Quick start
+Five paired fresh-process trials compare both complete workloads for C, C++, and Java with matched inputs and settings. The ratio is the enum median divided by the virtual median; values below 1 favor the enum workload. Java JIT results are close because captured virtual hot paths are devirtualized and inlined. C++ favors enum dispatch in these trials, while C (Clang)'s large split coincides with SIMD in the enum workload and an indirect function-pointer call in the virtual workload. The comparison still includes other workload and representation differences.
 
-### Prerequisites
+| Target | Median enum/virtual ratio | Paired ratio range | Stable trials (virtual / enum) |
+| --- | ---: | ---: | ---: |
+| C (GCC) | 0.868 | 0.860–1.134 | 3/5 / 3/5 |
+| C (Clang) | 0.102 | 0.098–0.103 | 2/5 / 2/5 |
+| C++ (GCC) | 0.653 | 0.645–0.671 | 5/5 / 2/5 |
+| C++ (Clang) | 0.777 | 0.748–0.818 | 4/5 / 2/5 |
+| Java (Eclipse Temurin, HotSpot C2) | 1.003 | 0.997–1.138 | 5/5 / 5/5 |
+| Java (GraalVM JIT) | 0.991 | 0.982–0.995 | 5/5 / 5/5 |
+| Java (GraalVM Native Image) | 0.962 | 0.960–0.962 | 5/5 / 5/5 |
 
-Use Linux with Bash and either Docker Engine or Podman. Container builds pin
-their base images and toolchains; native workflows additionally require the
-matching compilers and runtimes on the host. CPU affinity uses Docker's
-`--cpuset-cpus` where available or host `taskset` for rootless Podman, so the
-selected logical CPU must be available.
+**References:** [Matched comparison analysis](reports/dispatch-differences-analysis.md); [virtual generated-code analysis](reports/virtual-dispatch-test-assembly.md); [enum generated-code and vectorization analysis](reports/enum-dispatch-test-assembly.md).
 
-The following example builds and runs Java (Eclipse Temurin, HotSpot C2) for
-the virtual-dispatch workload. Choose a new run ID and an unused output
-directory for each collection.
+## Java application RSS (Task 4.1)
 
-```sh
-./virtual-dispatch-test/java/build.sh --target temurin-c2
+The memory benchmark covers console, Swing, Spring Boot, and Quarkus applications. The table shows the minimum and median RSS recorded over 100 samples for one trial with the default heap profile in run `memory-001`. Values are MiB. Five of 40 attempted configurations failed and remain documented in the run evidence. A second run, `memory-002`, is in progress and has no completed summary yet.
 
-./virtual-dispatch-test/java/run.sh \
-  --target temurin-c2 \
-  --size 100000 --seed 42 --repeats 100 --value 7 \
-  --warmup-samples 10 --samples 30 \
-  --output ./results/virtual-dispatch-test \
-  --run-id my-virtual-run-001 --trial 1 --config-id default
-```
+| Application | Target | Minimum RSS (MiB) | Median RSS (MiB) |
+| --- | --- | ---: | ---: |
+| Console | Java (GraalVM Native Image) | 8.99 | 8.99 |
+| Console | Java (Eclipse Temurin, HotSpot C2) | 41.78 | 41.78 |
+| Quarkus | Java (GraalVM Native Image) | 36.02 | 36.02 |
+| Quarkus | Java (Eclipse Temurin, HotSpot C2) | 102.38 | 102.38 |
+| Spring Boot | Java (GraalVM Native Image) | 88.73 | 88.73 |
+| Spring Boot | Java (Eclipse Temurin, HotSpot C2) | 132.80 | 132.85 |
+| Swing | Java (Eclipse Temurin, HotSpot C2) | 67.71 | 72.43 |
 
-Scripts use `docker` by default. To invoke Podman directly, set the same engine
-for both build and run commands:
-
-```sh
-CONTAINER_ENGINE=podman ./virtual-dispatch-test/java/build.sh \
-  --target temurin-c2
-
-CONTAINER_ENGINE=podman ./virtual-dispatch-test/java/run.sh \
-  --target temurin-c2 \
-  --size 100000 --seed 42 --repeats 100 --value 7 \
-  --warmup-samples 10 --samples 30 \
-  --output ./results/virtual-dispatch-test \
-  --run-id my-virtual-podman-run-001 --trial 1 --config-id default
-```
-
-The scripts also detect when the `docker` command is Podman's compatibility
-wrapper and record Podman as the actual runtime. Keep Docker Engine, Podman,
-and native-host results in separate comparison groups even if the generic CSV
-execution label is `docker`.
-
-See the [virtual-dispatch instructions](virtual-dispatch-test/README.md) and
-[enum-dispatch instructions](enum-dispatch-test/README.md) for all-target,
-native, assembly, and vectorization-diagnostic workflows.
-
-### Repeat the matched Task 3.1 collection
-
-Run the matched C, C++, and Java comparison from the repository root. Replace
-the example with a comparison ID that has never been used; the script refuses
-to overwrite an existing output directory.
-
-```sh
-./task-scripts/3.1-collect.sh dispatch-validation-002
-```
-
-This performs 14 builds and 70 sequential measured runs. Avoid compilation,
-interactive agent work, or other substantial host activity until collection
-finishes because competing load can affect scheduling, shared caches, memory
-bandwidth, temperature, and turbo frequency. The script uses the
-Docker-compatible `docker` command and automatically follows a Podman
-compatibility wrapper when that is what the command provides.
-
-## Outputs and interpretation
-
-Normal timing runs write one `<target-id>-report.csv` plus target/run logs
-beneath `reports/<workload>-test/` by default. Task 3.1 writes its two workload
-sets beneath `reports/task-3.1/<comparison-id>/`. Generated-code captures live
-under `reports/<workload>-test/assembly/<target-id>/<execution-mode>/<diagnostic-run-id>/`.
-The human-readable analyses are the top-level Markdown files in
-[`reports/`](reports/).
-
-CSV phases have literal meanings. `warmup` contains requested warmup windows;
-`unclassified` contains retained measured windows that were not proven stable
-under a predefined collection-time criterion. Analyses may apply a documented
-descriptive check, but preserve the source phase and keep startup, warmup,
-unclassified, and steady-state data separate.
-
-Current conclusions are limited to the recorded hosts, architectures,
-toolchains, execution engines, inputs, and resource controls. Some original
-runs lack complete runtime-feature provenance or compilation diagnostics, and
-some diagnostic artifacts differ from measured binaries to retain symbols.
-The assembly reports document those cases individually.
-
-Most importantly, no current control holds the flat data representation,
-traversal, and loop body constant while changing only the dispatch expression.
-The next performance follow-up proposed by
-[Task 3.1](agent-tasks/3.1-validate-dispatch-difference.md) is such a controlled
-benchmark, ideally with hardware branch, cache, and cycle counters. Until then,
-the results support claims about these complete workloads, not a universal
-cost for virtual or enum dispatch.
-
-## Repository guide
-
-- [`agent-tasks/`](agent-tasks/) contains task specifications and acceptance
-  criteria.
-- [`agent-rules/`](agent-rules/) contains shared target, runner, reporting,
-  analysis, and generated-code rules.
-- [`virtual-dispatch-test/`](virtual-dispatch-test/) and
-  [`enum-dispatch-test/`](enum-dispatch-test/) contain implementations and
-  orchestration scripts.
-- [`task-scripts/`](task-scripts/) contains cross-workload collection scripts.
-- [`reports/`](reports/) contains raw evidence and human-readable analysis.
-
-See [LICENSE](LICENSE) for licensing terms.
+**References:** [Task specification](agent-tasks/4.1-java-minimum-rss.md); [memory-001 summary data](reports/java-memory-test/memory-001/summary.csv); [memory-001 matrix manifest](reports/java-memory-test/memory-001/matrix-manifest.txt).

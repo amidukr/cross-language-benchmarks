@@ -1,45 +1,13 @@
 # Root README
 
-Keep the repository-root `README.md` as the entry point for readers who have
-not seen the task history. It must let them understand the project's purpose,
-which benchmarks have been completed, what the main measurements show, and
-where to find the supporting analysis.
+The repository-root `README.md` is a concise summary of the project's purpose and the total results of work completed in the repository.
 
-## Required content
+It must contain only:
 
-The README must include:
+1. A short opening description of the repository and its objectives.
+2. One chapter for each test that has been run. Each chapter briefly describes the test and presents a table of its important measured results, with clear units, targets, and trial context. Include generated-code or diagnostic findings where they are part of the test results.
+3. A references list after the table or tables in each chapter, linking to every related analysis file and the supporting results when useful.
 
-1. An **Overview** section explaining the purpose of the benchmarks: comparing
-   equivalent workloads across languages, compilers, and runtimes under
-   documented, reproducible conditions. State what the benchmark is intended
-   to reveal and any important limit on what it measures.
-2. A list or table of every benchmark completed so far. Give each benchmark a
-   short description of its workload and scope. Identify work still in
-   progress as such; do not present it as completed.
-3. A results table with the most useful headline measurements for each
-   completed benchmark. Include units, the relevant targets or comparison,
-   trial/configuration context, and a concise interpretation. Keep the table
-   selective; link to the analysis for full target-level data and methodology.
-4. Links from each benchmark entry to all related human-readable analysis
-   files, including timing, matched-comparison, assembly, vectorization, or
-   memory analysis when those files exist. Do not invent links or results for
-   analyses that have not been produced yet.
+Keep results faithful to their analysis and evidence. Label single-trial, provisional, unstable, incomplete, or failed configurations clearly. Do not imply a broad language ranking or isolate a factor the test did not control. If a test has been run but has no complete analysis yet, show the available results with that limitation stated.
 
-## Accuracy and maintenance
-
-- Update the README when a benchmark is completed, its analysis changes, or a
-  new analysis file is added. Keep the benchmark list, headline figures, and
-  analysis links in sync with the reports.
-- Copy measurements from the analysis files and preserve their units, trial
-  counts, and relevant configuration. Clearly label provisional, single-trial,
-  unstable, or otherwise limited results; do not turn them into general
-  language rankings.
-- Use explicit language and runtime names from `targets.md` (for example,
-  **Java (Eclipse Temurin, HotSpot C2)**) rather than ambiguous vendor or
-  target shorthand.
-- Prefer a small number of meaningful results over a dump of all CSV rows.
-  The detailed analysis remains the source for methodology, full results,
-  caveats, and code examples.
-- Keep overview and navigation concise. Link to task specifications,
-  workload instructions, evidence, and analysis instead of copying their full
-  contents into the root README.
+Do not put build or run instructions, prerequisites, general project guides, task procedures, or unrelated navigation on the root README. Update the chapters, tables, and references as tests and analyses are completed or revised.
