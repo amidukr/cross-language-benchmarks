@@ -53,7 +53,7 @@ Cells show median / P10 process RSS in MiB, with 100 raw samples per value. This
 
 ## Heap-profile results by application
 
-Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one run, target, collector, and trial. Failed profile labels refer to the failure key above. A missing measurement is not converted to zero.
+Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row identifies one target and collector; this completed run contains one trial per configuration. Failed profile labels refer to the failure key above. A missing measurement is not converted to zero.
 
 ### Console
 
