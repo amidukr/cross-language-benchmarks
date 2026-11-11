@@ -26,6 +26,11 @@ public final class SwingHello {
                     heap.getInit(), heap.getUsed(), heap.getCommitted(), heap.getMax());
             System.out.println("MEMORY_TEST_READY application=swing frame_visible=true");
             System.out.flush();
+            // Let the Native Image tracing run exit after exercising the visible frame.
+            if (Boolean.getBoolean("memory.test.exit-after-ready")) {
+                frame.dispose();
+                STOP.countDown();
+            }
         });
         STOP.await();
     }

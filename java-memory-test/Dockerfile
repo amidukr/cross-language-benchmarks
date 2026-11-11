@@ -24,6 +24,7 @@ FROM ghcr.io/graalvm/native-image-community:25i4-25.0.4.1.1 AS native-build
 ARG APP
 ARG COLLECTOR
 WORKDIR /src
+RUN microdnf install -y xorg-x11-server-Xvfb && microdnf clean all
 COPY --from=jvm-build /usr/share/maven /usr/share/maven
 ENV PATH="/usr/share/maven/bin:${PATH}"
 COPY .mvn/ .mvn/
@@ -33,7 +34,7 @@ COPY spring-boot/ spring-boot/
 COPY quarkus/ quarkus/
 RUN set -eux; \
     case "$COLLECTOR" in default) gc=serial ;; serial|epsilon) gc="$COLLECTOR" ;; g1|G1) gc=G1 ;; *) exit 2 ;; esac; \
-    mkdir -p /build /build/runtime-libs; \
+    mkdir -p /build /build/runtime-libs /build/swing-agent-config; \
     native-image --version > /build/toolchain-version.txt 2>&1; \
     case "$APP" in \
       console) \
@@ -41,7 +42,29 @@ RUN set -eux; \
         native-image --no-fallback -O3 "--gc=$gc" -cp /build/classes ConsoleHello /build/app ;; \
       swing) \
         javac --release 25 -d /build/classes swing/src/SwingHello.java; \
-        native-image --no-fallback -O3 "--gc=$gc" -cp /build/classes SwingHello /build/app ;; \
+        mkdir -p /build/classes/META-INF/native-image/org.crosslanguagebenchmarks/swing; \
+        mkdir -p /build/swing-agent-config; \
+        Xvfb :99 -screen 0 1024x768x24 -nolisten tcp -ac >/build/xvfb-agent.log 2>&1 & \
+        xvfb_pid=$!; \
+        trap 'kill "$xvfb_pid" 2>/dev/null || true; wait "$xvfb_pid" 2>/dev/null || true' EXIT; \
+        attempt=0; \
+        while [[ ! -S /tmp/.X11-unix/X99 && $attempt -lt 50 ]]; do \
+          sleep 0.1; \
+          attempt=$((attempt + 1)); \
+        done; \
+        [[ -S /tmp/.X11-unix/X99 ]]; \
+        DISPLAY=:99 java -Djava.awt.headless=false -Dmemory.test.exit-after-ready=true \
+          -agentlib:native-image-agent=config-output-dir=/build/swing-agent-config \
+          -cp /build/classes SwingHello; \
+        test -n "$(find /build/swing-agent-config -type f -print -quit)"; \
+        cp -a /build/swing-agent-config/. \
+          /build/classes/META-INF/native-image/org.crosslanguagebenchmarks/swing/; \
+        kill "$xvfb_pid" 2>/dev/null || true; \
+        wait "$xvfb_pid" 2>/dev/null || true; \
+        trap - EXIT; \
+        native-image -Djava.awt.headless=false \
+          --initialize-at-run-time=java.awt,sun.awt --no-fallback -O3 "--gc=$gc" \
+          -cp /build/classes SwingHello /build/app ;; \
       spring-boot) \
         mvn -f spring-boot/pom.xml -Pnative -DskipTests "-Dnative.gc=$gc" package; \
         cp spring-boot/target/spring-hello /build/app ;; \
@@ -78,6 +101,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=native-build /build/app /opt/apps/app
 COPY --from=native-build /build/runtime-libs/ /usr/lib64/
+COPY --from=native-build /build/swing-agent-config/ /opt/native-image-metadata/
 COPY --from=native-build /build/toolchain-version.txt /opt/native-build-toolchain-version.txt
 ENV EXECUTION_KIND=native
 

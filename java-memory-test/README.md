@@ -64,6 +64,11 @@ JVM collectors are runtime selections, so JVM images are built with collector
 `default`. Native Image collectors are build-time selections and have separate
 images.
 
+For the Linux Swing Native Image build, the image builder starts `SwingHello`
+under Xvfb with GraalVM's tracing agent, uses the collected metadata for native
+compilation, and retains the generated files in `/opt/native-image-metadata/`
+inside the image for inspection.
+
 ## Probe support
 
 The full matrix probes support automatically. To collect only collector and
