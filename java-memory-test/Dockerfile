@@ -20,7 +20,7 @@ RUN mkdir -p /build/console /build/swing && \
     mkdir -p /build/quarkus && \
     cp -a quarkus/target/quarkus-app/. /build/quarkus/
 
-FROM ghcr.io/graalvm/native-image-community:25.0.1 AS native-build
+FROM ghcr.io/graalvm/native-image-community:25i4-25.0.4.1.1 AS native-build
 ARG APP
 ARG COLLECTOR
 WORKDIR /src
