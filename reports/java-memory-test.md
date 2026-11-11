@@ -57,63 +57,63 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 ### Console
 
-| Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
+| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 42.11 / 42.11 (n=100) | 42.73 / 42.73 (n=100) | 42.78 / 42.78 (n=100) | 42.78 / 42.78 (n=100) | 43.25 / 43.25 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 41.91 / 41.91 (n=100) | 42.63 / 42.63 (n=100) | 42.87 / 42.87 (n=100) | 42.93 / 42.93 (n=100) | 43.07 / 43.07 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 41.95 / 41.95 (n=100) | 41.86 / 41.86 (n=100) | 42.16 / 42.16 (n=100) | 43.19 / 43.19 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 43.39 / 43.39 (n=100) | 42.98 / 42.98 (n=100) | 42.83 / 42.83 (n=100) | 43.61 / 43.61 (n=100) | 44.61 / 44.61 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 45.36 / 45.36 (n=100) | 45.25 / 45.25 (n=100) | 48.07 / 48.07 (n=100) | 45.62 / 45.62 (n=100) | 45.47 / 45.47 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 44.40 / 44.40 (n=100) | 45.30 / 45.30 (n=100) | 44.67 / 44.67 (n=100) | 45.54 / 45.54 (n=100) | 45.19 / 45.19 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 41.85 / 41.85 (n=100) | 42.07 / 42.07 (n=100) | 41.88 / 41.88 (n=100) | 41.86 / 41.86 (n=100) | 41.89 / 41.89 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.93 / 8.93 (n=100) | 8.85 / 8.85 (n=100) | 8.97 / 8.97 (n=100) | 9.09 / 9.09 (n=100) | 8.94 / 8.94 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 8.80 / 8.80 (n=100) | 9.00 / 9.00 (n=100) | 9.09 / 9.09 (n=100) | 9.09 / 9.09 (n=100) | 9.11 / 9.11 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 8.89 / 8.89 (n=100) | 8.93 / 8.93 (n=100) | 8.85 / 8.85 (n=100) | 8.74 / 8.74 (n=100) | 8.75 / 8.75 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.93 / 8.93 (n=100) | 8.85 / 8.85 (n=100) | 8.97 / 8.97 (n=100) | 9.09 / 9.09 (n=100) | 8.94 / 8.94 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 8.80 / 8.80 (n=100) | 9.00 / 9.00 (n=100) | 9.09 / 9.09 (n=100) | 9.09 / 9.09 (n=100) | 9.11 / 9.11 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 8.89 / 8.89 (n=100) | 8.93 / 8.93 (n=100) | 8.85 / 8.85 (n=100) | 8.74 / 8.74 (n=100) | 8.75 / 8.75 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 42.11 / 42.11 (n=100) | 42.73 / 42.73 (n=100) | 42.78 / 42.78 (n=100) | 42.78 / 42.78 (n=100) | 43.25 / 43.25 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 41.91 / 41.91 (n=100) | 42.63 / 42.63 (n=100) | 42.87 / 42.87 (n=100) | 42.93 / 42.93 (n=100) | 43.07 / 43.07 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 41.95 / 41.95 (n=100) | 41.86 / 41.86 (n=100) | 42.16 / 42.16 (n=100) | 43.19 / 43.19 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 43.39 / 43.39 (n=100) | 42.98 / 42.98 (n=100) | 42.83 / 42.83 (n=100) | 43.61 / 43.61 (n=100) | 44.61 / 44.61 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 45.36 / 45.36 (n=100) | 45.25 / 45.25 (n=100) | 48.07 / 48.07 (n=100) | 45.62 / 45.62 (n=100) | 45.47 / 45.47 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 44.40 / 44.40 (n=100) | 45.30 / 45.30 (n=100) | 44.67 / 44.67 (n=100) | 45.54 / 45.54 (n=100) | 45.19 / 45.19 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 41.85 / 41.85 (n=100) | 42.07 / 42.07 (n=100) | 41.88 / 41.88 (n=100) | 41.86 / 41.86 (n=100) | 41.89 / 41.89 (n=100) |
 
 ### Swing
 
-| Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
+| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 72.09 / 72.08 (n=100) | 68.73 / 68.72 (n=100) | 68.69 / 68.69 (n=100) | 69.09 / 69.09 (n=100) | 75.92 / 75.91 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 71.96 / 71.96 (n=100) | 68.97 / 68.97 (n=100) | 69.23 / 69.23 (n=100) | 69.32 / 69.32 (n=100) | 75.83 / 75.83 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 72.36 / 72.36 (n=100) | 70.41 / 70.40 (n=100) | 70.90 / 70.90 (n=100) | 70.33 / 70.33 (n=100) | 76.16 / 76.15 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 75.34 / 75.34 (n=100) | 73.04 / 73.04 (n=100) | 71.98 / 71.97 (n=100) | 73.75 / 73.75 (n=100) | 77.27 / 77.27 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 79.24 / 79.23 (n=100) | 80.23 / 80.23 (n=100) | 79.91 / 79.90 (n=100) | 79.96 / 79.95 (n=100) | 80.22 / 80.21 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 78.90 / 78.90 (n=100) | 79.11 / 79.11 (n=100) | 77.15 / 77.15 (n=100) | 79.27 / 79.27 (n=100) | 79.16 / 79.15 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 74.52 / 74.52 (n=100) | 75.01 / 75.01 (n=100) | 75.02 / 75.02 (n=100) | 75.11 / 75.11 (n=100) | 74.82 / 74.82 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 72.09 / 72.08 (n=100) | 68.73 / 68.72 (n=100) | 68.69 / 68.69 (n=100) | 69.09 / 69.09 (n=100) | 75.92 / 75.91 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 71.96 / 71.96 (n=100) | 68.97 / 68.97 (n=100) | 69.23 / 69.23 (n=100) | 69.32 / 69.32 (n=100) | 75.83 / 75.83 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 72.36 / 72.36 (n=100) | 70.41 / 70.40 (n=100) | 70.90 / 70.90 (n=100) | 70.33 / 70.33 (n=100) | 76.16 / 76.15 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 75.34 / 75.34 (n=100) | 73.04 / 73.04 (n=100) | 71.98 / 71.97 (n=100) | 73.75 / 73.75 (n=100) | 77.27 / 77.27 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 79.24 / 79.23 (n=100) | 80.23 / 80.23 (n=100) | 79.91 / 79.90 (n=100) | 79.96 / 79.95 (n=100) | 80.22 / 80.21 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 78.90 / 78.90 (n=100) | 79.11 / 79.11 (n=100) | 77.15 / 77.15 (n=100) | 79.27 / 79.27 (n=100) | 79.16 / 79.15 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 74.52 / 74.52 (n=100) | 75.01 / 75.01 (n=100) | 75.02 / 75.02 (n=100) | 75.11 / 75.11 (n=100) | 74.82 / 74.82 (n=100) |
 
 ### Spring Boot
 
-| Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
+| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 130.50 / 130.48 (n=100) | 135.00 / 134.95 (n=100) | 129.98 / 129.93 (n=100) | 142.15 / 142.09 (n=100) | 273.32 / 273.21 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 136.79 / 136.63 (n=100) | 138.73 / 138.68 (n=100) | 130.37 / 130.32 (n=100) | 138.17 / 138.02 (n=100) | 270.75 / 270.75 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 181.19 / 181.14 (n=100) | 177.29 / 177.24 (n=100) | 130.99 / 130.96 (n=100) | 163.71 / 163.68 (n=100) | 266.52 / 266.50 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 151.86 / 151.81 (n=100) | 153.07 / 153.05 (n=100) | 136.29 / 136.27 (n=100) | 152.64 / 152.64 (n=100) | 228.66 / 228.61 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 244.10 / 244.00 (n=100) | 244.28 / 244.08 (n=100) | Failed [F2] | 266.13 / 266.08 (n=100) | 241.67 / 241.67 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 209.10 / 209.03 (n=100) | 266.63 / 266.59 (n=100) | 138.35 / 138.35 (n=100) | 287.77 / 287.59 (n=100) | 345.34 / 345.18 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 319.65 / 319.46 (n=100) | 326.02 / 325.86 (n=100) | Failed [F2] | 319.38 / 319.12 (n=100) | 320.49 / 320.27 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 88.74 / 88.74 (n=100) | 88.64 / 88.64 (n=100) | 56.02 / 56.02 (n=100) | 88.50 / 88.50 (n=100) | 88.42 / 88.42 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 88.50 / 88.50 (n=100) | 88.41 / 88.41 (n=100) | 55.46 / 55.46 (n=100) | 88.56 / 88.56 (n=100) | 88.44 / 88.44 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 86.75 / 86.75 (n=100) | 86.87 / 86.87 (n=100) | Failed [F3] | 86.91 / 86.91 (n=100) | 86.96 / 86.96 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 88.74 / 88.74 (n=100) | 88.64 / 88.64 (n=100) | 56.02 / 56.02 (n=100) | 88.50 / 88.50 (n=100) | 88.42 / 88.42 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 88.50 / 88.50 (n=100) | 88.41 / 88.41 (n=100) | 55.46 / 55.46 (n=100) | 88.56 / 88.56 (n=100) | 88.44 / 88.44 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 86.75 / 86.75 (n=100) | 86.87 / 86.87 (n=100) | Failed [F3] | 86.91 / 86.91 (n=100) | 86.96 / 86.96 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 130.50 / 130.48 (n=100) | 135.00 / 134.95 (n=100) | 129.98 / 129.93 (n=100) | 142.15 / 142.09 (n=100) | 273.32 / 273.21 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 136.79 / 136.63 (n=100) | 138.73 / 138.68 (n=100) | 130.37 / 130.32 (n=100) | 138.17 / 138.02 (n=100) | 270.75 / 270.75 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 181.19 / 181.14 (n=100) | 177.29 / 177.24 (n=100) | 130.99 / 130.96 (n=100) | 163.71 / 163.68 (n=100) | 266.52 / 266.50 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 151.86 / 151.81 (n=100) | 153.07 / 153.05 (n=100) | 136.29 / 136.27 (n=100) | 152.64 / 152.64 (n=100) | 228.66 / 228.61 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 244.10 / 244.00 (n=100) | 244.28 / 244.08 (n=100) | Failed [F2] | 266.13 / 266.08 (n=100) | 241.67 / 241.67 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 209.10 / 209.03 (n=100) | 266.63 / 266.59 (n=100) | 138.35 / 138.35 (n=100) | 287.77 / 287.59 (n=100) | 345.34 / 345.18 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 319.65 / 319.46 (n=100) | 326.02 / 325.86 (n=100) | Failed [F2] | 319.38 / 319.12 (n=100) | 320.49 / 320.27 (n=100) |
 
 ### Quarkus
 
-| Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
+| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 112.89 / 112.89 (n=100) | 99.52 / 99.52 (n=100) | 98.59 / 98.59 (n=100) | 106.08 / 106.08 (n=100) | 136.00 / 136.00 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 107.31 / 107.31 (n=100) | 98.77 / 98.77 (n=100) | 99.17 / 99.17 (n=100) | 99.39 / 99.39 (n=100) | 135.91 / 135.91 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 115.66 / 115.66 (n=100) | 111.40 / 111.40 (n=100) | 106.30 / 106.30 (n=100) | 111.48 / 111.48 (n=100) | 136.41 / 136.41 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 113.52 / 113.52 (n=100) | 111.60 / 111.60 (n=100) | 118.02 / 118.02 (n=100) | 111.05 / 111.05 (n=100) | 129.37 / 129.37 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 139.63 / 139.63 (n=100) | 145.30 / 145.30 (n=100) | 124.50 / 124.50 (n=100) | 152.50 / 152.50 (n=100) | 151.98 / 151.98 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 142.38 / 142.38 (n=100) | 146.42 / 146.42 (n=100) | 112.27 / 112.27 (n=100) | 146.73 / 146.73 (n=100) | 149.39 / 149.39 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 133.89 / 133.89 (n=100) | 134.08 / 134.08 (n=100) | Failed [F2] | 136.03 / 136.03 (n=100) | 134.98 / 134.98 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 35.94 / 35.94 (n=100) | 36.09 / 36.09 (n=100) | 32.72 / 32.72 (n=100) | 36.05 / 36.05 (n=100) | 36.10 / 36.10 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 36.22 / 36.22 (n=100) | 36.13 / 36.13 (n=100) | 33.16 / 33.16 (n=100) | 36.10 / 36.10 (n=100) | 36.20 / 36.20 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 35.73 / 35.73 (n=100) | 35.88 / 35.88 (n=100) | 35.71 / 35.71 (n=100) | 35.75 / 35.75 (n=100) | 35.74 / 35.74 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 35.94 / 35.94 (n=100) | 36.09 / 36.09 (n=100) | 32.72 / 32.72 (n=100) | 36.05 / 36.05 (n=100) | 36.10 / 36.10 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 36.22 / 36.22 (n=100) | 36.13 / 36.13 (n=100) | 33.16 / 33.16 (n=100) | 36.10 / 36.10 (n=100) | 36.20 / 36.20 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 35.73 / 35.73 (n=100) | 35.88 / 35.88 (n=100) | 35.71 / 35.71 (n=100) | 35.75 / 35.75 (n=100) | 35.74 / 35.74 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 112.89 / 112.89 (n=100) | 99.52 / 99.52 (n=100) | 98.59 / 98.59 (n=100) | 106.08 / 106.08 (n=100) | 136.00 / 136.00 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 107.31 / 107.31 (n=100) | 98.77 / 98.77 (n=100) | 99.17 / 99.17 (n=100) | 99.39 / 99.39 (n=100) | 135.91 / 135.91 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 115.66 / 115.66 (n=100) | 111.40 / 111.40 (n=100) | 106.30 / 106.30 (n=100) | 111.48 / 111.48 (n=100) | 136.41 / 136.41 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 113.52 / 113.52 (n=100) | 111.60 / 111.60 (n=100) | 118.02 / 118.02 (n=100) | 111.05 / 111.05 (n=100) | 129.37 / 129.37 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 139.63 / 139.63 (n=100) | 145.30 / 145.30 (n=100) | 124.50 / 124.50 (n=100) | 152.50 / 152.50 (n=100) | 151.98 / 151.98 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 142.38 / 142.38 (n=100) | 146.42 / 146.42 (n=100) | 112.27 / 112.27 (n=100) | 146.73 / 146.73 (n=100) | 149.39 / 149.39 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 133.89 / 133.89 (n=100) | 134.08 / 134.08 (n=100) | Failed [F2] | 136.03 / 136.03 (n=100) | 134.98 / 134.98 (n=100) |
 
 ## Interpretation
 
