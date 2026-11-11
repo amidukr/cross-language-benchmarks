@@ -57,7 +57,7 @@ FROM docker.io/library/eclipse-temurin:25.0.1_8-jdk AS runtime-temurin-c2
 USER root
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      bash curl procps xvfb xauth libxi6 && \
+      bash curl procps xvfb xauth libxi6 libxtst6 && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=jvm-build /build /opt/apps
 ENV EXECUTION_KIND=jvm
