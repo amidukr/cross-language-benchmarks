@@ -40,6 +40,16 @@ Cells show median / P10 process RSS in MiB, with 100 raw samples per value. This
 
 | Execution target and kind | Collector | Console RSS (MiB) | Swing RSS (MiB) | Spring Boot RSS (MiB) | Quarkus RSS (MiB) |
 | --- | --- | --- | --- | --- | --- |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.93 / 8.93 (n=100) | Failed [F1] | 88.74 / 88.74 (n=100) | 35.94 / 35.94 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 8.80 / 8.80 (n=100) | Failed [F1] | 88.50 / 88.50 (n=100) | 36.22 / 36.22 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 8.89 / 8.89 (n=100) | Failed [F1] | 86.75 / 86.75 (n=100) | 35.73 / 35.73 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 42.11 / 42.11 (n=100) | 72.09 / 72.08 (n=100) | 130.50 / 130.48 (n=100) | 112.89 / 112.89 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 41.91 / 41.91 (n=100) | 71.96 / 71.96 (n=100) | 136.79 / 136.63 (n=100) | 107.31 / 107.31 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 72.36 / 72.36 (n=100) | 181.19 / 181.14 (n=100) | 115.66 / 115.66 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 43.39 / 43.39 (n=100) | 75.34 / 75.34 (n=100) | 151.86 / 151.81 (n=100) | 113.52 / 113.52 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 45.36 / 45.36 (n=100) | 79.24 / 79.23 (n=100) | 244.10 / 244.00 (n=100) | 139.63 / 139.63 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 44.40 / 44.40 (n=100) | 78.90 / 78.90 (n=100) | 209.10 / 209.03 (n=100) | 142.38 / 142.38 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 41.85 / 41.85 (n=100) | 74.52 / 74.52 (n=100) | 319.65 / 319.46 (n=100) | 133.89 / 133.89 (n=100) |
 
 ## Heap-profile results by application
 
@@ -47,8 +57,8 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 ### Console
 
-| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Execution target and kind | Collector | Default / default (MiB) | 1 MiB / default (MiB) | 1 MiB / 16 MiB (MiB) | 1 MiB / 1024 MiB (MiB) | 512 MiB / 1024 MiB (MiB) |
+| --- | --- | --- | --- | --- | --- | --- |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.93 / 8.93 (n=100) | 8.85 / 8.85 (n=100) | 8.97 / 8.97 (n=100) | 9.09 / 9.09 (n=100) | 8.94 / 8.94 (n=100) |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 8.80 / 8.80 (n=100) | 9.00 / 9.00 (n=100) | 9.09 / 9.09 (n=100) | 9.09 / 9.09 (n=100) | 9.11 / 9.11 (n=100) |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 8.89 / 8.89 (n=100) | 8.93 / 8.93 (n=100) | 8.85 / 8.85 (n=100) | 8.74 / 8.74 (n=100) | 8.75 / 8.75 (n=100) |
@@ -62,8 +72,8 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 ### Swing
 
-| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Execution target and kind | Collector | Default / default (MiB) | 1 MiB / default (MiB) | 1 MiB / 16 MiB (MiB) | 1 MiB / 1024 MiB (MiB) | 512 MiB / 1024 MiB (MiB) |
+| --- | --- | --- | --- | --- | --- | --- |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
@@ -77,8 +87,8 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 ### Spring Boot
 
-| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Execution target and kind | Collector | Default / default (MiB) | 1 MiB / default (MiB) | 1 MiB / 16 MiB (MiB) | 1 MiB / 1024 MiB (MiB) | 512 MiB / 1024 MiB (MiB) |
+| --- | --- | --- | --- | --- | --- | --- |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 88.74 / 88.74 (n=100) | 88.64 / 88.64 (n=100) | 56.02 / 56.02 (n=100) | 88.50 / 88.50 (n=100) | 88.42 / 88.42 (n=100) |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 88.50 / 88.50 (n=100) | 88.41 / 88.41 (n=100) | 55.46 / 55.46 (n=100) | 88.56 / 88.56 (n=100) | 88.44 / 88.44 (n=100) |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 86.75 / 86.75 (n=100) | 86.87 / 86.87 (n=100) | Failed [F3] | 86.91 / 86.91 (n=100) | 86.96 / 86.96 (n=100) |
@@ -92,8 +102,8 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 ### Quarkus
 
-| Execution target and kind | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Execution target and kind | Collector | Default / default (MiB) | 1 MiB / default (MiB) | 1 MiB / 16 MiB (MiB) | 1 MiB / 1024 MiB (MiB) | 512 MiB / 1024 MiB (MiB) |
+| --- | --- | --- | --- | --- | --- | --- |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 35.94 / 35.94 (n=100) | 36.09 / 36.09 (n=100) | 32.72 / 32.72 (n=100) | 36.05 / 36.05 (n=100) | 36.10 / 36.10 (n=100) |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 36.22 / 36.22 (n=100) | 36.13 / 36.13 (n=100) | 33.16 / 33.16 (n=100) | 36.10 / 36.10 (n=100) | 36.20 / 36.20 (n=100) |
 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 35.73 / 35.73 (n=100) | 35.88 / 35.88 (n=100) | 35.71 / 35.71 (n=100) | 35.75 / 35.75 (n=100) | 35.74 / 35.74 (n=100) |
