@@ -38,18 +38,18 @@ No full-duration trial was present in memory-002. Results below describe the 10-
 
 Cells show median / P10 process RSS in MiB, with 100 raw samples per value. Rows retain the run and trial identity. Default is reported separately from an explicitly selected Serial collector even where both resolve to Serial.
 
-| Run / trial | Execution target and kind | Collector | Console | Swing | Spring Boot | Quarkus |
+| Execution target and kind | Collector | Console RSS (MiB) | Swing RSS (MiB) | Spring Boot RSS (MiB) | Quarkus RSS (MiB) |
 | --- | --- | --- | --- | --- | --- | --- |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 42.11 / 42.11 (n=100) | 72.09 / 72.08 (n=100) | 130.50 / 130.48 (n=100) | 112.89 / 112.89 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 41.91 / 41.91 (n=100) | 71.96 / 71.96 (n=100) | 136.79 / 136.63 (n=100) | 107.31 / 107.31 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 72.36 / 72.36 (n=100) | 181.19 / 181.14 (n=100) | 115.66 / 115.66 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 43.39 / 43.39 (n=100) | 75.34 / 75.34 (n=100) | 151.86 / 151.81 (n=100) | 113.52 / 113.52 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 45.36 / 45.36 (n=100) | 79.24 / 79.23 (n=100) | 244.10 / 244.00 (n=100) | 139.63 / 139.63 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 44.40 / 44.40 (n=100) | 78.90 / 78.90 (n=100) | 209.10 / 209.03 (n=100) | 142.38 / 142.38 (n=100) |
-| memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 41.85 / 41.85 (n=100) | 74.52 / 74.52 (n=100) | 319.65 / 319.46 (n=100) | 133.89 / 133.89 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.93 / 8.93 (n=100) | Failed [F1] | 88.74 / 88.74 (n=100) | 35.94 / 35.94 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 8.80 / 8.80 (n=100) | Failed [F1] | 88.50 / 88.50 (n=100) | 36.22 / 36.22 (n=100) |
-| memory-002 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 8.89 / 8.89 (n=100) | Failed [F1] | 86.75 / 86.75 (n=100) | 35.73 / 35.73 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Epsilon (build-time) | 8.89 / 8.89 (n=100) | Failed [F1] | 86.75 / 86.75 (n=100) | 35.73 / 35.73 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 72.36 / 72.36 (n=100) | 181.19 / 181.14 (n=100) | 115.66 / 115.66 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | G1 | 43.39 / 43.39 (n=100) | 75.34 / 75.34 (n=100) | 151.86 / 151.81 (n=100) | 113.52 / 113.52 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | ZGC | 45.36 / 45.36 (n=100) | 79.24 / 79.23 (n=100) | 244.10 / 244.00 (n=100) | 139.63 / 139.63 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Shenandoah | 44.40 / 44.40 (n=100) | 78.90 / 78.90 (n=100) | 209.10 / 209.03 (n=100) | 142.38 / 142.38 (n=100) |
+| JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Epsilon | 41.85 / 41.85 (n=100) | 74.52 / 74.52 (n=100) | 319.65 / 319.46 (n=100) | 133.89 / 133.89 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.93 / 8.93 (n=100) | Failed [F1] | 88.74 / 88.74 (n=100) | 35.94 / 35.94 (n=100) |
+| Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Serial (build-time) | 8.80 / 8.80 (n=100) | Failed [F1] | 88.50 / 88.50 (n=100) | 36.22 / 36.22 (n=100) |
 
 ## Heap-profile results by application
 
