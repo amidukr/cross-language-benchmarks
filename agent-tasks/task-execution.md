@@ -6,18 +6,18 @@ replacement for the task specification, evidence, or acceptance criteria.
 
 ## Execution matrix
 
-| Task | Title | `targets.md` | `tooling.md` | `docker.md` | `runner.md` | `project-structure.md` | `report.md` | `analysis.md` | `assembly-analysis.md` |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1.1 | Implement the virtual dispatch benchmark | done | done | done | done | done | done | not applicable | not applicable |
-| 1.2 | Analyze the virtual dispatch results | done | not applicable | not applicable | not applicable | done | done | done | not applicable |
-| 1.3 | Analyze virtual dispatch assembly | done | done | done | done | done | done | not applicable | done |
-| 2.1 | Implement the enum dispatch benchmark | done | done | done | done | done | done | not applicable | not applicable |
-| 2.2 | Analyze the enum dispatch results | done | not applicable | not applicable | not applicable | done | done | done | not applicable |
-| 2.3 | Analyze enum dispatch assembly | done | done | done | done | done | done | not applicable | done |
-| 2.4 | Diagnose enum-dispatch vectorization | done | done | done | not applicable | done | done | not applicable | done |
-| 3.1 | Validate virtual-versus-enum dispatch differences | done | done | done | done | done | done | done | not applicable |
-| 3.2 | Create the project README | done | done | done | done | done | done | done | done |
-| 4.1 | Measure Java application RSS across selected heap profiles | to be done | to be done | to be done | to be done | to be done | to be done | to be done | not applicable |
+| Task | Title | `targets.md` | `tooling.md` | `docker.md` | `runner.md` | `project-structure.md` | `report.md` | `analysis.md` | `assembly-analysis.md` | `root-readme.md` |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1.1 | Implement the virtual dispatch benchmark | done | done | done | done | done | done | not applicable | not applicable | done |
+| 1.2 | Analyze the virtual dispatch results | done | not applicable | not applicable | not applicable | done | done | done | not applicable | done |
+| 1.3 | Analyze virtual dispatch assembly | done | done | done | done | done | done | not applicable | done | done |
+| 2.1 | Implement the enum dispatch benchmark | done | done | done | done | done | done | not applicable | not applicable | done |
+| 2.2 | Analyze the enum dispatch results | done | not applicable | not applicable | not applicable | done | done | done | not applicable | done |
+| 2.3 | Analyze enum dispatch assembly | done | done | done | done | done | done | not applicable | done | done |
+| 2.4 | Diagnose enum-dispatch vectorization | done | done | done | not applicable | done | done | not applicable | done | done |
+| 3.1 | Validate virtual-versus-enum dispatch differences | done | done | done | done | done | done | done | not applicable | done |
+| 3.2 | Create the project README | done | done | done | done | done | done | done | done | done |
+| 4.1 | Measure Java application RSS across selected heap profiles | to be done | to be done | to be done | to be done | to be done | to be done | to be done | not applicable | to be done |
 
 ## Status values
 

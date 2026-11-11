@@ -1,5 +1,7 @@
 # Cross-language benchmarks
 
+## Overview
+
 This project compares equivalent workloads across programming languages,
 compilers, and runtimes under documented, reproducible conditions. It keeps
 clean timing runs separate from generated-code diagnostics and preserves the
@@ -24,6 +26,26 @@ measurement matrix narrowed to five selected heap profiles, one initial trial,
 and default collectors.
 Its full container collection and analysis have not been completed. See the
 [task execution matrix](agent-tasks/task-execution.md) for current status.
+
+## Benchmark inventory and headline results
+
+The figures below are entry points into the detailed reports, not general
+language rankings. The original Tasks 1.2 and 2.2 results are single-process
+trials; Task 3.1 is the matched comparison with five fresh-process trials per
+target. Generated-code findings describe captured code shapes and do not
+measure the cost of an individual instruction.
+
+| Benchmark | What it measures | Headline result | Related analysis |
+| --- | --- | --- | --- |
+| Task 1.x: virtual dispatch | Complete workloads where prepared operation objects invoke addition or multiplication through dynamic dispatch. | In the original one-trial run, medians ranged from 70.364 ms/op for C (GCC) to 2654.789 ms/op for Python (CPython); C (GCC) failed the report's stability check. | [Timing](reports/virtual-dispatch-test.md) · [Generated code](reports/virtual-dispatch-test-assembly.md) |
+| Task 2.x: enum dispatch | Complete workloads where prepared records select addition or multiplication using an operation tag. | In the original one-trial run, medians ranged from 6.782 ms/op for Rust to 2275.403 ms/op for Python (CPython); C# (.NET Native AOT) failed the stability check. | [Timing](reports/enum-dispatch-test.md) · [Generated code and vectorization](reports/enum-dispatch-test-assembly.md) |
+| Task 3.1: matched virtual versus enum | Five paired fresh-process trials for C, C++, and Java under matched workload settings. | Java (Eclipse Temurin, HotSpot C2) was effectively tied (median enum/virtual ratio 1.003); Java (GraalVM JIT) showed a 0.991 ratio and Java (GraalVM Native Image) 0.962. C++ ratios were 0.653 (GCC) and 0.777 (Clang). | [Matched comparison](reports/dispatch-differences-analysis.md) · [Virtual generated code](reports/virtual-dispatch-test-assembly.md) · [Enum generated code and vectorization](reports/enum-dispatch-test-assembly.md) |
+| Task 4.1: Java application RSS | Minimum resident memory for console, Swing, Spring Boot, and Quarkus applications across selected Java runtimes, collectors, and heap profiles. | In progress. The reduced matrix is implemented, but collection and analysis are not complete; no headline measurement is reported yet. | [Task specification](agent-tasks/4.1-java-minimum-rss.md) · [Memory benchmark instructions](java-memory-test/README.md) |
+
+Tasks 1.x and 2.x use different workload settings and each original timing
+report contains one trial, so their figures should not be directly compared.
+Use Task 3.1 for the matched virtual-versus-enum comparison. Generated-code
+evidence helps describe compiler decisions, but does not replace timing data.
 
 ## Evidence map
 
