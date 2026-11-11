@@ -320,13 +320,26 @@ conclusions for the twelve identifiable captures.
 
 ## Code under test
 
-The following source excerpts show the measured benchmark function.
+These examples include the operation/tag declarations needed to read the measured function.
 
 ### C
 
-Source: [virtual-dispatch-test/c/main.c](../virtual-dispatch-test/c/main.c), function `run`.
+Source: [virtual-dispatch-test/c/main.c](../virtual-dispatch-test/c/main.c), declarations and function `run`.
 
 ```c
+typedef struct Operation Operation;
+struct Operation {
+  int32_t (*process)(const Operation *, int32_t);
+  int32_t operand;
+};
+
+static int32_t add(const Operation *o, int32_t v) {
+  return (int32_t)((uint32_t)v + (uint32_t)o->operand);
+}
+static int32_t mul(const Operation *o, int32_t v) {
+  return (int32_t)((uint32_t)v * (uint32_t)o->operand);
+}
+
 static int32_t run(const Operation *ops, uint32_t size, uint32_t repeats,
                    int32_t value) {
   uint32_t sum = 0;
@@ -339,9 +352,30 @@ static int32_t run(const Operation *ops, uint32_t size, uint32_t repeats,
 
 ### C++
 
-Source: [virtual-dispatch-test/cpp/main.cpp](../virtual-dispatch-test/cpp/main.cpp), function `run`.
+Source: [virtual-dispatch-test/cpp/main.cpp](../virtual-dispatch-test/cpp/main.cpp), declarations and function `run`.
 
 ```cpp
+struct Operation {
+  virtual std::int32_t process(std::int32_t) const = 0;
+  virtual ~Operation() = default;
+};
+struct Add final : Operation {
+  std::int32_t x;
+  explicit Add(std::int32_t v) : x(v) {}
+  std::int32_t process(std::int32_t v) const override {
+    return static_cast<std::int32_t>(static_cast<std::uint32_t>(v) +
+                                     static_cast<std::uint32_t>(x));
+  }
+};
+struct Mul final : Operation {
+  std::int32_t x;
+  explicit Mul(std::int32_t v) : x(v) {}
+  std::int32_t process(std::int32_t v) const override {
+    return static_cast<std::int32_t>(static_cast<std::uint32_t>(v) *
+                                     static_cast<std::uint32_t>(x));
+  }
+};
+
 static std::int32_t run(const std::vector<std::unique_ptr<Operation>> &ops,
                         std::uint32_t repeats, std::int32_t value) {
   std::uint32_t sum = 0;
@@ -354,9 +388,19 @@ static std::int32_t run(const std::vector<std::unique_ptr<Operation>> &ops,
 
 ### Java
 
-Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-test/java/VirtualDispatch.java), function `run`.
+Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-test/java/VirtualDispatch.java), declarations and function `run`.
 
 ```java
+  interface Operation {
+    int process(int value);
+  }
+  record AddOperation(int operand) implements Operation {
+    public int process(int value) { return value + operand; }
+  }
+  record MulOperation(int operand) implements Operation {
+    public int process(int value) { return value * operand; }
+  }
+
   static int run(List<Operation> operations, int repeats, int value) {
     int checksum = 0;
     for (int n = 0; n < repeats; n++)
@@ -368,9 +412,25 @@ Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-te
 
 ### Rust
 
-Source: [virtual-dispatch-test/rust/src/main.rs](../virtual-dispatch-test/rust/src/main.rs), function `run`.
+Source: [virtual-dispatch-test/rust/src/main.rs](../virtual-dispatch-test/rust/src/main.rs), declarations and function `run`.
 
 ```rust
+trait Operation {
+    fn process(&self, value: i32) -> i32;
+}
+struct Add(i32);
+impl Operation for Add {
+    fn process(&self, v: i32) -> i32 {
+        v.wrapping_add(self.0)
+    }
+}
+struct Mul(i32);
+impl Operation for Mul {
+    fn process(&self, v: i32) -> i32 {
+        v.wrapping_mul(self.0)
+    }
+}
+
 fn run(ops: &[Box<dyn Operation>], repeats: u32, value: i32) -> i32 {
     let mut sum = 0i32;
     for _ in 0..repeats {
@@ -384,9 +444,18 @@ fn run(ops: &[Box<dyn Operation>], repeats: u32, value: i32) -> i32 {
 
 ### Go
 
-Source: [virtual-dispatch-test/go/main.go](../virtual-dispatch-test/go/main.go), function `run`.
+Source: [virtual-dispatch-test/go/main.go](../virtual-dispatch-test/go/main.go), declarations and function `run`.
 
 ```go
+type Operation interface{ Process(int32) int32 }
+type Add struct{ operand int32 }
+
+func (a Add) Process(v int32) int32 { return int32(uint32(v) + uint32(a.operand)) }
+
+type Mul struct{ operand int32 }
+
+func (m Mul) Process(v int32) int32 { return int32(uint32(v) * uint32(m.operand)) }
+
 func run(ops []Operation, repeats int, value int32) int32 {
 	var sum uint32
 	for n := 0; n < repeats; n++ {
@@ -400,9 +469,32 @@ func run(ops []Operation, repeats int, value int32) int32 {
 
 ### Python
 
-Source: [virtual-dispatch-test/python/virtual_dispatch.py](../virtual-dispatch-test/python/virtual_dispatch.py), function `run`.
+Source: [virtual-dispatch-test/python/virtual_dispatch.py](../virtual-dispatch-test/python/virtual_dispatch.py), declarations and function `run`.
 
 ```python
+class Operation:
+    def process(self, value: int) -> int:
+        raise NotImplementedError
+
+class AddOperation(Operation):
+    def __init__(self, operand: int):
+        self.operand = operand
+
+    def process(self, value: int) -> int:
+        return i32(value + self.operand)
+
+
+class MulOperation(Operation):
+    def __init__(self, operand: int):
+        self.operand = operand
+
+    def process(self, value: int) -> int:
+        return i32(value * self.operand)
+
+def i32(value: int) -> int:
+    value &= 0xFFFFFFFF
+    return value if value < 0x80000000 else value - 0x100000000
+
 def run(operations, repeats, value):
     checksum = 0
     for _ in range(repeats):
@@ -413,9 +505,19 @@ def run(operations, repeats, value):
 
 ### C#
 
-Source: [virtual-dispatch-test/csharp/Program.cs](../virtual-dispatch-test/csharp/Program.cs), function `Run`.
+Source: [virtual-dispatch-test/csharp/Program.cs](../virtual-dispatch-test/csharp/Program.cs), declarations and function `Run`.
 
 ```csharp
+interface IOperation {
+  int Process(int value);
+}
+readonly record struct AddOperation(int Operand) : IOperation {
+  public int Process(int v) => unchecked(v + Operand);
+}
+readonly record struct MulOperation(int Operand) : IOperation {
+  public int Process(int v) => unchecked(v * Operand);
+}
+
   static int Run(IOperation[] ops, int repeats, int value) {
     var sum = 0;
     unchecked {
@@ -429,9 +531,27 @@ Source: [virtual-dispatch-test/csharp/Program.cs](../virtual-dispatch-test/cshar
 
 ### JavaScript
 
-Source: [virtual-dispatch-test/javascript/virtual-dispatch.js](../virtual-dispatch-test/javascript/virtual-dispatch.js), function `run`.
+Source: [virtual-dispatch-test/javascript/virtual-dispatch.js](../virtual-dispatch-test/javascript/virtual-dispatch.js), declarations and function `run`.
 
 ```javascript
+class Operation {
+  process(_) { throw new Error('abstract'); }
+}
+class AddOperation extends Operation {
+  constructor(operand) {
+    super();
+    this.operand = operand;
+  }
+  process(value) { return (value + this.operand) | 0; }
+}
+class MulOperation extends Operation {
+  constructor(operand) {
+    super();
+    this.operand = operand;
+  }
+  process(value) { return Math.imul(value, this.operand); }
+}
+
 function run(operations, repeats, value) {
   let checksum = 0;
   for (let n = 0; n < repeats; n++)

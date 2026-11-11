@@ -166,13 +166,19 @@ that holds traversal, arithmetic, data layout, and checksum work constant.
 
 ## Code under test
 
-The following source excerpts show the measured benchmark function.
+These examples include the operation/tag declarations needed to read the measured function.
 
 ### C
 
-Source: [enum-dispatch-test/c/main.c](../enum-dispatch-test/c/main.c), function `run`.
+Source: [enum-dispatch-test/c/main.c](../enum-dispatch-test/c/main.c), declarations and function `run`.
 
 ```c
+typedef enum { OP_ADD, OP_MUL } Operation;
+typedef struct {
+  Operation operation;
+  int32_t operand;
+} Instruction;
+
 static int32_t run(const Instruction *ops, uint32_t size, uint32_t repeats,
                    int32_t value) {
   uint32_t sum = 0;
@@ -194,9 +200,15 @@ static int32_t run(const Instruction *ops, uint32_t size, uint32_t repeats,
 
 ### C++
 
-Source: [enum-dispatch-test/cpp/main.cpp](../enum-dispatch-test/cpp/main.cpp), function `run`.
+Source: [enum-dispatch-test/cpp/main.cpp](../enum-dispatch-test/cpp/main.cpp), declarations and function `run`.
 
 ```cpp
+enum class Operation { Add, Mul };
+struct Instruction {
+  Operation operation;
+  std::int32_t operand;
+};
+
 static std::int32_t run(const std::vector<Instruction> &ops,
                         std::uint32_t repeats, std::int32_t value) {
   std::uint32_t sum = 0;
@@ -218,9 +230,12 @@ static std::int32_t run(const std::vector<Instruction> &ops,
 
 ### Java
 
-Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/EnumDispatch.java), function `run`.
+Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/EnumDispatch.java), declarations and function `run`.
 
 ```java
+  enum Operation { ADD, MUL }
+  record Instruction(Operation operation, int operand) {}
+
   static int run(List<Instruction> operations, int repeats, int value) {
     int checksum = 0;
     for (int n = 0; n < repeats; n++)
@@ -235,9 +250,20 @@ Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/E
 
 ### Rust
 
-Source: [enum-dispatch-test/rust/src/main.rs](../enum-dispatch-test/rust/src/main.rs), function `run`.
+Source: [enum-dispatch-test/rust/src/main.rs](../enum-dispatch-test/rust/src/main.rs), declarations and function `run`.
 
 ```rust
+#[derive(Clone, Copy)]
+enum Operation {
+    Add,
+    Mul,
+}
+#[derive(Clone, Copy)]
+struct Instruction {
+    operation: Operation,
+    operand: i32,
+}
+
 fn run(ops: &[Instruction], repeats: u32, value: i32) -> i32 {
     let mut sum = 0i32;
     for _ in 0..repeats {
@@ -255,9 +281,21 @@ fn run(ops: &[Instruction], repeats: u32, value: i32) -> i32 {
 
 ### Go
 
-Source: [enum-dispatch-test/go/main.go](../enum-dispatch-test/go/main.go), function `run`.
+Source: [enum-dispatch-test/go/main.go](../enum-dispatch-test/go/main.go), declarations and function `run`.
 
 ```go
+type Operation uint8
+
+const (
+	Add Operation = iota
+	Mul
+)
+
+type Instruction struct {
+	operation Operation
+	operand   int32
+}
+
 func run(ops []Instruction, repeats int, value int32) int32 {
 	var sum uint32
 	for n := 0; n < repeats; n++ {
@@ -276,9 +314,19 @@ func run(ops []Instruction, repeats int, value int32) int32 {
 
 ### Python
 
-Source: [enum-dispatch-test/python/enum_dispatch.py](../enum-dispatch-test/python/enum_dispatch.py), function `run`.
+Source: [enum-dispatch-test/python/enum_dispatch.py](../enum-dispatch-test/python/enum_dispatch.py), declarations and function `run`.
 
 ```python
+class Operation(IntEnum):
+    ADD = 0
+    MUL = 1
+
+
+@dataclass(frozen=True, slots=True)
+class Instruction:
+    operation: Operation
+    operand: int
+
 def run(operations, repeats, value):
     checksum = 0
     for _ in range(repeats):
@@ -294,9 +342,12 @@ def run(operations, repeats, value):
 
 ### C#
 
-Source: [enum-dispatch-test/csharp/Program.cs](../enum-dispatch-test/csharp/Program.cs), function `Run`.
+Source: [enum-dispatch-test/csharp/Program.cs](../enum-dispatch-test/csharp/Program.cs), declarations and function `Run`.
 
 ```csharp
+enum Operation { Add, Mul }
+readonly record struct Instruction(Operation Operation, int Operand);
+
   static int Run(Instruction[] ops, int repeats, int value) {
     var sum = 0;
     unchecked {
@@ -314,9 +365,16 @@ Source: [enum-dispatch-test/csharp/Program.cs](../enum-dispatch-test/csharp/Prog
 
 ### JavaScript
 
-Source: [enum-dispatch-test/javascript/enum-dispatch.js](../enum-dispatch-test/javascript/enum-dispatch.js), function `run`.
+Source: [enum-dispatch-test/javascript/enum-dispatch.js](../enum-dispatch-test/javascript/enum-dispatch.js), declarations and function `run`.
 
 ```javascript
+const Operation = Object.freeze({ADD : 0, MUL : 1});
+
+    operations.push({
+      operation : add ? Operation.ADD : Operation.MUL,
+      operand,
+    });
+
 function run(operations, repeats, value) {
   let checksum = 0;
   for (let n = 0; n < repeats; n++)

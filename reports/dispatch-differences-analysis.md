@@ -128,15 +128,28 @@ be updated only under a separately requested Task 3.2.
 
 ## Code under test
 
-The matched comparison uses the following measured functions. C and C++ use the same source for both compiler targets; the Java source is shared by its three runtime targets.
+These examples include the operation/tag declarations needed to read the measured functions.
 
 ### Virtual dispatch
 
 #### C
 
-Source: [virtual-dispatch-test/c/main.c](../virtual-dispatch-test/c/main.c), function `run`.
+Source: [virtual-dispatch-test/c/main.c](../virtual-dispatch-test/c/main.c), declarations and function `run`.
 
 ```c
+typedef struct Operation Operation;
+struct Operation {
+  int32_t (*process)(const Operation *, int32_t);
+  int32_t operand;
+};
+
+static int32_t add(const Operation *o, int32_t v) {
+  return (int32_t)((uint32_t)v + (uint32_t)o->operand);
+}
+static int32_t mul(const Operation *o, int32_t v) {
+  return (int32_t)((uint32_t)v * (uint32_t)o->operand);
+}
+
 static int32_t run(const Operation *ops, uint32_t size, uint32_t repeats,
                    int32_t value) {
   uint32_t sum = 0;
@@ -149,9 +162,30 @@ static int32_t run(const Operation *ops, uint32_t size, uint32_t repeats,
 
 #### C++
 
-Source: [virtual-dispatch-test/cpp/main.cpp](../virtual-dispatch-test/cpp/main.cpp), function `run`.
+Source: [virtual-dispatch-test/cpp/main.cpp](../virtual-dispatch-test/cpp/main.cpp), declarations and function `run`.
 
 ```cpp
+struct Operation {
+  virtual std::int32_t process(std::int32_t) const = 0;
+  virtual ~Operation() = default;
+};
+struct Add final : Operation {
+  std::int32_t x;
+  explicit Add(std::int32_t v) : x(v) {}
+  std::int32_t process(std::int32_t v) const override {
+    return static_cast<std::int32_t>(static_cast<std::uint32_t>(v) +
+                                     static_cast<std::uint32_t>(x));
+  }
+};
+struct Mul final : Operation {
+  std::int32_t x;
+  explicit Mul(std::int32_t v) : x(v) {}
+  std::int32_t process(std::int32_t v) const override {
+    return static_cast<std::int32_t>(static_cast<std::uint32_t>(v) *
+                                     static_cast<std::uint32_t>(x));
+  }
+};
+
 static std::int32_t run(const std::vector<std::unique_ptr<Operation>> &ops,
                         std::uint32_t repeats, std::int32_t value) {
   std::uint32_t sum = 0;
@@ -164,9 +198,19 @@ static std::int32_t run(const std::vector<std::unique_ptr<Operation>> &ops,
 
 #### Java
 
-Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-test/java/VirtualDispatch.java), function `run`.
+Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-test/java/VirtualDispatch.java), declarations and function `run`.
 
 ```java
+  interface Operation {
+    int process(int value);
+  }
+  record AddOperation(int operand) implements Operation {
+    public int process(int value) { return value + operand; }
+  }
+  record MulOperation(int operand) implements Operation {
+    public int process(int value) { return value * operand; }
+  }
+
   static int run(List<Operation> operations, int repeats, int value) {
     int checksum = 0;
     for (int n = 0; n < repeats; n++)
@@ -180,9 +224,15 @@ Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-te
 
 #### C
 
-Source: [enum-dispatch-test/c/main.c](../enum-dispatch-test/c/main.c), function `run`.
+Source: [enum-dispatch-test/c/main.c](../enum-dispatch-test/c/main.c), declarations and function `run`.
 
 ```c
+typedef enum { OP_ADD, OP_MUL } Operation;
+typedef struct {
+  Operation operation;
+  int32_t operand;
+} Instruction;
+
 static int32_t run(const Instruction *ops, uint32_t size, uint32_t repeats,
                    int32_t value) {
   uint32_t sum = 0;
@@ -204,9 +254,15 @@ static int32_t run(const Instruction *ops, uint32_t size, uint32_t repeats,
 
 #### C++
 
-Source: [enum-dispatch-test/cpp/main.cpp](../enum-dispatch-test/cpp/main.cpp), function `run`.
+Source: [enum-dispatch-test/cpp/main.cpp](../enum-dispatch-test/cpp/main.cpp), declarations and function `run`.
 
 ```cpp
+enum class Operation { Add, Mul };
+struct Instruction {
+  Operation operation;
+  std::int32_t operand;
+};
+
 static std::int32_t run(const std::vector<Instruction> &ops,
                         std::uint32_t repeats, std::int32_t value) {
   std::uint32_t sum = 0;
@@ -228,9 +284,12 @@ static std::int32_t run(const std::vector<Instruction> &ops,
 
 #### Java
 
-Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/EnumDispatch.java), function `run`.
+Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/EnumDispatch.java), declarations and function `run`.
 
 ```java
+  enum Operation { ADD, MUL }
+  record Instruction(Operation operation, int operand) {}
+
   static int run(List<Instruction> operations, int repeats, int value) {
     int checksum = 0;
     for (int n = 0; n < repeats; n++)
