@@ -18,7 +18,7 @@ replacement for the task specification, evidence, or acceptance criteria.
 | 3.1 | Validate virtual-versus-enum dispatch differences | done | done | done | done | done | done | done | not applicable | done |
 | 3.2 | Create the project README | done | done | done | done | done | done | done | done | done |
 | 4.1 | Measure Java application RSS across selected heap profiles | to be done | to be done | to be done | to be done | to be done | to be done | to be done | not applicable | to be done |
-| 4.2 | Analyze Java application RSS results | to be done | not applicable | not applicable | not applicable | to be done | to be done | to be done | not applicable | to be done |
+| 4.2 | Analyze Java application RSS results | done | not applicable | not applicable | not applicable | done | done | done | not applicable | done |
 
 ## Status values
 

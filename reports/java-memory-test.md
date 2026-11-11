@@ -4,7 +4,7 @@
 
 This report analyzes the completed 10-second survey run memory-002. Each successful trial sampled survey-idle 100 times at 100 ms intervals after readiness. Every trial is shown separately.
 
-Both runs used Podman 5.7.0 on x86-64 Linux 7.0.0-42-generic with an Intel Core i7-1255U, one logical CPU, and a 1 GiB container memory limit. The JVM target used Eclipse Temurin JDK 25.0.1+8. Successful Native Image trials used GraalVM Native Image 25.0.4.1.1. The JVM default collector was Serial in the GC logs; the Native Image default artifact reports Serial GC in its toolchain record. JVM collector choices are runtime options; Native Image collector choices are build-time artifacts.
+The run used Podman 5.7.0 on x86-64 Linux 7.0.0-42-generic with an Intel Core i7-1255U, one logical CPU, and a 1 GiB container memory limit. The JVM target used Eclipse Temurin JDK 25.0.1+8. Successful Native Image trials used GraalVM Native Image 25.0.4.1.1. The JVM default collector was Serial in the GC logs; the Native Image default artifact reports Serial GC in its toolchain record. JVM collector choices are runtime options; Native Image collector choices are build-time artifacts.
 
 | Run | Collection scope | Attempts | Successful | Failed | Source summary | Matrix manifest |
 | --- | --- | ---: | ---: | ---: | --- | --- |
@@ -32,7 +32,7 @@ GraalVM JIT has no trial results: its probes could not find the expected applica
 | Java (GraalVM Native Image) [graalvm-native], G1 | No trial data | The expected G1 image was not present; no runtime support conclusion can be drawn. |
 | Java (GraalVM Native Image) [graalvm-native], Swing with default, Serial, or Epsilon build | Failed [F1] | AWT initialization failed before readiness; details are in the Swing profile table and trial stderr. |
 
-No full-duration trial was present in either completed run. Results below describe the 10-second survey only, not the separate ready-idle and post-exercise phases in Task 4.1 full mode.
+No full-duration trial was present in memory-002. Results below describe the 10-second survey only, not the separate ready-idle and post-exercise phases in Task 4.1 full mode.
 
 ## Cross-application summary: default heap profile
 
