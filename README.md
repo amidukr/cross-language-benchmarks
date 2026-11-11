@@ -82,13 +82,13 @@ Five paired fresh-process trials compare both complete workloads for C, C++, and
 
 ## Java application RSS (Task 4.1)
 
-The memory benchmark covers console, Swing, Spring Boot, and Quarkus applications. The table shows median RSS over 100 samples for one trial with the default heap profile in run `memory-001`. Values are MiB. Five of 40 attempted configurations failed and remain documented in the run evidence. A second run, `memory-002`, is in progress and has no completed summary yet. A dash means no result was recorded for that application and target.
+The memory benchmark covers console, Swing, Spring Boot, and Quarkus applications. The table shows median RSS over 100 samples for one trial with the default heap profile in run `memory-002`. Values are MiB. The default collector resolved to Serial for HotSpot and the Native Image default artifact. Swing Native Image AOT failed AWT initialization; the remaining failed and unavailable configurations are documented in the analysis.
 
 | Application | Java (Eclipse Temurin, HotSpot C2), median RSS (MiB) | Java (GraalVM Native Image), median RSS (MiB) |
 | ----------- | ---------------------------------------------------: | --------------------------------------------: |
-| Console     | 41.78 | 8.99 |
-| Swing       | 72.43 | — |
-| Spring Boot | 132.85 | 88.73 |
-| Quarkus     | 102.38 | 36.02 |
+| Console     | 42.11 | 8.93 |
+| Swing       | 72.09 | Failed: AWT initialization |
+| Spring Boot | 130.50 | 88.74 |
+| Quarkus     | 112.89 | 35.94 |
 
-**References:** [Task specification](agent-tasks/4.1-java-minimum-rss.md); [memory-001 summary data](reports/java-memory-test/memory-001/summary.csv); [memory-001 matrix manifest](reports/java-memory-test/memory-001/matrix-manifest.txt).
+**References:** [Task 4.2 analysis](reports/java-memory-test.md); [Task specification](agent-tasks/4.1-java-minimum-rss.md); [memory-002 summary data](reports/java-memory-test/memory-002/summary.csv); [memory-002 matrix manifest](reports/java-memory-test/memory-002/matrix-manifest.txt).

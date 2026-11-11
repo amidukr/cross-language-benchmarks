@@ -2,28 +2,35 @@
 
 ## Scope and source data
 
-This report analyzes the completed 10-second survey runs memory-001 and memory-002. Each successful trial sampled survey-idle 100 times at 100 ms intervals after readiness. Every trial is shown separately; the two run IDs are not pooled as replication.
+This report analyzes the completed 10-second survey run memory-002. Each successful trial sampled survey-idle 100 times at 100 ms intervals after readiness. Every trial is shown separately.
 
 Both runs used Podman 5.7.0 on x86-64 Linux 7.0.0-42-generic with an Intel Core i7-1255U, one logical CPU, and a 1 GiB container memory limit. The JVM target used Eclipse Temurin JDK 25.0.1+8. Successful Native Image trials used GraalVM Native Image 25.0.4.1.1. The JVM default collector was Serial in the GC logs; the Native Image default artifact reports Serial GC in its toolchain record. JVM collector choices are runtime options; Native Image collector choices are build-time artifacts.
 
 | Run | Collection scope | Attempts | Successful | Failed | Source summary | Matrix manifest |
 | --- | --- | ---: | ---: | ---: | --- | --- |
-| memory-001 | Default collector policy | 40 | 35 | 5 | [summary.csv](java-memory-test/memory-001/summary.csv) | [matrix-manifest.txt](java-memory-test/memory-001/matrix-manifest.txt) |
 | memory-002 | All probed, available collector images | 200 | 181 | 19 | [summary.csv](java-memory-test/memory-002/summary.csv) | [matrix-manifest.txt](java-memory-test/memory-002/matrix-manifest.txt) |
 
 The underlying source files for each trial are manifest.txt, raw-samples.csv, results.csv, app.stdout, app.stderr, and (for JVM trials) gc.log, beneath java-memory-test/<run-id>/<application>/<target>/<collector>/<heap-profile>/1/. Probe evidence is in each run’s probes/support.tsv, probes/heap-options.tsv, and target/collector probe directories.
 
 ## Validation and coverage
 
-Both matrix manifests end in status=complete. The 216 successful trial directories each have 100 ordered survey samples; the 35 memory-001 and 181 memory-002 successful trials each have 100 RSS, peak-RSS, and cgroup-memory result samples. Recomputing minimum, P10, median, maximum, range, and final-window range from the ordered raw records matched every summary row. All successful REST trials recorded 1,000 requests and zero correctness failures. Failed trials have no successful RSS summary rows.
+The matrix manifest ends in status=complete. The 181 successful trial directories each have 100 ordered survey samples and 100 RSS, peak-RSS, and cgroup-memory result samples. Recomputing minimum, P10, median, maximum, range, and final-window range from the ordered raw records matched every summary row. All successful REST trials recorded 1,000 requests and zero correctness failures. Failed trials have no successful RSS summary rows.
 
-The 24 failed attempts fall into three groups:
+The 19 failed attempts fall into three groups:
 
-- F1 — Swing Native Image AOT, 20 profiles across both runs: the app did not emit readiness. Captured native failures include missing sun/awt/X11/XErrorHandlerUtil and an unavailable awt library. These are AWT/native-library initialization failures, not low-RSS successes.
+- F1 — Swing Native Image AOT, 15 profiles across the default, Serial, and Epsilon collectors: the app did not emit readiness. Captured native failures include missing sun/awt/X11/XErrorHandlerUtil and an unavailable awt library. These are AWT/native-library initialization failures, not low-RSS successes.
 - F2 — three 16 MiB maximum-heap JVM profiles: Spring Boot with Temurin/Epsilon, Quarkus with Temurin/Epsilon, and Spring Boot with Temurin/ZGC terminated with OutOfMemoryError before completing readiness.
 - F3 — Spring Boot Native Image AOT with Epsilon and -Xms1m -Xmx16m: it became ready, then OOM errors in HTTP worker threads caused REST checks to time out; the controller exited with curl status 28. This profile is invalid.
 
 GraalVM JIT has no trial results: its probes could not find the expected application images. Native Image G1 likewise had no available image. The probe records therefore establish missing artifacts for these matrix cells, not that the runtime or collector itself is unsupported. All attempted Native Image default, Serial, and Epsilon profiles for Swing failed as F1.
+
+### Unavailable target configurations
+
+| Runtime configuration | Result | Evidence |
+| --- | --- | --- |
+| Java (GraalVM JIT) [graalvm-jit], all four applications | No trial data | Probes could not find the expected application images. |
+| Java (GraalVM Native Image) [graalvm-native], G1 | No trial data | The expected G1 image was not present; no runtime support conclusion can be drawn. |
+| Java (GraalVM Native Image) [graalvm-native], Swing with default, Serial, or Epsilon build | Failed [F1] | AWT initialization failed before readiness; details are in the Swing profile table and trial stderr. |
 
 No full-duration trial was present in either completed run. Results below describe the 10-second survey only, not the separate ready-idle and post-exercise phases in Task 4.1 full mode.
 
@@ -33,8 +40,6 @@ Cells show median / P10 process RSS in MiB, with 100 raw samples per value. Rows
 
 | Run / trial | Execution target and kind | Collector | Console | Swing | Spring Boot | Quarkus |
 | --- | --- | --- | --- | --- | --- | --- |
-| memory-001 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 41.78 / 41.78 (n=100) | 72.43 / 72.41 (n=100) | 132.85 / 132.80 (n=100) | 102.38 / 102.38 (n=100) |
-| memory-001 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.99 / 8.99 (n=100) | Failed [F1] | 88.73 / 88.73 (n=100) | 36.02 / 36.02 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 42.11 / 42.11 (n=100) | 72.09 / 72.08 (n=100) | 130.50 / 130.48 (n=100) | 112.89 / 112.89 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 41.91 / 41.91 (n=100) | 71.96 / 71.96 (n=100) | 136.79 / 136.63 (n=100) | 107.31 / 107.31 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 72.36 / 72.36 (n=100) | 181.19 / 181.14 (n=100) | 115.66 / 115.66 (n=100) |
@@ -54,8 +59,6 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 | Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-001 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 41.78 / 41.78 (n=100) | 42.62 / 42.62 (n=100) | 42.52 / 42.52 (n=100) | 42.95 / 42.95 (n=100) | 43.06 / 43.06 (n=100) |
-| memory-001 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 8.99 / 8.99 (n=100) | 9.03 / 9.03 (n=100) | 8.87 / 8.87 (n=100) | 8.84 / 8.84 (n=100) | 9.04 / 9.04 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 42.11 / 42.11 (n=100) | 42.73 / 42.73 (n=100) | 42.78 / 42.78 (n=100) | 42.78 / 42.78 (n=100) | 43.25 / 43.25 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 41.91 / 41.91 (n=100) | 42.63 / 42.63 (n=100) | 42.87 / 42.87 (n=100) | 42.93 / 42.93 (n=100) | 43.07 / 43.07 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 41.91 / 41.91 (n=100) | 41.95 / 41.95 (n=100) | 41.86 / 41.86 (n=100) | 42.16 / 42.16 (n=100) | 43.19 / 43.19 (n=100) |
@@ -71,8 +74,6 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 | Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-001 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 72.43 / 72.41 (n=100) | 68.72 / 68.72 (n=100) | 69.09 / 69.09 (n=100) | 69.29 / 69.28 (n=100) | 75.80 / 75.79 (n=100) |
-| memory-001 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] | Failed [F1] |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 72.09 / 72.08 (n=100) | 68.73 / 68.72 (n=100) | 68.69 / 68.69 (n=100) | 69.09 / 69.09 (n=100) | 75.92 / 75.91 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 71.96 / 71.96 (n=100) | 68.97 / 68.97 (n=100) | 69.23 / 69.23 (n=100) | 69.32 / 69.32 (n=100) | 75.83 / 75.83 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 72.36 / 72.36 (n=100) | 70.41 / 70.40 (n=100) | 70.90 / 70.90 (n=100) | 70.33 / 70.33 (n=100) | 76.16 / 76.15 (n=100) |
@@ -88,8 +89,6 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 | Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-001 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 132.85 / 132.80 (n=100) | 138.22 / 138.17 (n=100) | 127.86 / 127.82 (n=100) | 133.76 / 133.70 (n=100) | 273.23 / 273.06 (n=100) |
-| memory-001 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 88.73 / 88.73 (n=100) | 88.67 / 88.67 (n=100) | 53.78 / 53.78 (n=100) | 88.40 / 88.40 (n=100) | 88.66 / 88.66 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 130.50 / 130.48 (n=100) | 135.00 / 134.95 (n=100) | 129.98 / 129.93 (n=100) | 142.15 / 142.09 (n=100) | 273.32 / 273.21 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 136.79 / 136.63 (n=100) | 138.73 / 138.68 (n=100) | 130.37 / 130.32 (n=100) | 138.17 / 138.02 (n=100) | 270.75 / 270.75 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 181.19 / 181.14 (n=100) | 177.29 / 177.24 (n=100) | 130.99 / 130.96 (n=100) | 163.71 / 163.68 (n=100) | 266.52 / 266.50 (n=100) |
@@ -105,8 +104,6 @@ Each cell shows median / P10 process RSS in MiB (n=100 samples). Each row is one
 
 | Run / trial | Execution target and kind | Collector | Default / default | 1 MiB / default | 1 MiB / 16 MiB | 1 MiB / 1024 MiB | 512 MiB / 1024 MiB |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| memory-001 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 102.38 / 102.38 (n=100) | 98.41 / 98.41 (n=100) | 98.97 / 98.97 (n=100) | 99.50 / 99.50 (n=100) | 135.82 / 135.82 (n=100) |
-| memory-001 / 1 | Native Image AOT — Java (GraalVM Native Image) [graalvm-native]; Native Image 25.0.4.1.1 | Default (artifact uses Serial) | 36.02 / 36.02 (n=100) | 36.09 / 36.09 (n=100) | 32.91 / 32.91 (n=100) | 35.97 / 35.97 (n=100) | 36.04 / 36.04 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Default (runtime selected Serial) | 112.89 / 112.89 (n=100) | 99.52 / 99.52 (n=100) | 98.59 / 98.59 (n=100) | 106.08 / 106.08 (n=100) | 136.00 / 136.00 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Serial | 107.31 / 107.31 (n=100) | 98.77 / 98.77 (n=100) | 99.17 / 99.17 (n=100) | 99.39 / 99.39 (n=100) | 135.91 / 135.91 (n=100) |
 | memory-002 / 1 | JVM — Java (Eclipse Temurin, HotSpot C2) [temurin-c2]; JDK 25.0.1+8 | Parallel | 115.66 / 115.66 (n=100) | 111.40 / 111.40 (n=100) | 106.30 / 106.30 (n=100) | 111.48 / 111.48 (n=100) | 136.41 / 136.41 (n=100) |
@@ -136,7 +133,7 @@ Reducing -Xms to 1 MiB did not consistently reduce RSS. For example, Temurin Spr
 
 ### Sample variability and measurement limits
 
-P10 equals the median in 150 of 216 successful survey trials. The median full-series RSS range was about 0.012 MiB, and the largest was 12.535 MiB (Quarkus, Temurin, Shenandoah, -Xms512m -Xmx1024m); that trial’s final-30-sample range was zero. Across all 216 trials, the largest final-30-sample range was 0.086 MiB. This describes observed short-window variation; no stability threshold was defined, so it is not a formal steady-state classification.
+P10 equals the median in 125 of 181 successful survey trials. The median full-series RSS range was about 0.012 MiB, and the largest was 12.535 MiB (Quarkus, Temurin, Shenandoah, -Xms512m -Xmx1024m); that trial’s final-30-sample range was zero. Across all 181 trials, the largest final-30-sample range was 0.086 MiB. This describes observed short-window variation; no stability threshold was defined, so it is not a formal steady-state classification.
 
 Process RSS, sampled process high-water RSS, and cgroup memory are separate metrics. The tables use process RSS. The summary.csv files retain P10, minimum, maximum, range, and high-water and cgroup summaries. Cgroup memory includes container accounting and must not be substituted for application-process RSS. One trial per configuration and a 10-second survey limit claims about replication, longer-lived memory behavior, or the minimum heap needed for sustained operation.
 
