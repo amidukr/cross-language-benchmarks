@@ -19,8 +19,9 @@ decisions, and generated code can differ. The exact contracts are in
 [`agent-rules/`](agent-rules/).
 
 Tasks 1.x, 2.x, and 3.1 are implemented and analyzed. Task 4.1's
-[Java RSS-memory workload](java-memory-test/) is implemented, but its full
-container collection and analysis have not been completed. See the
+[Java RSS-memory workload](java-memory-test/) is implemented, with the
+measurement matrix narrowed to five selected heap profiles and three trials.
+Its full container collection and analysis have not been completed. See the
 [task execution matrix](agent-tasks/task-execution.md) for current status.
 
 ## Evidence map

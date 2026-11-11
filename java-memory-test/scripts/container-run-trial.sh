@@ -62,6 +62,7 @@ record_manifest idle_sample_interval_ms 100
 record_manifest idle_sample_duration_seconds 30
 record_manifest quiescence_seconds 10
 record_manifest rest_request_count 1000
+record_manifest probe_only "${MEMORY_PROBE_ONLY:-false}"
 
 echo 'monotonic_ns,elapsed_from_ready_ns,phase,sample,process_rss_bytes,process_hwm_bytes,cgroup_memory_bytes,rss_source,pid_start_ticks' >"$raw"
 echo 'schema_version,run_id,benchmark,case_id,language,target,config_id,toolchain,flags,environment,trial,phase,sample,elapsed_ms,metric,value,unit' >"$results"
@@ -137,6 +138,40 @@ if [[ $EXECUTION_KIND == jvm && -s $output/gc.log ]]; then
   record_manifest selected_collector "${selected_gc:-not-reported-by-runtime}"
 else
   record_manifest selected_collector "native-build-$MEMORY_BUILD_COLLECTOR"
+fi
+
+if [[ ${MEMORY_PROBE_ONLY:-false} == true ]]; then
+  if [[ $app == spring-boot || $app == quarkus ]]; then
+    response=$(curl --silent --show-error --max-time 5 --write-out $'\n%{http_code}\n%{content_type}' \
+      http://127.0.0.1:8080/hello-world) || response=
+    body=${response%%$'\n'*}
+    rest=${response#*$'\n'}
+    status_code=${rest%%$'\n'*}
+    content_type=${rest#*$'\n'}
+    if [[ $body != 'Hello World' || $status_code != 200 || $content_type != text/plain* ]];
+    then
+      record_manifest status failed
+      record_manifest failure_reason probe-readiness-check-failed
+      exit 1
+    fi
+  fi
+  record_manifest request_count 1
+  record_manifest request_failures 0
+  record_manifest probe_completed true
+  kill -TERM "$app_pid" 2>/dev/null || true
+  for _ in {1..100}; do
+    if ! kill -0 "$app_pid" 2>/dev/null; then break; fi
+    sleep 0.1
+  done
+  wait "$app_pid" 2>/dev/null
+  app_status=$?
+  app_pid=
+  record_manifest application_exit_status "$app_status"
+  record_manifest forced_sigkill false
+  record_manifest completed_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  record_manifest status success
+  trap - EXIT INT TERM
+  exit 0
 fi
 
 case "$app" in

@@ -122,7 +122,9 @@ used before:
    ```
 
 2. Run the full matrix. This automatically probes collector and heap-option
-   support first, so a separate `probe-collectors.sh` run is optional.
+   support first, so a separate `probe-collectors.sh` run is optional. Each
+   supported application/target/collector combination gets the five requested
+   heap profiles and three full measurement trials per profile.
 
 ```sh
 ./java-memory-test/run-matrix.sh memory-001
@@ -145,25 +147,25 @@ CONTAINER_ENGINE=podman ./java-memory-test/summarize.sh memory-001
 ```
 
 The script runs sequentially and prints the application, target, collector,
-heap profile, candidate values, and trial. For every supported combination it:
+heap profile, settings, and trial. Its five profiles are:
 
-1. Runs five default-setting trials.
-2. Tests the ordered `-Xms` grid until the smallest successful value, then
-   completes five trials for that value.
-3. Tests the descending `-Xmx` grid and completes five trials for the smallest
-   successful value.
-4. Searches for the smallest successful combined pair and completes five
-   trials.
-5. Runs five fixed-heap trials with `-Xms` equal to the smallest viable
-   `-Xmx`.
+| Profile | `-Xms` | `-Xmx` |
+| --- | --- | --- |
+| `default` | default | default |
+| `xms-1m` | `1m` | default |
+| `xms-1m-xmx-16m` | `1m` | `16m` |
+| `xms-1m-xmx-1024m` | `1m` | `1024m` |
+| `xms-512m-xmx-1024m` | `512m` | `1024m` |
 
-Failed candidates are evidence and remain in place with their failure reason.
-The boundary file means “smallest successful tested grid value under this
-environment,” not a universal lower bound.
+Each profile gets three full trials. Invalid heap settings and OOMs are retained
+with their failure evidence. These fixed profiles do not locate a minimum
+viable heap.
 
-This is a large experiment: every successful trial contains two 30-second
-sampling windows plus readiness, REST exercise, settling, and shutdown. Plan
-for a long unattended run.
+Each successful trial takes roughly 70 seconds plus application startup,
+correctness checks, and shutdown. The maximum duration is therefore about 17.5
+minutes per supported application/target/collector combination, plus collector
+probes and any additional time caused by slow startup, REST checks, or failed
+profiles.
 
 ## Measurement sequence
 

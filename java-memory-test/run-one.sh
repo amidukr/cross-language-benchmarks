@@ -10,6 +10,7 @@ heap_initial=
 heap_max=
 run_id=
 trial=
+probe_only=false
 output_root="$repo_root/reports/java-memory-test"
 declare -A seen=()
 while (($#)); do
@@ -32,8 +33,9 @@ while (($#)); do
         --output) output_root=$value ;;
       esac
       shift 2 ;;
+    --probe-only) probe_only=true; shift ;;
     --help)
-      echo "Usage: $0 --application ID --target ID --collector ID --heap-profile ID --run-id ID --trial N [--xms SIZE] [--xmx SIZE] [--output DIR]"
+      echo "Usage: $0 --application ID --target ID --collector ID --heap-profile ID --run-id ID --trial N [--xms SIZE] [--xmx SIZE] [--probe-only] [--output DIR]"
       exit 0 ;;
     *) die "unknown option: $1" ;;
   esac
@@ -74,6 +76,7 @@ env_args=(
   --env "MEMORY_HEAP_MAX=$heap_max"
   --env "MEMORY_RUN_ID=$run_id"
   --env "MEMORY_TRIAL=$trial"
+  --env "MEMORY_PROBE_ONLY=$probe_only"
   --env "MEMORY_IMAGE_REF=$image"
   --env "MEMORY_IMAGE_ID=$image_id"
   --env "MEMORY_CONTAINER_ENGINE=$container_runtime"

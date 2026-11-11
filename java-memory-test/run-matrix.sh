@@ -26,20 +26,28 @@ if ! "$memory_root/probe-collectors.sh" --output "$run_root/probes"; then
   exit 1
 fi
 
-xms_values=(1m 2m 4m 8m 12m 16m 24m 32m 48m 64m)
-xmx_desc=(512m 384m 256m 192m 128m 96m 64m 48m 32m 24m 16m 12m 8m 4m)
-xmx_asc=(4m 8m 12m 16m 24m 32m 48m 64m 96m 128m 192m 256m 384m 512m)
+trial_count=3
+heap_profiles=(
+  'default||'
+  'xms-1m|1m|'
+  'xms-1m-xmx-16m|1m|16m'
+  'xms-1m-xmx-1024m|1m|1024m'
+  'xms-512m-xmx-1024m|512m|1024m'
+)
 progress=0
 failed_retained=0
 
 run_config() {
-  local app=$1 target=$2 collector=$3 profile=$4 trial=$5 xms=${6:-} xmx=${7:-}
+  local app=$1 target=$2 collector=$3 profile=$4 trial=$5 xms=${6:-} xmx=${7:-} probe_only=${8:-false}
   ((progress += 1))
-  echo "RUN $progress application=$app target=$target collector=$collector heap_profile=$profile xms=${xms:-default} xmx=${xmx:-default} trial=$trial"
+  local phase=TRIAL
+  [[ $probe_only == true ]] && phase=PROBE
+  echo "$phase $progress application=$app target=$target collector=$collector heap_profile=$profile xms=${xms:-default} xmx=${xmx:-default} trial=$trial"
   args=(--application "$app" --target "$target" --collector "$collector" \
     --heap-profile "$profile" --run-id "$run_id" --trial "$trial" --output "$output_root")
   [[ -z $xms ]] || args+=(--xms "$xms")
   [[ -z $xmx ]] || args+=(--xmx "$xmx")
+  [[ $probe_only != true ]] || args+=(--probe-only)
   "$memory_root/run-one.sh" "${args[@]}"
 }
 
@@ -59,86 +67,24 @@ for app in console swing spring-boot quarkus; do
         :
       fi
 
-      for trial in 1 2 3 4 5; do
-        run_config "$app" "$target" "$collector" default "$trial" || ((failed_retained += 1))
+      for heap_config in "${heap_profiles[@]}"; do
+        IFS='|' read -r profile xms xmx <<<"$heap_config"
+        if [[ -n $xms && $xms_supported != supported ]] || [[ -n $xmx && $xmx_supported != supported ]]; then
+          mkdir -p "$run_root/$app/$target/$collector/$profile"
+          printf 'status=unsupported\nreason=heap-option-not-supported\nxms_support=%s\nxmx_support=%s\n' \
+            "$xms_supported" "$xmx_supported" >"$run_root/$app/$target/$collector/$profile/unsupported.txt"
+          continue
+        fi
+        for ((trial=1; trial<=trial_count; trial++)); do
+          run_config "$app" "$target" "$collector" "$profile" "$trial" "$xms" "$xmx" || ((failed_retained += 1))
+        done
       done
-
-      selected_xms=
-      if [[ $xms_supported == supported ]]; then
-        for value in "${xms_values[@]}"; do
-          profile="initial-$value"
-          if run_config "$app" "$target" "$collector" "$profile" 1 "$value" ''; then
-            selected_xms=$value
-            for trial in 2 3 4 5; do run_config "$app" "$target" "$collector" "$profile" "$trial" "$value" '' || ((failed_retained += 1)); done
-            break
-          else
-            ((failed_retained += 1))
-          fi
-        done
-      fi
-
-      selected_xmx=
-      selected_xmx_profile=
-      if [[ $xmx_supported == supported ]]; then
-        for value in "${xmx_desc[@]}"; do
-          profile="maximum-$value"
-          if run_config "$app" "$target" "$collector" "$profile" 1 '' "$value"; then
-            selected_xmx=$value
-            selected_xmx_profile=$profile
-          else
-            ((failed_retained += 1))
-          fi
-        done
-      fi
-      if [[ -n $selected_xmx ]]; then
-        for trial in 2 3 4 5; do run_config "$app" "$target" "$collector" "$selected_xmx_profile" "$trial" '' "$selected_xmx" || ((failed_retained += 1)); done
-      fi
-
-      selected_combined_xms=
-      selected_combined_xmx=
-      selected_combined_profile=
-      if [[ -n $selected_xms && -n $selected_xmx ]]; then
-        xms_enabled=false
-        for xms in "${xms_values[@]}"; do
-          [[ $xms == "$selected_xms" ]] && xms_enabled=true
-          [[ $xms_enabled == true ]] || continue
-          xmx_enabled=false
-          for xmx in "${xmx_asc[@]}"; do
-            [[ $xmx == "$selected_xmx" ]] && xmx_enabled=true
-            [[ $xmx_enabled == true ]] || continue
-            profile="combined-${xms}-${xmx}"
-            if run_config "$app" "$target" "$collector" "$profile" 1 "$xms" "$xmx"; then
-              selected_combined_xms=$xms
-              selected_combined_xmx=$xmx
-              selected_combined_profile=$profile
-              break 2
-            else
-              ((failed_retained += 1))
-            fi
-          done
-        done
-      fi
-      if [[ -n $selected_combined_profile ]]; then
-        for trial in 2 3 4 5; do
-          run_config "$app" "$target" "$collector" "$selected_combined_profile" "$trial" "$selected_combined_xms" "$selected_combined_xmx" || ((failed_retained += 1))
-        done
-      fi
-
-      if [[ -n $selected_xmx ]]; then
-        profile="fixed-$selected_xmx"
-        for trial in 1 2 3 4 5; do
-          run_config "$app" "$target" "$collector" "$profile" "$trial" "$selected_xmx" "$selected_xmx" || ((failed_retained += 1))
-        done
-      fi
 
       boundary="$run_root/$app/$target/$collector/viability-boundary.txt"
       mkdir -p "${boundary%/*}"
       {
-        echo "smallest_accepted_xms=${selected_xms:-none}"
-        echo "smallest_viable_xmx=${selected_xmx:-none}"
-        echo "combined_xms=${selected_combined_xms:-none}"
-        echo "combined_xmx=${selected_combined_xmx:-none}"
-        echo "fixed_heap=${selected_xmx:-none}"
+        echo "heap_profiles=${heap_profiles[*]}"
+        echo "trials_per_profile=$trial_count"
         echo "xms_option_support=$xms_supported"
         echo "xmx_option_support=$xmx_supported"
         echo "scope=smallest successful tested grid value in this environment"
