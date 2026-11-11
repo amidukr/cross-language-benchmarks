@@ -20,11 +20,13 @@ RUN mkdir -p /build/console /build/swing && \
     mkdir -p /build/quarkus && \
     cp -a quarkus/target/quarkus-app/. /build/quarkus/
 
-FROM ghcr.io/graalvm/native-image-community:25i4-25.0.4.1.1 AS native-build
+FROM ghcr.io/graalvm/native-image-community:25i4-25.0.4.1.1-ol9 AS native-build
 ARG APP
 ARG COLLECTOR
 WORKDIR /src
-RUN microdnf install -y xorg-x11-server-Xvfb && microdnf clean all
+RUN if [[ "$APP" == swing ]]; then \
+      microdnf install -y xorg-x11-server-Xvfb && microdnf clean all; \
+    fi
 COPY --from=jvm-build /usr/share/maven /usr/share/maven
 ENV PATH="/usr/share/maven/bin:${PATH}"
 COPY .mvn/ .mvn/
