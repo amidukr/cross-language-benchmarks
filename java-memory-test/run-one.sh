@@ -11,6 +11,7 @@ heap_max=
 run_id=
 trial=
 probe_only=false
+duration_mode=full
 output_root="$repo_root/reports/java-memory-test"
 declare -A seen=()
 while (($#)); do
@@ -34,13 +35,20 @@ while (($#)); do
       esac
       shift 2 ;;
     --probe-only) probe_only=true; shift ;;
+    --duration-mode)
+      (($# >= 2)) || die "missing value for $1"
+      [[ -z ${seen[$1]:-} ]] || die "duplicate $1"
+      seen[$1]=true
+      duration_mode=$2
+      shift 2 ;;
     --help)
-      echo "Usage: $0 --application ID --target ID --collector ID --heap-profile ID --run-id ID --trial N [--xms SIZE] [--xmx SIZE] [--probe-only] [--output DIR]"
+      echo "Usage: $0 --application ID --target ID --collector ID --heap-profile ID --run-id ID --trial N [--xms SIZE] [--xmx SIZE] [--probe-only] [--duration-mode survey|full] [--output DIR]"
       exit 0 ;;
     *) die "unknown option: $1" ;;
   esac
 done
 [[ -n $app && -n $target && -n $collector && -n $heap_profile && -n $run_id && -n $trial ]] || die "missing required option"
+case "$duration_mode" in survey|full) ;; *) die "invalid duration mode: $duration_mode" ;; esac
 require_application "$app"
 require_target "$target"
 require_collector "$collector"
@@ -77,6 +85,7 @@ env_args=(
   --env "MEMORY_RUN_ID=$run_id"
   --env "MEMORY_TRIAL=$trial"
   --env "MEMORY_PROBE_ONLY=$probe_only"
+  --env "MEMORY_DURATION_MODE=$duration_mode"
   --env "MEMORY_IMAGE_REF=$image"
   --env "MEMORY_IMAGE_ID=$image_id"
   --env "MEMORY_CONTAINER_ENGINE=$container_runtime"

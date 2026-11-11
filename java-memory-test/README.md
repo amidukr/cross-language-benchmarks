@@ -124,7 +124,9 @@ used before:
 2. Run the full matrix. This automatically probes collector and heap-option
    support first, so a separate `probe-collectors.sh` run is optional. Each
    supported application/target/collector combination gets the five requested
-   heap profiles and three full measurement trials per profile.
+   heap profiles and one 10-second survey trial per profile. By default, the
+   matrix uses only the default collector for each target. To run every
+   supported collector, set `MEMORY_COLLECTOR_POLICY=all` for that command.
 
 ```sh
 ./java-memory-test/run-matrix.sh memory-001
@@ -157,19 +159,28 @@ heap profile, settings, and trial. Its five profiles are:
 | `xms-1m-xmx-1024m` | `1m` | `1024m` |
 | `xms-512m-xmx-1024m` | `512m` | `1024m` |
 
-Each profile gets three full trials. Invalid heap settings and OOMs are retained
-with their failure evidence. These fixed profiles do not locate a minimum
-viable heap.
+Each profile gets one survey trial. After readiness and (for REST apps)
+correctness checks, survey mode records 100 samples over 10 seconds without an
+additional settling delay. Invalid heap settings and OOMs are retained with
+their failure evidence. These fixed profiles do not locate a minimum viable
+heap. Set `MEMORY_COLLECTOR_POLICY=all` before `run-matrix.sh` to include every
+supported collector; this substantially increases runtime.
 
-Each successful trial takes roughly 70 seconds plus application startup,
-correctness checks, and shutdown. The maximum duration is therefore about 17.5
-minutes per supported application/target/collector combination, plus collector
-probes and any additional time caused by slow startup, REST checks, or failed
-profiles.
+To take a full measurement for a selected profile, rerun `run-one.sh` with a
+new run ID, the same application/target/collector/heap settings, and
+`--duration-mode full`. Full mode samples for 30 seconds before the exercise,
+runs the REST correctness requests, waits 10 seconds, then samples another 30
+seconds. A full trial takes about 70 seconds plus startup, requests, and
+shutdown.
+
+With the default collector policy, four apps, three targets, five profiles,
+and one 10-second survey each, the nominal sampling time is about 10 minutes.
+Add startup, REST checks, and collector probes. Enabling all collectors
+increases this substantially.
 
 ## Measurement sequence
 
-Each fresh measured container:
+Each full-mode measured container:
 
 1. Starts one application and records its PID start ticks.
 2. Waits up to 120 seconds for `MEMORY_TEST_READY`.
@@ -178,6 +189,10 @@ Each fresh measured container:
 5. Waits 10 seconds without forcing GC.
 6. Samples another 300 times during `post-exercise-idle`.
 7. Sends `SIGTERM`, waits up to 10 seconds, and records any forced `SIGKILL`.
+
+Survey mode instead samples once every 100 ms for 10 seconds after readiness
+and REST correctness checks, with no additional settling delay. Its samples
+use the `survey-idle` phase.
 
 The primary RSS source is `/proc/<pid>/smaps_rollup`; `VmRSS` is a labeled
 fallback. Every sample records `VmHWM`, cgroup `memory.current`, a monotonic

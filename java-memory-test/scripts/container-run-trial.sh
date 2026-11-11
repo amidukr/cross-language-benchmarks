@@ -63,6 +63,8 @@ record_manifest idle_sample_duration_seconds 30
 record_manifest quiescence_seconds 10
 record_manifest rest_request_count 1000
 record_manifest probe_only "${MEMORY_PROBE_ONLY:-false}"
+duration_mode=${MEMORY_DURATION_MODE:-full}
+record_manifest duration_mode "$duration_mode"
 
 echo 'monotonic_ns,elapsed_from_ready_ns,phase,sample,process_rss_bytes,process_hwm_bytes,cgroup_memory_bytes,rss_source,pid_start_ticks' >"$raw"
 echo 'schema_version,run_id,benchmark,case_id,language,target,config_id,toolchain,flags,environment,trial,phase,sample,elapsed_ms,metric,value,unit' >"$results"
@@ -257,9 +259,10 @@ if [[ -n ${heap_line:-} ]]; then
   done
 fi
 
-for _ in {1..300}; do sample_once ready-idle || exit 1; sleep 0.1; done
-
 request_failures=0
+if [[ $duration_mode == full ]]; then
+  for _ in {1..300}; do sample_once ready-idle || exit 1; sleep 0.1; done
+fi
 if [[ $app == spring-boot || $app == quarkus ]]; then
   for request in {1..1000}; do
     response=$(curl --silent --show-error --max-time 5 --write-out $'\n%{http_code}\n%{content_type}' \
@@ -282,8 +285,12 @@ if (( request_failures != 0 )); then
   exit 1
 fi
 
-sleep 10
-for _ in {1..300}; do sample_once post-exercise-idle || exit 1; sleep 0.1; done
+if [[ $duration_mode == survey ]]; then
+  for _ in {1..100}; do sample_once survey-idle || exit 1; sleep 0.1; done
+else
+  sleep 10
+  for _ in {1..300}; do sample_once post-exercise-idle || exit 1; sleep 0.1; done
+fi
 
 kill -TERM "$app_pid" 2>/dev/null || true
 shutdown_clean=false
