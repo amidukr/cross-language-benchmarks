@@ -33,7 +33,7 @@ COPY spring-boot/ spring-boot/
 COPY quarkus/ quarkus/
 RUN set -eux; \
     case "$COLLECTOR" in default) gc=serial ;; serial|epsilon) gc="$COLLECTOR" ;; g1|G1) gc=G1 ;; *) exit 2 ;; esac; \
-    mkdir -p /build; \
+    mkdir -p /build /build/runtime-libs; \
     native-image --version > /build/toolchain-version.txt 2>&1; \
     case "$APP" in \
       console) \
@@ -51,6 +51,7 @@ RUN set -eux; \
         cp quarkus/target/quarkus-hello-1.0.0-runner /build/app ;; \
       *) echo "unsupported application: $APP" >&2; exit 2 ;; \
     esac; \
+    if [[ "$APP" == swing ]]; then cp /build/lib*.so /build/runtime-libs/; fi; \
     chmod 0755 /build/app
 
 FROM docker.io/library/eclipse-temurin:25.0.1_8-jdk AS runtime-temurin-c2
@@ -72,9 +73,11 @@ ENV EXECUTION_KIND=jvm
 FROM docker.io/library/debian:bookworm-20251020-slim AS runtime-graalvm-native
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      bash ca-certificates curl procps xvfb xauth && \
+      bash ca-certificates curl procps xvfb xauth \
+      libxi6 libxtst6 libxrender1 libxext6 libx11-6 libfontconfig1 libfreetype6 libasound2 && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=native-build /build/app /opt/apps/app
+COPY --from=native-build /build/runtime-libs/ /usr/lib64/
 COPY --from=native-build /build/toolchain-version.txt /opt/native-build-toolchain-version.txt
 ENV EXECUTION_KIND=native
 
