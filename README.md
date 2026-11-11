@@ -84,11 +84,11 @@ Five paired fresh-process trials compare both complete workloads for C, C++, and
 
 The memory benchmark covers console, Swing, Spring Boot, and Quarkus applications. The table shows median RSS over 100 samples for one trial with the default heap profile in run `memory-002`. Values are MiB. The default collector resolved to Serial for HotSpot and the Native Image default artifact. Swing Native Image AOT failed AWT initialization; the remaining failed and unavailable configurations are documented in the analysis.
 
-| Application | Java (Eclipse Temurin, HotSpot C2), median RSS (MiB) | Java (GraalVM Native Image), median RSS (MiB) |
-| ----------- | ---------------------------------------------------: | --------------------------------------------: |
-| Console     | 42.11 | 8.93 |
-| Swing       | 72.09 | Failed: AWT initialization |
-| Spring Boot | 130.50 | 88.74 |
-| Quarkus     | 112.89 | 35.94 |
+| Application | Java (GraalVM Native Image AOT), median RSS (MiB) | Java (Eclipse Temurin HotSpot JVM), median RSS (MiB) |
+| ----------- | -------------------------------------------------: | --------------------------------------------------: |
+| Console     | 8.93 | 42.11 |
+| Swing       | Failed: AWT initialization | 72.09 |
+| Spring Boot | 88.74 | 130.50 |
+| Quarkus     | 35.94 | 112.89 |
 
 **References:** [Task 4.2 analysis](reports/java-memory-test.md); [Task specification](agent-tasks/4.1-java-minimum-rss.md); [memory-002 summary data](reports/java-memory-test/memory-002/summary.csv); [memory-002 matrix manifest](reports/java-memory-test/memory-002/matrix-manifest.txt).
