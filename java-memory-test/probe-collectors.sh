@@ -17,6 +17,8 @@ output=$(absolute_directory "$output")
 select_engine
 echo $'target\tcollector\tstatus\texit_status\tevidence' >"$output/support.tsv"
 echo $'target\toption\tstatus\texit_status\tevidence' >"$output/heap-options.tsv"
+probe_index=0
+probe_total=24
 
 for target in temurin-c2 graalvm-jit; do
   image=$(image_for console "$target" default)
@@ -33,6 +35,8 @@ for target in temurin-c2 graalvm-jit; do
       epsilon) options=(-XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -Xlog:gc+init=info) ;;
     esac
     printf '%q ' "$container_engine" run --rm --entrypoint java "$image" "${options[@]}" -version >"$dir/command.txt"; echo >>"$dir/command.txt"
+    ((probe_index += 1))
+    echo "PROBE [$probe_index/$probe_total] target=$target collector=$collector"
     set +e
     "$container_engine" run --rm --memory 1g --cpus 1 --entrypoint java "$image" \
       "${options[@]}" -version >"$dir/stdout.txt" 2>"$dir/stderr.txt"
@@ -50,6 +54,7 @@ for target in temurin-c2 graalvm-jit; do
       echo "status=$result"
     } >"$dir/manifest.txt"
     printf '%s\t%s\t%s\t%s\t%s\n' "$target" "$collector" "$result" "$status" "$dir" >>"$output/support.tsv"
+    echo "RESULT [$probe_index/$probe_total] target=$target collector=$collector status=$result exit=$status"
   done
 done
 
@@ -60,6 +65,8 @@ for target in temurin-c2 graalvm-jit; do
     mkdir -p "$dir"
     if [[ $option == xms ]]; then heap_option=-Xms1m; else heap_option=-Xmx4m; fi
     printf '%q ' "$container_engine" run --rm --memory 1g --cpus 1 --entrypoint java "$image" "$heap_option" -version >"$dir/command.txt"; echo >>"$dir/command.txt"
+    ((probe_index += 1))
+    echo "PROBE [$probe_index/$probe_total] target=$target option=$heap_option"
     set +e
     "$container_engine" run --rm --memory 1g --cpus 1 --entrypoint java "$image" \
       "$heap_option" -version >"$dir/stdout.txt" 2>"$dir/stderr.txt"
@@ -70,6 +77,7 @@ for target in temurin-c2 graalvm-jit; do
     printf 'target=%s\noption=%s\nrequested=%s\nexit_status=%s\nstatus=%s\n' \
       "$target" "$option" "$heap_option" "$status" "$result" >"$dir/manifest.txt"
     printf '%s\t%s\t%s\t%s\t%s\n' "$target" "$option" "$result" "$status" "$dir" >>"$output/heap-options.tsv"
+    echo "RESULT [$probe_index/$probe_total] target=$target option=$heap_option status=$result exit=$status"
   done
 done
 
@@ -80,6 +88,8 @@ for option in xms xmx; do
   mkdir -p "$dir"
   if [[ $option == xms ]]; then heap_option=-Xms1m; else heap_option=-Xmx4m; fi
   printf '%q ' timeout 5 "$container_engine" run --rm --memory 1g --cpus 1 --entrypoint /opt/apps/app "$image" "$heap_option" >"$dir/command.txt"; echo >>"$dir/command.txt"
+  ((probe_index += 1))
+  echo "PROBE [$probe_index/$probe_total] target=graalvm-native option=$heap_option (5-second timeout)"
   set +e
   timeout 5 "$container_engine" run --rm --memory 1g --cpus 1 --entrypoint /opt/apps/app "$image" \
     "$heap_option" >"$dir/stdout.txt" 2>"$dir/stderr.txt"
@@ -90,6 +100,7 @@ for option in xms xmx; do
   printf 'target=graalvm-native\noption=%s\nrequested=%s\nexit_status=%s\nstatus=%s\n' \
     "$option" "$heap_option" "$status" "$result" >"$dir/manifest.txt"
   printf 'graalvm-native\t%s\t%s\t%s\t%s\n' "$option" "$result" "$status" "$dir" >>"$output/heap-options.tsv"
+  echo "RESULT [$probe_index/$probe_total] target=graalvm-native option=$heap_option status=$result exit=$status"
 done
 
 for collector in default serial epsilon g1; do
@@ -97,6 +108,8 @@ for collector in default serial epsilon g1; do
   dir="$output/graalvm-native/$collector"
   mkdir -p "$dir"
   printf '%q ' "$container_engine" image inspect "$image" >"$dir/command.txt"; echo >>"$dir/command.txt"
+  ((probe_index += 1))
+  echo "PROBE [$probe_index/$probe_total] target=graalvm-native collector=$collector (image check)"
   set +e
   "$container_engine" image inspect "$image" >"$dir/stdout.txt" 2>"$dir/stderr.txt"
   status=$?
@@ -114,4 +127,5 @@ for collector in default serial epsilon g1; do
     echo "status=$result"
   } >"$dir/manifest.txt"
   printf 'graalvm-native\t%s\t%s\t%s\t%s\n' "$collector" "$result" "$status" "$dir" >>"$output/support.tsv"
+  echo "RESULT [$probe_index/$probe_total] target=graalvm-native collector=$collector status=$result exit=$status"
 done
