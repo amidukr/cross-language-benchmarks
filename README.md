@@ -2,6 +2,8 @@
 
 This repository compares equivalent workloads across programming languages, compilers, and runtimes. Its objective is to measure complete programs under documented, reproducible conditions and explain observed results with benchmark and generated-code evidence. These measurements describe the tested workloads and configurations; they do not establish universal language rankings or isolate one instruction's cost.
 
+![Overview of the cross-language benchmark workloads and selected results](assets/images/project-overview.png)
+
 ## Virtual dispatch (Tasks 1.1–1.3)
 
 Prepared operations perform addition or multiplication through dynamic dispatch. Timing results below are medians from one process trial per target. Each complete benchmark operation contains 10 million dispatches; values are milliseconds per operation (`ms/op`). They are provisional observations from the recorded configuration.
