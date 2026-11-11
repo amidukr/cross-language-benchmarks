@@ -394,3 +394,177 @@ remarks and generated code; forced-vectorization or a debug LLVM cost trace can
 then show whether Clang avoided genuinely expensive vector code or made a
 conservative estimate. Any performance effect of such a rewrite requires new
 clean timing trials separate from these diagnostic builds.
+
+## Code under test
+
+The following source excerpts show the measured benchmark function.
+
+### C
+
+Source: [enum-dispatch-test/c/main.c](../enum-dispatch-test/c/main.c), function `run`.
+
+```c
+static int32_t run(const Instruction *ops, uint32_t size, uint32_t repeats,
+                   int32_t value) {
+  uint32_t sum = 0;
+  for (uint32_t n = 0; n < repeats; n++)
+    for (uint32_t i = 0; i < size; i++) {
+      uint32_t operand = (uint32_t)ops[i].operand;
+      switch (ops[i].operation) {
+      case OP_ADD:
+        sum += (uint32_t)value + operand;
+        break;
+      case OP_MUL:
+        sum += (uint32_t)value * operand;
+        break;
+      }
+    }
+  return (int32_t)sum;
+}
+```
+
+### C++
+
+Source: [enum-dispatch-test/cpp/main.cpp](../enum-dispatch-test/cpp/main.cpp), function `run`.
+
+```cpp
+static std::int32_t run(const std::vector<Instruction> &ops,
+                        std::uint32_t repeats, std::int32_t value) {
+  std::uint32_t sum = 0;
+  for (std::uint32_t n = 0; n < repeats; n++)
+    for (auto instruction : ops) {
+      auto operand = static_cast<std::uint32_t>(instruction.operand);
+      switch (instruction.operation) {
+      case Operation::Add:
+        sum += static_cast<std::uint32_t>(value) + operand;
+        break;
+      case Operation::Mul:
+        sum += static_cast<std::uint32_t>(value) * operand;
+        break;
+      }
+    }
+  return static_cast<std::int32_t>(sum);
+}
+```
+
+### Java
+
+Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/EnumDispatch.java), function `run`.
+
+```java
+  static int run(List<Instruction> operations, int repeats, int value) {
+    int checksum = 0;
+    for (int n = 0; n < repeats; n++)
+      for (Instruction instruction : operations)
+        checksum += switch (instruction.operation()) {
+          case ADD -> value + instruction.operand();
+          case MUL -> value *instruction.operand();
+        };
+    return checksum;
+  }
+```
+
+### Rust
+
+Source: [enum-dispatch-test/rust/src/main.rs](../enum-dispatch-test/rust/src/main.rs), function `run`.
+
+```rust
+fn run(ops: &[Instruction], repeats: u32, value: i32) -> i32 {
+    let mut sum = 0i32;
+    for _ in 0..repeats {
+        for instruction in ops {
+            let result = match instruction.operation {
+                Operation::Add => value.wrapping_add(instruction.operand),
+                Operation::Mul => value.wrapping_mul(instruction.operand),
+            };
+            sum = sum.wrapping_add(result)
+        }
+    }
+    sum
+}
+```
+
+### Go
+
+Source: [enum-dispatch-test/go/main.go](../enum-dispatch-test/go/main.go), function `run`.
+
+```go
+func run(ops []Instruction, repeats int, value int32) int32 {
+	var sum uint32
+	for n := 0; n < repeats; n++ {
+		for _, instruction := range ops {
+			switch instruction.operation {
+			case Add:
+				sum += uint32(value) + uint32(instruction.operand)
+			case Mul:
+				sum += uint32(value) * uint32(instruction.operand)
+			}
+		}
+	}
+	return int32(sum)
+}
+```
+
+### Python
+
+Source: [enum-dispatch-test/python/enum_dispatch.py](../enum-dispatch-test/python/enum_dispatch.py), function `run`.
+
+```python
+def run(operations, repeats, value):
+    checksum = 0
+    for _ in range(repeats):
+        for instruction in operations:
+            match instruction.operation:
+                case Operation.ADD:
+                    result = value + instruction.operand
+                case Operation.MUL:
+                    result = value * instruction.operand
+            checksum = i32(checksum + result)
+    return checksum
+```
+
+### C#
+
+Source: [enum-dispatch-test/csharp/Program.cs](../enum-dispatch-test/csharp/Program.cs), function `Run`.
+
+```csharp
+  static int Run(Instruction[] ops, int repeats, int value) {
+    var sum = 0;
+    unchecked {
+      for (var n = 0; n < repeats; n++)
+        foreach (var instruction in ops)
+          sum += instruction.Operation switch {
+            Operation.Add => value + instruction.Operand,
+            Operation.Mul => value * instruction.Operand,
+            _ => throw new InvalidOperationException()
+          };
+    }
+    return sum;
+  }
+```
+
+### JavaScript
+
+Source: [enum-dispatch-test/javascript/enum-dispatch.js](../enum-dispatch-test/javascript/enum-dispatch.js), function `run`.
+
+```javascript
+function run(operations, repeats, value) {
+  let checksum = 0;
+  for (let n = 0; n < repeats; n++)
+    for (const instruction of operations) {
+      let result;
+      switch (instruction.operation) {
+        case Operation.ADD:
+          result = (value + instruction.operand) | 0;
+          break;
+        case Operation.MUL:
+          result = Math.imul(value, instruction.operand);
+          break;
+        default:
+          throw new Error('invalid operation');
+      }
+      checksum = (checksum + result) | 0;
+    }
+  return checksum;
+}
+```

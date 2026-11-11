@@ -125,3 +125,120 @@ and that enum dispatch does not gain unrelated vectorization. Hardware branch,
 cache, and cycle counters would further separate branch prediction, call
 overhead, and memory-layout effects. Existing Task 1.x and 2.x reports should
 be updated only under a separately requested Task 3.2.
+
+## Code under test
+
+The matched comparison uses the following measured functions. C and C++ use the same source for both compiler targets; the Java source is shared by its three runtime targets.
+
+### Virtual dispatch
+
+#### C
+
+Source: [virtual-dispatch-test/c/main.c](../virtual-dispatch-test/c/main.c), function `run`.
+
+```c
+static int32_t run(const Operation *ops, uint32_t size, uint32_t repeats,
+                   int32_t value) {
+  uint32_t sum = 0;
+  for (uint32_t n = 0; n < repeats; n++)
+    for (uint32_t i = 0; i < size; i++)
+      sum += (uint32_t)ops[i].process(&ops[i], value);
+  return (int32_t)sum;
+}
+```
+
+#### C++
+
+Source: [virtual-dispatch-test/cpp/main.cpp](../virtual-dispatch-test/cpp/main.cpp), function `run`.
+
+```cpp
+static std::int32_t run(const std::vector<std::unique_ptr<Operation>> &ops,
+                        std::uint32_t repeats, std::int32_t value) {
+  std::uint32_t sum = 0;
+  for (std::uint32_t n = 0; n < repeats; n++)
+    for (const auto &o : ops)
+      sum += static_cast<std::uint32_t>(o->process(value));
+  return static_cast<std::int32_t>(sum);
+}
+```
+
+#### Java
+
+Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-test/java/VirtualDispatch.java), function `run`.
+
+```java
+  static int run(List<Operation> operations, int repeats, int value) {
+    int checksum = 0;
+    for (int n = 0; n < repeats; n++)
+      for (Operation operation : operations)
+        checksum += operation.process(value);
+    return checksum;
+  }
+```
+
+### Enum dispatch
+
+#### C
+
+Source: [enum-dispatch-test/c/main.c](../enum-dispatch-test/c/main.c), function `run`.
+
+```c
+static int32_t run(const Instruction *ops, uint32_t size, uint32_t repeats,
+                   int32_t value) {
+  uint32_t sum = 0;
+  for (uint32_t n = 0; n < repeats; n++)
+    for (uint32_t i = 0; i < size; i++) {
+      uint32_t operand = (uint32_t)ops[i].operand;
+      switch (ops[i].operation) {
+      case OP_ADD:
+        sum += (uint32_t)value + operand;
+        break;
+      case OP_MUL:
+        sum += (uint32_t)value * operand;
+        break;
+      }
+    }
+  return (int32_t)sum;
+}
+```
+
+#### C++
+
+Source: [enum-dispatch-test/cpp/main.cpp](../enum-dispatch-test/cpp/main.cpp), function `run`.
+
+```cpp
+static std::int32_t run(const std::vector<Instruction> &ops,
+                        std::uint32_t repeats, std::int32_t value) {
+  std::uint32_t sum = 0;
+  for (std::uint32_t n = 0; n < repeats; n++)
+    for (auto instruction : ops) {
+      auto operand = static_cast<std::uint32_t>(instruction.operand);
+      switch (instruction.operation) {
+      case Operation::Add:
+        sum += static_cast<std::uint32_t>(value) + operand;
+        break;
+      case Operation::Mul:
+        sum += static_cast<std::uint32_t>(value) * operand;
+        break;
+      }
+    }
+  return static_cast<std::int32_t>(sum);
+}
+```
+
+#### Java
+
+Source: [enum-dispatch-test/java/EnumDispatch.java](../enum-dispatch-test/java/EnumDispatch.java), function `run`.
+
+```java
+  static int run(List<Instruction> operations, int repeats, int value) {
+    int checksum = 0;
+    for (int n = 0; n < repeats; n++)
+      for (Instruction instruction : operations)
+        checksum += switch (instruction.operation()) {
+          case ADD -> value + instruction.operand();
+          case MUL -> value *instruction.operand();
+        };
+    return checksum;
+  }
+```

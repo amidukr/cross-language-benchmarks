@@ -150,3 +150,126 @@ non-virtual controls. Stronger conclusions require multiple fresh-process
 trials per target with the same case and controls, separate startup trials,
 and runtime-specific diagnostic runs. A matched direct-call workload would be
 needed before attributing target differences to virtual dispatch itself.
+
+## Code under test
+
+The following source excerpts show the measured benchmark function.
+
+### C
+
+Source: [virtual-dispatch-test/c/main.c](../virtual-dispatch-test/c/main.c), function `run`.
+
+```c
+static int32_t run(const Operation *ops, uint32_t size, uint32_t repeats,
+                   int32_t value) {
+  uint32_t sum = 0;
+  for (uint32_t n = 0; n < repeats; n++)
+    for (uint32_t i = 0; i < size; i++)
+      sum += (uint32_t)ops[i].process(&ops[i], value);
+  return (int32_t)sum;
+}
+```
+
+### C++
+
+Source: [virtual-dispatch-test/cpp/main.cpp](../virtual-dispatch-test/cpp/main.cpp), function `run`.
+
+```cpp
+static std::int32_t run(const std::vector<std::unique_ptr<Operation>> &ops,
+                        std::uint32_t repeats, std::int32_t value) {
+  std::uint32_t sum = 0;
+  for (std::uint32_t n = 0; n < repeats; n++)
+    for (const auto &o : ops)
+      sum += static_cast<std::uint32_t>(o->process(value));
+  return static_cast<std::int32_t>(sum);
+}
+```
+
+### Java
+
+Source: [virtual-dispatch-test/java/VirtualDispatch.java](../virtual-dispatch-test/java/VirtualDispatch.java), function `run`.
+
+```java
+  static int run(List<Operation> operations, int repeats, int value) {
+    int checksum = 0;
+    for (int n = 0; n < repeats; n++)
+      for (Operation operation : operations)
+        checksum += operation.process(value);
+    return checksum;
+  }
+```
+
+### Rust
+
+Source: [virtual-dispatch-test/rust/src/main.rs](../virtual-dispatch-test/rust/src/main.rs), function `run`.
+
+```rust
+fn run(ops: &[Box<dyn Operation>], repeats: u32, value: i32) -> i32 {
+    let mut sum = 0i32;
+    for _ in 0..repeats {
+        for op in ops {
+            sum = sum.wrapping_add(op.process(value))
+        }
+    }
+    sum
+}
+```
+
+### Go
+
+Source: [virtual-dispatch-test/go/main.go](../virtual-dispatch-test/go/main.go), function `run`.
+
+```go
+func run(ops []Operation, repeats int, value int32) int32 {
+	var sum uint32
+	for n := 0; n < repeats; n++ {
+		for _, op := range ops {
+			sum += uint32(op.Process(value))
+		}
+	}
+	return int32(sum)
+}
+```
+
+### Python
+
+Source: [virtual-dispatch-test/python/virtual_dispatch.py](../virtual-dispatch-test/python/virtual_dispatch.py), function `run`.
+
+```python
+def run(operations, repeats, value):
+    checksum = 0
+    for _ in range(repeats):
+        for operation in operations:
+            checksum = i32(checksum + operation.process(value))
+    return checksum
+```
+
+### C#
+
+Source: [virtual-dispatch-test/csharp/Program.cs](../virtual-dispatch-test/csharp/Program.cs), function `Run`.
+
+```csharp
+  static int Run(IOperation[] ops, int repeats, int value) {
+    var sum = 0;
+    unchecked {
+      for (var n = 0; n < repeats; n++)
+        foreach (var op in ops)
+          sum += op.Process(value);
+    }
+    return sum;
+  }
+```
+
+### JavaScript
+
+Source: [virtual-dispatch-test/javascript/virtual-dispatch.js](../virtual-dispatch-test/javascript/virtual-dispatch.js), function `run`.
+
+```javascript
+function run(operations, repeats, value) {
+  let checksum = 0;
+  for (let n = 0; n < repeats; n++)
+    for (const operation of operations)
+      checksum = (checksum + operation.process(value)) | 0;
+  return checksum;
+}
+```
