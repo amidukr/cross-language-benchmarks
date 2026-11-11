@@ -38,6 +38,7 @@ heap_profiles=(
 )
 progress=0
 failed_retained=0
+probe_only=false
 
 run_config() {
   local app=$1 target=$2 collector=$3 profile=$4 trial=$5 xms=${6:-} xmx=${7:-} mode=${8:-$duration_mode}
